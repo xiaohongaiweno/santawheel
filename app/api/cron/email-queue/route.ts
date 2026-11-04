@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { processDueJobs, sweepReminders } from "@/lib/email-queue";
 
 /**
- * Email retry worker. Vercel Cron hits this every 5 minutes (see vercel.json)
- * and processes due jobs: pending jobs whose backoff window has elapsed, plus
- * the premium reminder sweep for paid exchanges whose reminder time arrived.
- * Protect with CRON_SECRET (Vercel sends "Authorization: Bearer <CRON_SECRET>").
+ * Email retry worker. Called from two places:
+ *  - Vercel Cron once a day (Hobby plan limit; see vercel.json) as a fallback sweep
+ *  - An external free cron service (e.g. cron-job.org) every 5 minutes for timely
+ *    retries and the premium reminder sweep
+ * Processes due jobs: pending jobs whose backoff window has elapsed, plus the
+ * reminder sweep for paid exchanges whose reminder time arrived.
+ * Protect with CRON_SECRET ("Authorization: Bearer <CRON_SECRET>").
  */
 async function handle(req: NextRequest) {
   const secret = process.env.CRON_SECRET;
