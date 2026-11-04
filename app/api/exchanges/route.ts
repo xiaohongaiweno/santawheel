@@ -83,10 +83,18 @@ export async function POST(req: NextRequest) {
   }
 
   // Collect-first draws only emailed the organizer a join link; there is
-  // nothing else to deliver until the organizer draws the names.
+  // nothing else to deliver until the organizer draws the names. Still flush
+  // the queue inline so that email goes out with the response, not hours
+  // later whenever the cron fires.
   if (joinPath) {
+    let delivery: Awaited<ReturnType<typeof processDueJobs>> | null = null;
+    try {
+      delivery = await processDueJobs({ exchangeId, limit: 10 });
+    } catch {
+      // non-fatal
+    }
     return NextResponse.json(
-      { exchangeId, delivery: null, managePath, links: [], joinPath },
+      { exchangeId, delivery, managePath, links: [], joinPath },
       { status: 201 }
     );
   }
