@@ -17,6 +17,8 @@
  *     candidate receivers, so repeated draws differ.
  */
 
+import { randomInt } from "node:crypto";
+
 export class UnsolvableDrawError extends Error {
   constructor(message: string) {
     super(message);
@@ -29,10 +31,17 @@ export interface DrawPair {
   receiver: string;
 }
 
-/** Fisher-Yates shuffle (in place). */
+/**
+ * Fisher-Yates shuffle (in place).
+ *
+ * Uses a CSPRNG rather than Math.random(): the draw decides who buys a gift
+ * for whom, and an assignment should not be predictable from a seed an
+ * observer could reconstruct. `randomInt` is also unbiased (rejection
+ * sampling), so every permutation is equally likely.
+ */
 function shuffle<T>(arr: T[]): T[] {
   for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = randomInt(i + 1);
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;

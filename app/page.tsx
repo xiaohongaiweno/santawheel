@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import DrawForm from "@/components/home/DrawForm";
 import CopyButton from "@/components/home/CopyButton";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
@@ -7,7 +8,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: { absolute: "Secret Santa Generator – Free & No Sign-up" },
   description:
-    "Paste your list, draw names, and everyone gets their assignment by email. Free secret santa generator — no sign-up, no app, exclusions supported.",
+    "Paste your list, draw names, and each person gets their own assignment by email. Free, no account, up to 100 people, with couple and family exclusions.",
   alternates: {
     canonical: "/",
   },
@@ -17,28 +18,44 @@ export const metadata: Metadata = {
 
 const faqs = [
   {
-    q: "Do I need to sign up?",
-    a: "No. The generator works without an account. Paste your participants' names and draw — nothing to register and nothing to install.",
+    q: "Is SantaWheel free?",
+    a: "Yes. Drawing names, exclusion rules and email delivery are free, with no account and no credit card. An optional $4.99 upgrade per draw removes the watermark, adds Excel/CSV import, automatic reminders and no-repeat draws across years.",
   },
   {
-    q: "Can I see who drew whom?",
-    a: "Yes — as the organizer you see the full list of assignments. Each participant only sees the person they are buying for, so the draw stays secret.",
+    q: "Do I need to create an account?",
+    a: "No. There is nothing to sign up for and nothing to install. Paste your participants, draw, and your organizer dashboard link is emailed to you.",
   },
   {
-    q: "Do participants receive an email?",
-    a: "Yes. After the draw, every participant automatically gets an email with their assignment. They don't need an account or an app.",
+    q: "Do participants need an email address?",
+    a: "Only in email mode. Switch to private links and you paste names alone — we draw the pairs and give you one private link per person to send however you like. Nothing is emailed to participants in that mode.",
   },
   {
-    q: "Can I edit the participant list?",
-    a: "Yes, any time before you generate: edit the list, then draw. After the draw, your organizer dashboard can reset it — everyone is re-drawn and re-emailed.",
+    q: "Can I stop couples or family members from drawing each other?",
+    a: "Yes. Add as many exclusion pairs as you like — partners, roommates, or a manager and their direct reports. Exclusions work in both directions, and the draw is computed to respect all of them at once.",
   },
   {
-    q: "Can I set exclusion rules?",
-    a: "Yes. Exclude any two people from drawing each other — for example spouses, roommates, or a manager and their direct reports. Exclusions apply in both directions.",
+    q: "Can the organizer see everyone's assignment?",
+    a: "In a normal draw, yes: the dashboard lists who drew whom so you can check the draw worked and resend any email. Turn on blind mode instead and the dashboard never shows the pairings — not even to you. Each participant only ever sees the person they are buying for.",
   },
   {
-    q: "How many people can participate?",
-    a: "Up to 100 participants per exchange, with any number of exclusions. Large lists are drawn in under a second.",
+    q: "How are the names drawn?",
+    a: "We compute a random one-to-one pairing where nobody draws themselves and no exclusion rule is broken. The result is checked before it is saved, and if your rules make a valid draw impossible we tell you instead of returning a broken one.",
+  },
+  {
+    q: "Can I redraw the names?",
+    a: "Yes. Resetting from the organizer dashboard discards the current pairings, invalidates every link already sent, and emails everyone a fresh assignment. A redraw is rate limited so an accidental double click cannot spam your group.",
+  },
+  {
+    q: "Can I resend an assignment email?",
+    a: "Yes. Every participant row on the organizer dashboard has a Resend button, and it shows whether the earlier attempt was sent, pending or failed.",
+  },
+  {
+    q: "How long do you keep participant details?",
+    a: "Until the draw is removed. There is no automatic expiry yet. Every email includes a one-click link that removes that person's name and email immediately, and the organizer can delete the entire draw from the dashboard once the exchange is over.",
+  },
+  {
+    q: "How many people can take part?",
+    a: "Up to 100 participants per draw, with any number of exclusions. Large lists are drawn in under a second.",
   },
 ];
 
@@ -90,12 +107,24 @@ export default function Home() {
       {/* Above the fold: subtitle + form. LCP element is the textarea. */}
       <section className="mx-auto w-full max-w-2xl px-4 pb-10 pt-8 sm:pt-12">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Secret Santa Generator
+          Free Secret Santa Generator
         </h1>
         <p className="mt-3 text-base text-muted">
-          No sign-up, no app — draw names and everyone gets their assignment by
-          email.
+          Paste your group, draw names in one click, and everyone gets their own
+          private assignment — by email, or as a link you hand out yourself. No
+          account, no app, no chasing people.
         </p>
+        <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-xs font-medium text-muted">
+          <li>Free forever</li>
+          <li aria-hidden="true">·</li>
+          <li>No sign-up</li>
+          <li aria-hidden="true">·</li>
+          <li>Up to 100 people</li>
+          <li aria-hidden="true">·</li>
+          <li>Exclusion rules</li>
+          <li aria-hidden="true">·</li>
+          <li>Blind mode</li>
+        </ul>
         <div className="mt-6">
           <DrawForm kind="secret-santa" />
         </div>
@@ -110,18 +139,38 @@ export default function Home() {
             </h2>
             <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-muted">
               <li>
-                Paste your participants with their emails, one per line.
+                Paste your participants, one per line — names with emails, or
+                just names if you would rather hand out links yourself.
                 Copy-paste from a spreadsheet works too.
               </li>
               <li>
-                Set exclusions if you need them, then generate. Names are drawn
-                so nobody picks themselves.
+                Set exclusions if you need them, then draw. Names are paired so
+                nobody picks themselves and no exclusion rule is broken.
               </li>
               <li>
-                Everyone receives their assignment by email automatically. You
-                never have to chase anyone.
+                Everyone receives their assignment by email, or you copy one
+                private link per person and send it through WhatsApp or
+                Messenger. You never have to chase anyone.
               </li>
             </ol>
+          </section>
+
+          <section aria-labelledby="private-links">
+            <h2 id="private-links" className="text-xl font-semibold">
+              No email addresses? Use private links
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              Not every group wants to hand over email addresses — and for a
+              family draw, half of them may not check their inbox anyway. Switch
+              to private links, paste names only, and you get one unguessable
+              link per person to share however your group already talks. Each
+              link opens that person&apos;s assignment and nothing else.
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Prefer to keep the pairings to yourself as well? Blind mode hides
+              them from the organizer dashboard entirely: you can check delivery
+              and resend emails, but you never see who drew whom.
+            </p>
           </section>
 
           <section aria-labelledby="free-no-signup">
@@ -168,6 +217,25 @@ export default function Home() {
               Set a budget, exclude couples who live together, and let the
               draw handle the rest. Grandparents don&apos;t need an account —
               their assignment simply arrives by email.
+            </p>
+          </section>
+
+          <section aria-labelledby="gift-exchange">
+            <h2 id="gift-exchange" className="text-xl font-semibold">
+              Gift exchange, not Secret Santa?
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              The same draw also runs a general gift exchange — an office swap,
+              a friends&apos; yankee swap, a family draw where everybody buys for
+              everybody. If that is what you are organizing, start from the{" "}
+              <Link
+                href="/gift-exchange-generator"
+                className="text-accent underline"
+              >
+                gift exchange generator
+              </Link>{" "}
+              page: same engine, wording that fits a swap rather than a Secret
+              Santa.
             </p>
           </section>
 

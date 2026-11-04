@@ -3,6 +3,7 @@ import { createAndDeliverExchange, type CreateExchangeInput } from "@/lib/supaba
 import { processDueJobs } from "@/lib/email-queue";
 import { UnsolvableDrawError } from "@/lib/draw/derangement";
 import { checkCreateRateLimit, clientIp } from "@/lib/rate-limit";
+import { signToken } from "@/lib/tokens";
 
 /**
  * POST /api/exchanges
@@ -33,28 +34,61 @@ export async function POST(req: NextRequest) {
   }
 
   let exchangeId: string;
+  let reused = false;
+  let links: Awaited<ReturnType<typeof createAndDeliverExchange>>["links"] = [];
   try {
     // UI sends hyphenated kinds ("secret-santa"); the DB stores underscored
     // values per the exchange_kind_check constraint.
     const kind = body.kind?.replace(/-/g, "_") as CreateExchangeInput["kind"];
-    const result = await createAndDeliverExchange({ ...body, kind, createdByIp: ip });
+    const result = await createAndDeliverExchange({
+      ...body,
+      kind,
+      createdByIp: ip,
+      requestId: body.requestId,
+    });
     exchangeId = result.exchangeId;
+    reused = result.reused;
+    links = result.links;
   } catch (e) {
     const message = e instanceof Error ? e.message : "Failed to create exchange";
+    // A missing migration is an operator problem, not a bad request: say so
+    // plainly instead of blaming the organizer.
+    if (/migration/i.test(message)) {
+      return NextResponse.json({ error: message }, { status: 503 });
+    }
     const badRequest =
       e instanceof UnsolvableDrawError ||
-      /required|Invalid|Duplicate|unknown participant|Up to 100|At least 2|Exclusion/i.test(message);
+      /required|Invalid|Duplicate|unknown participant|Up to 100|At least 2|Exclusion|requestId|called|Blind mode|needs an email/i.test(
+        message
+      );
     return NextResponse.json({ error: message }, { status: badRequest ? 400 : 500 });
   }
 
-  // Best-effort immediate send; anything that fails stays in the queue with
-  // backoff (cron retries it) and shows up on the organizer dashboard.
+  // Hand the creator their dashboard link directly, so a mistyped or filtered
+  // organizer email cannot lock them out of their own draw.
+  const managePath = `/manage/${signToken({ t: "o", x: exchangeId })}`;
+
+  // A retried submission already delivered (or is delivering) this exchange.
+  // Never send the same assignment emails twice.
+  if (reused) {
+    // Link-mode retries must still get their links back: the first response may
+    // have been lost to a flaky connection, and an empty success page would
+    // leave the organizer with nothing to hand out.
+    return NextResponse.json(
+      { exchangeId, reused: true, delivery: null, managePath, links },
+      { status: 200 }
+    );
+  }
+
+  // Best-effort immediate send. Capped so a 100-person draw cannot exceed the
+  // serverless function budget: whatever is left stays queued for the cron
+  // worker, which retries it within minutes.
   let delivery: Awaited<ReturnType<typeof processDueJobs>> | null = null;
   try {
-    delivery = await processDueJobs({ exchangeId, limit: 200 });
+    delivery = await processDueJobs({ exchangeId, limit: 40 });
   } catch {
     // queue processing errors are non-fatal for the caller
   }
 
-  return NextResponse.json({ exchangeId, delivery }, { status: 201 });
+  return NextResponse.json({ exchangeId, delivery, managePath, links }, { status: 201 });
 }

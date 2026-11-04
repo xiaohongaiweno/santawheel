@@ -22,6 +22,12 @@ export default function Footer() {
           >
             Gift Exchange Generator
           </Link>
+          <Link href="/privacy" className="text-muted hover:text-foreground">
+            Privacy
+          </Link>
+          <Link href="/terms" className="text-muted hover:text-foreground">
+            Terms
+          </Link>
           <a href={`mailto:hello@santawheel.com`} className="text-muted hover:text-foreground">
             Contact
           </a>

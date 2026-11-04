@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import DrawForm from "@/components/home/DrawForm";
-import CopyButton from "@/components/home/CopyButton";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 
 export const metadata: Metadata = {
   title: { absolute: "Gift Exchange Generator – Free Random Pairing" },
   description:
-    "Paste your list and draw random pairs for your gift exchange. Free, no sign-up — supports exclusions for white elephant, yankee swap and office gift swaps.",
+    "Draw random gift exchange pairs for an office swap, a family draw or a friends' exchange. Free, no sign-up, names only if you prefer — with exclusion rules and private links.",
   alternates: {
     canonical: "/gift-exchange-generator",
   },
@@ -17,27 +17,31 @@ export const metadata: Metadata = {
 const faqs = [
   {
     q: "What does the gift exchange generator do?",
-    a: "It randomly pairs everyone in your group. Each person draws someone else to give a gift to, and nobody ever draws themselves.",
+    a: "It pairs everyone in your group at random. Each person is assigned one other person to buy a gift for, nobody is assigned themselves, and everybody is assigned exactly once.",
   },
   {
-    q: "Do participants need an account?",
-    a: "No. Paste names and draw — nothing to register, nothing to install.",
+    q: "Do participants need an account or an email address?",
+    a: "No account, ever. Email addresses are optional: use email delivery and we message everyone for you, or choose private links and paste names only — we hand you one link per person to send yourself.",
   },
   {
     q: "Can I stop certain people from drawing each other?",
-    a: "Yes. Exclude any two people — spouses, roommates, or a manager and their direct reports. Exclusions apply in both directions, and the draw never breaks them.",
+    a: "Yes. Exclude any two people — spouses, roommates, or a manager and their direct reports. Exclusions apply in both directions, and if your rules make a valid draw impossible we say so instead of producing a broken one.",
   },
   {
-    q: "Can I use it for a white elephant or yankee swap?",
-    a: "Yes. Draw who each person is buying for ahead of time, or draw the picking order for the swap itself. The random pairing works for any gift exchange format.",
+    q: "Is this a white elephant or yankee swap game?",
+    a: "No. Those games are played in a picking order with stealing, and we do not run that format yet. What this does is the draw behind a “buy for one person” exchange, which is what most office swaps and family exchanges actually use.",
   },
   {
     q: "How many people can join a gift exchange?",
-    a: "Up to 100 participants per draw, with any number of exclusions. Large groups are drawn in under a second.",
+    a: "Up to 100 participants per draw, with any number of exclusions. Large groups are drawn in well under a second.",
   },
   {
     q: "Is the pairing really random?",
-    a: "Yes. Every valid pairing is possible, the draw is freshly random each time, and nobody can draw themselves or an excluded person.",
+    a: "Yes. The pairing is generated on our server from a cryptographically secure random source, then checked against every rule before it is saved. Resetting the draw produces a genuinely new pairing, not the same one reshuffled.",
+  },
+  {
+    q: "Can I see who everyone is buying for?",
+    a: "In a normal draw the organizer dashboard lists the pairs. If you would rather not know, turn on blind mode when you create the draw: the pairings are then never shown in your dashboard and cannot be exported.",
   },
 ];
 
@@ -54,21 +58,16 @@ const faqJsonLd = {
 const appJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "SantaWheel",
+  name: "SantaWheel Gift Exchange Generator",
   alternateName: "Gift Exchange Generator",
   url: "https://santawheel.com/gift-exchange-generator",
   applicationCategory: "GameApplication",
   operatingSystem: "Any",
   browserRequirements: "Requires JavaScript",
   description:
-    "Free gift exchange generator. Paste your participant list and draw random pairs for white elephant, yankee swap or office gift exchanges. No sign-up required.",
+    "Free gift exchange generator. Paste your participant list and draw random pairs for an office swap, a family draw or a friends' exchange. No sign-up required.",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
-
-const pickingOrderIdeas = [
-  "Picking order for the swap: {names in drawn order}. Lowest number picks first — good luck!",
-  "You are buying for {name} in our gift exchange. Budget is {amount}. Keep it a surprise until the swap!",
-];
 
 function JsonLd({ data }: { data: object }) {
   return (
@@ -97,8 +96,8 @@ export default function GiftExchangeGenerator() {
           Gift Exchange Generator
         </h1>
         <p className="mt-3 text-base text-muted">
-          No sign-up, no app — paste names and draw random pairs for your gift
-          exchange.
+          Draw random pairs for an office swap, a family draw or a friends&apos;
+          exchange. Free, no sign-up, and you can skip email addresses entirely.
         </p>
         <div className="mt-6">
           <DrawForm kind="gift-exchange" />
@@ -110,82 +109,78 @@ export default function GiftExchangeGenerator() {
         <div className="mx-auto max-w-2xl space-y-10 px-4 py-12">
           <section aria-labelledby="how-it-works">
             <h2 id="how-it-works" className="text-xl font-semibold">
-              How it works
+              How a gift exchange draw works
             </h2>
             <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-muted">
               <li>
-                Paste your participant list, one name per line. Copy-paste from
-                a spreadsheet column works too.
+                Paste the group — one name per line, or names with emails if you
+                want us to message everyone.
               </li>
               <li>
-                Add exclusions if some people shouldn&apos;t draw each other,
-                then generate. Names are drawn so nobody picks themselves.
+                Add exclusions if two people should not be paired, then draw.
+                Everyone is assigned exactly one person, and nobody gets
+                themselves.
               </li>
               <li>
-                Share the pairs with your group and start the exchange. Redraw
-                as many times as you like.
+                Deliver it: one email each, or a set of private links you copy
+                and send through WhatsApp, Slack, Messenger or a group chat.
               </li>
             </ol>
           </section>
 
-          <section aria-labelledby="free-random-pairing">
-            <h2 id="free-random-pairing" className="text-xl font-semibold">
-              Free random pairing
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted">
-              The generator is free with no limits. No account, no app, nothing
-              to pay. Paste your list and get a fresh random draw instantly —
-              run it again any time for a new pairing.
-            </p>
-          </section>
-
-          <section aria-labelledby="exclusions">
-            <h2 id="exclusions" className="text-xl font-semibold">
-              Works with exclusions
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted">
-              Some people should not draw each other. Exclude pairs so spouses,
-              roommates, or a manager and their direct reports never get
-              matched. Exclusions work in both directions, and if the rules
-              make a draw impossible, the generator tells you clearly instead
-              of producing a wrong result.
-            </p>
-          </section>
-
-          <section aria-labelledby="white-elephant">
-            <h2 id="white-elephant" className="text-xl font-semibold">
-              For white elephant and yankee swap
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted">
-              Running a white elephant or yankee swap? Draw the picking order
-              for the swap itself, or draw who each person is buying for before
-              the party. Either way, the pairing is random and nobody is left
-              out.
-            </p>
-            <div className="mt-4 space-y-3">
-              {pickingOrderIdeas.map((msg) => (
-                <div
-                  key={msg.slice(0, 24)}
-                  className="rounded-lg border border-border bg-background p-4"
-                >
-                  <p className="text-sm leading-relaxed">{msg}</p>
-                  <div className="mt-3">
-                    <CopyButton text={msg} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
           <section aria-labelledby="office-swaps">
             <h2 id="office-swaps" className="text-xl font-semibold">
-              For office gift swaps
+              Office gift exchanges
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              Department-wide swaps, remote teams, big groups — paste your
-              roster and draw in one click. Exclusions keep managers and their
-              direct reports apart, and the draw handles 100 people in under a
-              second.
+              Department swaps get awkward when someone is paired with their own
+              manager, or with the person they carpool with. Add those pairs as
+              exclusions and the draw works around them. A hundred-person roster
+              is drawn instantly, and remote teammates need nothing installed —
+              they just open a link.
+            </p>
+          </section>
+
+          <section aria-labelledby="family-exchanges">
+            <h2 id="family-exchanges" className="text-xl font-semibold">
+              Family gift exchanges
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              Big families usually need two things: couples who live together
+              should not draw each other, and nobody should have to explain how
+              to use an app to Grandma. Exclude the couples, set a budget if you
+              want one shown with the draw, and choose private links so you can
+              text each person their own link.
+            </p>
+          </section>
+
+          <section aria-labelledby="name-picker">
+            <h2 id="name-picker" className="text-xl font-semibold">
+              A name picker that respects your rules
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              A plain random shuffle is easy to write and easy to get wrong: it
+              often produces an invalid pairing, then reruns until something
+              sticks — or gives up and reports “no solution” when a valid draw
+              exists. This generator instead computes a real one-to-one
+              assignment that satisfies every exclusion, and verifies the result
+              before saving it. If your rules genuinely make a draw impossible —
+              say three people where two may not draw each other — you get a
+              clear message instead of a broken pairing.
+            </p>
+          </section>
+
+          <section aria-labelledby="no-emails">
+            <h2 id="no-emails" className="text-xl font-semibold">
+              Without collecting email addresses
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              Some groups would rather not hand over a list of addresses. Switch
+              to private links and we only store names: the draw runs the same
+              way, and you get one unguessable link per participant to share
+              however your group already talks. Each link opens that
+              person&apos;s assignment and nothing else, and resetting the draw
+              cancels every link issued before it.
             </p>
           </section>
 
@@ -205,6 +200,20 @@ export default function GiftExchangeGenerator() {
                 </details>
               ))}
             </div>
+          </section>
+
+          <section aria-labelledby="secret-santa">
+            <h2 id="secret-santa" className="text-xl font-semibold">
+              Running a Secret Santa instead?
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              If each person buys for one mystery recipient and nobody knows who
+              has them, that is a Secret Santa — head to the{" "}
+              <Link href="/" className="text-accent underline">
+                free Secret Santa generator
+              </Link>
+              . Same engine, wording that fits the Christmas version.
+            </p>
           </section>
         </div>
       </div>

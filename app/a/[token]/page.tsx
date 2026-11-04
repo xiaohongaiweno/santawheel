@@ -3,9 +3,10 @@ import { getSupabaseAdmin } from "@/lib/supabase/draw-service";
 import RemoveMeButton from "@/components/delivery/RemoveMeButton";
 import Watermark from "@/components/delivery/Watermark";
 import { signToken } from "@/lib/tokens";
+import { kindLabel } from "@/lib/email-templates";
 
 export const metadata = {
-  title: "Your Secret Santa assignment",
+  title: "Your assignment",
   robots: { index: false, follow: false },
 };
 
@@ -38,7 +39,7 @@ export default async function AssignmentPage({
   const db = getSupabaseAdmin();
   const { data: exchange } = await db
     .from("exchange")
-    .select("title, status, draw_generation, paid")
+    .select("title, status, draw_generation, paid, kind")
     .eq("id", payload.x)
     .maybeSingle();
 
@@ -135,8 +136,8 @@ export default async function AssignmentPage({
 
       <div className="mt-8 rounded-lg border border-border bg-surface p-4">
         <p className="text-xs leading-relaxed text-muted">
-          This email was sent because you joined a Secret Santa group organized
-          with SantaWheel. Don&apos;t want to take part?
+          This link was sent because you joined a {kindLabel(String(exchange.kind))}{" "}
+          organized with SantaWheel. Don&apos;t want to take part?
         </p>
         <div className="mt-3">
           <RemoveMeButton

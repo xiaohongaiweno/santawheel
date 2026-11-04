@@ -54,7 +54,7 @@ interface JobRow {
  * organizer dashboard to show.
  */
 export async function processDueJobs(
-  opts: { exchangeId?: string; limit?: number } = {}
+  opts: { exchangeId?: string; jobId?: string; limit?: number; concurrency?: number } = {}
 ): Promise<QueueResult> {
   const db = getSupabaseAdmin();
   const limit = opts.limit ?? 25;
@@ -67,19 +67,48 @@ export async function processDueJobs(
     .order("created_at")
     .limit(limit);
   if (opts.exchangeId) query = query.eq("exchange_id", opts.exchangeId);
+  if (opts.jobId) query = query.eq("id", opts.jobId);
 
   const { data, error } = await query;
   if (error) throw new Error(`processDueJobs fetch failed: ${error.message}`);
 
-  const result: QueueResult = { processed: 0, sent: 0, failed: 0, retriable: 0 };
-  for (const job of (data ?? []) as unknown as JobRow[]) {
-    result.processed++;
-    const outcome = await attemptJob(job);
+  const jobs = (data ?? []) as unknown as JobRow[];
+  const result: QueueResult = { processed: jobs.length, sent: 0, failed: 0, retriable: 0 };
+
+  // Sending is I/O bound, so a small worker pool keeps a 100-person draw well
+  // inside the serverless time budget without hammering Resend.
+  await runWithConcurrency(jobs, opts.concurrency ?? 6, async (job) => {
+    let outcome: "sent" | "failed" | "retriable";
+    try {
+      outcome = await attemptJob(job);
+    } catch {
+      outcome = "retriable";
+    }
     if (outcome === "sent") result.sent++;
     else if (outcome === "failed") result.failed++;
     else result.retriable++;
-  }
+  });
   return result;
+}
+
+/** Run `worker` over `items` with at most `limit` in flight. */
+async function runWithConcurrency<T>(
+  items: T[],
+  limit: number,
+  worker: (item: T) => Promise<void>
+): Promise<void> {
+  if (items.length === 0) return;
+  const queue = [...items];
+  const size = Math.max(1, Math.min(limit, queue.length));
+  await Promise.all(
+    Array.from({ length: size }, async () => {
+      for (;;) {
+        const item = queue.shift();
+        if (item === undefined) return;
+        await worker(item);
+      }
+    })
+  );
 }
 
 async function attemptJob(job: JobRow): Promise<"sent" | "failed" | "retriable"> {
@@ -167,10 +196,10 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
     type Row = {
       giver_id: string;
       viewed_at: string | null;
-      participant: { name: string; email: string; removed_at: string | null };
+      participant: { name: string; email: string | null; removed_at: string | null };
     };
     const targets = ((rows ?? []) as unknown as Row[]).filter(
-      (r) => !r.viewed_at && !r.participant.removed_at
+      (r) => !r.viewed_at && !r.participant.removed_at && Boolean(r.participant.email)
     );
 
     if (targets.length > 0) {
@@ -179,7 +208,7 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
           exchangeId: ex.id,
           kind: "reminder" as const,
           giverId: r.giver_id,
-          toEmail: r.participant.email,
+          toEmail: r.participant.email as string,
           subject: `Reminder: your ${kindLabel(ex.kind)} assignment`,
           payload: {
             name: r.participant.name,
@@ -250,5 +279,7 @@ function render(job: JobRow): { html: string; text: string } {
     title: String(job.payload.title ?? "your draw"),
     manageToken: String(job.payload.token ?? ""),
     kind,
+    blind: job.payload.blind === true,
+    deliveryMode: job.payload.deliveryMode === "link" ? "link" : "email",
   });
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/tokens";
 import { getSupabaseAdmin } from "@/lib/supabase/draw-service";
+import { exchangePolicy } from "@/lib/exchange-visibility";
 import type { ParticipantRow } from "@/lib/supabase/draw-service";
 
 /**
@@ -15,12 +16,29 @@ export async function GET(req: NextRequest) {
   }
 
   const db = getSupabaseAdmin();
-  const [{ data: exchange }, { data: participants }, { data: pairs }] = await Promise.all([
-    db.from("exchange").select("title").eq("id", payload.x).maybeSingle(),
+  const { data: exchange } = await db
+    .from("exchange")
+    .select("*")
+    .eq("id", payload.x)
+    .maybeSingle();
+  if (!exchange) return NextResponse.json({ error: "Exchange not found" }, { status: 404 });
+
+  // Blind mode: the whole point is that no full pairing list is ever handed
+  // out. Refuse before the pairs are even queried.
+  if (exchangePolicy(exchange).blind) {
+    return NextResponse.json(
+      {
+        error:
+          "This draw is in blind mode — pairings are never exported. Each participant can still open their own link.",
+      },
+      { status: 403 }
+    );
+  }
+
+  const [{ data: participants }, { data: pairs }] = await Promise.all([
     db.from("participant").select("*").eq("exchange_id", payload.x),
     db.from("pair").select("giver_id, receiver_id").eq("exchange_id", payload.x),
   ]);
-  if (!exchange) return NextResponse.json({ error: "Exchange not found" }, { status: 404 });
 
   const byId = new Map(
     ((participants ?? []) as unknown as ParticipantRow[]).map((p) => [p.id, p])
@@ -34,9 +52,9 @@ export async function GET(req: NextRequest) {
     const receiver = byId.get(pair.receiver_id);
     rows.push([
       giver?.name ?? "?",
-      giver?.email ?? "?",
+      giver?.email ?? "",
       receiver?.name ?? "?",
-      receiver?.email ?? "?",
+      receiver?.email ?? "",
     ]);
   }
 

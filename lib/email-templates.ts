@@ -25,6 +25,11 @@ export function assignmentLink(exchangeId: string, participantId: string, genera
   return link({ t: "a", x: exchangeId, p: participantId, g: generation }, "/a/");
 }
 
+/** Absolute private result URL for one participant (link mode hands these out). */
+export function assignmentUrl(exchangeId: string, participantId: string, generation: number): string {
+  return assignmentLink(exchangeId, participantId, generation);
+}
+
 export function removeMeLink(exchangeId: string, participantId: string): string {
   return link({ t: "r", x: exchangeId, p: participantId }, "/remove/");
 }
@@ -32,9 +37,6 @@ export function removeMeLink(exchangeId: string, participantId: string): string 
 export function manageLink(exchangeId: string): string {
   return link({ t: "o", x: exchangeId }, "/manage/");
 }
-
-const FOOTER_SENTENCE =
-  "This email was sent because you joined a Secret Santa group organized with SantaWheel";
 
 function wrap(bodyHtml: string, removeUrl: string | null, kind?: string): string {
   const removeLine = removeUrl
@@ -96,24 +98,37 @@ export function renderOrganizerEmail(p: {
   title: string;
   manageToken: string;
   kind?: ExchangeKind;
+  /** Blind mode: the dashboard deliberately never shows the pairings. */
+  blind?: boolean;
+  deliveryMode?: "email" | "link";
 }): RenderedEmail {
   const url = `${baseUrl()}/manage/${p.manageToken}`;
+  const linkMode = p.deliveryMode === "link";
+
+  const intro = linkMode
+    ? `Your draw for "${escapeHtml(p.title)}" is ready. Nobody was emailed — this draw delivers private links, one per participant.`
+    : `Your draw for "${escapeHtml(p.title)}" is ready and every participant has been emailed.`;
+  const whatFor = linkMode
+    ? "Open your dashboard to copy each participant's private link and share it however you like. Old links stop working if you reset the draw."
+    : p.blind
+      ? "Open your dashboard to track delivery and resend an email. Because this draw is blind, the dashboard never shows who drew whom."
+      : "Use your private organizer link to track delivery, resend emails, download the pairs as CSV, or reset the draw:";
 
   const body = `
-    <p style="margin:0 0 16px">Your draw for "${escapeHtml(p.title)}" is ready and every participant has been emailed.</p>
-    <p style="margin:0 0 20px">Use your private organizer link to track delivery, resend emails, download the pairs as CSV, or reset the draw:</p>
+    <p style="margin:0 0 16px">${intro}</p>
+    <p style="margin:0 0 20px">${whatFor}:</p>
     <p style="margin:0 0 16px">
       <a href="${url}" style="display:inline-block;background:#b3402a;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:8px">Open organizer dashboard</a>
     </p>
     <p style="margin:0;font-size:13px;color:#7a6f68">This link is the only way to manage the draw — save it somewhere safe. It does not expire.</p>`;
 
   return {
-    subject: "Your SantaWheel draw is ready",
+    subject: p.blind ? "Your SantaWheel draw is ready — blind mode" : "Your SantaWheel draw is ready",
     html: wrap(body, null, p.kind),
     text: [
-      `Your draw for "${p.title}" is ready and every participant has been emailed.`,
+      intro,
       "",
-      `Organizer dashboard (save this link, it does not expire):`,
+      `${whatFor}:`,
       url,
     ].join("\n"),
   };

@@ -74,17 +74,46 @@ export async function POST(req: NextRequest) {
     jobPayload = { title: exchange.title, kind: exKind, token: body.token };
   }
 
-  // Re-queue with a clean attempt count (fresh 5 attempts + backoff).
-  const { error } = await db.from("email_job").insert({
-    exchange_id: exchangeId,
-    kind,
-    giver_id: giverId,
-    to_email: toEmail,
-    subject,
-    payload: jobPayload,
-  });
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  // Throttle: someone holding the organizer link must not be able to hammer a
+  // participant's inbox. Three resends per address per 10 minutes is plenty.
+  const WINDOW_MS = 10 * 60 * 1000;
+  const MAX_PER_WINDOW = 3;
+  let throttleQuery = db
+    .from("email_job")
+    .select("id", { count: "exact", head: true })
+    .eq("exchange_id", exchangeId)
+    .eq("kind", kind)
+    .gte("created_at", new Date(Date.now() - WINDOW_MS).toISOString());
+  if (giverId) throttleQuery = throttleQuery.eq("giver_id", giverId);
+  const { count } = await throttleQuery;
+  if ((count ?? 0) >= MAX_PER_WINDOW) {
+    return NextResponse.json(
+      {
+        error:
+          "This email has been resent several times already. Please wait about 10 minutes before trying again.",
+      },
+      { status: 429 }
+    );
+  }
 
-  const result = await processDueJobs({ exchangeId, limit: 1 }).catch(() => null);
+  // Re-queue with a clean attempt count (fresh 5 attempts + backoff).
+  const { data: job, error } = await db
+    .from("email_job")
+    .insert({
+      exchange_id: exchangeId,
+      kind,
+      giver_id: giverId,
+      to_email: toEmail,
+      subject,
+      payload: jobPayload,
+    })
+    .select("id")
+    .single();
+  if (error || !job) {
+    return NextResponse.json({ error: error?.message ?? "Could not queue email" }, { status: 500 });
+  }
+
+  // Process exactly the job we just queued (not the oldest pending one).
+  const result = await processDueJobs({ jobId: job.id as string, limit: 1 }).catch(() => null);
   return NextResponse.json({ ok: true, delivery: result });
 }
