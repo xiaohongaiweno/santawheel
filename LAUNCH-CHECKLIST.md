@@ -47,7 +47,7 @@
 
 | # | 步骤 | 说明 |
 |---|------|------|
-| 25 | Supabase 执行 3 个迁移 | `supabase/migrations/20261104000000_init_draw.sql`、`20261104010000_delivery.sql`、`20261104020000_premium.sql` |
+| 25 | Supabase 执行 4 个迁移 | `supabase/migrations/` 下：`20261104000000_init_draw.sql`、`20261104010000_delivery.sql`、`20261104020000_premium.sql`、`20261104030000_kind_and_ratelimit.sql` |
 | 26 | Vercel 环境变量 | `SUPABASE_URL`、`SUPABASE_SERVICE_ROLE_KEY`、`RESEND_API_KEY`、`EMAIL_FROM`、`APP_TOKEN_SECRET`、`CRON_SECRET`、`PAYMENTS_MODE`（先 test）、`WAFFO_MERCHANT_ID_TEST`、`WAFFO_PRIVATE_KEY_TEST`、`WAFFO_PRODUCT_ID_TEST`、`NEXT_PUBLIC_SITE_URL=https://santawheel.com` |
 | 27 | 绑定域名 | Vercel Settings → Domains 添加 `santawheel.com` + `www`，DNS 按提示配置，HTTPS 自动签发 |
 | 27b | 外部邮件队列 cron（Hobby 版 Vercel cron 仅限每日一次） | [cron-job.org](https://cron-job.org) 免费注册 → Create cronjob：URL `https://santawheel.com/api/cron/email-queue`，每 5 分钟，Headers 加 `Authorization: Bearer <CRON_SECRET>`。Vercel 自带 cron 保留为每日兜底（08:00 UTC） |
