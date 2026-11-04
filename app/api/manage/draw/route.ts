@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/tokens";
 import { drawDraftExchange } from "@/lib/supabase/draw-flow";
+import { processDueJobs } from "@/lib/email-queue";
 import { UnsolvableDrawError } from "@/lib/draw/derangement";
 
 /**
@@ -23,7 +24,15 @@ export async function POST(req: NextRequest) {
 
   try {
     const { generation, links } = await drawDraftExchange(payload.x);
-    return NextResponse.json({ ok: true, generation, links });
+    // Best-effort immediate send, same as creation: whatever exceeds the
+    // function budget stays queued for the cron worker.
+    let delivery: Awaited<ReturnType<typeof processDueJobs>> | null = null;
+    try {
+      delivery = await processDueJobs({ exchangeId: payload.x, limit: 40 });
+    } catch {
+      // non-fatal
+    }
+    return NextResponse.json({ ok: true, generation, links, delivery });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Draw failed";
     if (message.startsWith("ALREADY_DRAWN")) {
