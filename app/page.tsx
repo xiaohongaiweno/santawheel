@@ -30,7 +30,7 @@ const faqs = [
   },
   {
     q: "Can I edit the participant list?",
-    a: "Yes, any time before the draw: add, remove, or rename people. Once names are drawn, the result is final and can't be changed.",
+    a: "Yes, any time before you generate: edit the list, then draw. After the draw, your organizer dashboard can reset it — everyone is re-drawn and re-emailed.",
   },
   {
     q: "Can I set exclusion rules?",
@@ -97,7 +97,7 @@ export default function Home() {
           email.
         </p>
         <div className="mt-6">
-          <DrawForm />
+          <DrawForm kind="secret-santa" />
         </div>
       </section>
 
@@ -110,8 +110,8 @@ export default function Home() {
             </h2>
             <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-muted">
               <li>
-                Paste your participants, one name per line. Copy-paste from a
-                spreadsheet column works too.
+                Paste your participants with their emails, one per line.
+                Copy-paste from a spreadsheet works too.
               </li>
               <li>
                 Set exclusions if you need them, then generate. Names are drawn
@@ -129,7 +129,7 @@ export default function Home() {
               Free and no sign-up
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              SantaWheel is free and runs in your browser. There is no account
+              SantaWheel is free to use with no account. There is no sign-up
               to create, nothing to install, and no credit card. Paste your
               list and draw names — that is the whole process.
             </p>

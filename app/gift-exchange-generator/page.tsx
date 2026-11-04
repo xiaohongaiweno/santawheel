@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     q: "Do participants need an account?",
-    a: "No. The generator runs in your browser — paste names and draw. Nothing to register, nothing to install.",
+    a: "No. Paste names and draw — nothing to register, nothing to install.",
   },
   {
     q: "Can I stop certain people from drawing each other?",
@@ -101,7 +101,7 @@ export default function GiftExchangeGenerator() {
           exchange.
         </p>
         <div className="mt-6">
-          <DrawForm />
+          <DrawForm kind="gift-exchange" />
         </div>
       </section>
 

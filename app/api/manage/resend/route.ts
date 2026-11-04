@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, signToken } from "@/lib/tokens";
 import { getSupabaseAdmin } from "@/lib/supabase/draw-service";
 import { processDueJobs } from "@/lib/email-queue";
+import { kindLabel, type ExchangeKind } from "@/lib/email-templates";
 
 /**
  * POST /api/manage/resend  { token, giverId? }
@@ -26,10 +27,11 @@ export async function POST(req: NextRequest) {
 
   const { data: exchange } = await db
     .from("exchange")
-    .select("title, organizer_email, status, draw_generation")
+    .select("title, organizer_email, status, draw_generation, kind")
     .eq("id", exchangeId)
     .maybeSingle();
   if (!exchange) return NextResponse.json({ error: "Exchange not found" }, { status: 404 });
+  const exKind = (exchange.kind as ExchangeKind) ?? "secret-santa";
 
   let toEmail: string;
   let kind: "assignment" | "organizer_link";
@@ -53,9 +55,10 @@ export async function POST(req: NextRequest) {
     kind = "assignment";
     giverId = p.id as string;
     toEmail = p.email as string;
-    subject = "Your Secret Santa assignment";
+    subject = `Your ${kindLabel(exKind)} assignment`;
     jobPayload = {
       name: p.name,
+      kind: exKind,
       token: signToken({ t: "a", x: exchangeId, p: p.id as string, g: exchange.draw_generation }),
       removeToken: signToken({ t: "r", x: exchangeId, p: p.id as string }),
     };
@@ -68,7 +71,7 @@ export async function POST(req: NextRequest) {
     kind = "organizer_link";
     toEmail = exchange.organizer_email as string;
     subject = "Your SantaWheel draw is ready";
-    jobPayload = { title: exchange.title, token: body.token };
+    jobPayload = { title: exchange.title, kind: exKind, token: body.token };
   }
 
   // Re-queue with a clean attempt count (fresh 5 attempts + backoff).

@@ -3,11 +3,12 @@ import {
   validateDraw,
 } from "@/lib/draw/derangement";
 import { signToken } from "@/lib/tokens";
-import { assignmentLink, manageLink } from "@/lib/email-templates";
+import { assignmentLink, manageLink, kindLabel, type ExchangeKind } from "@/lib/email-templates";
 import { enqueueEmails } from "@/lib/email-queue";
 import { getSupabaseAdmin, type ParticipantRow } from "@/lib/supabase/draw-service";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_PARTICIPANTS = 100;
 
 export interface IncomingParticipant {
   name: string;
@@ -24,6 +25,10 @@ export interface CreateExchangeInput {
   exclusions?: Array<[string, string]>;
   budgetAmount?: number;
   deadline?: string; // YYYY-MM-DD
+  /** Landing page origin — switches email copy and keeps page data separate. */
+  kind?: ExchangeKind;
+  /** Creator IP, stored for abuse rate limiting. */
+  createdByIp?: string;
 }
 
 /** Full pipeline: validate -> persist -> draw -> persist pairs -> enqueue emails. */
@@ -37,6 +42,7 @@ export async function createAndDeliverExchange(
   }
   const participants = normalizeParticipants(input.participants);
   const organizerEmail = input.organizerEmail.toLowerCase();
+  const kind: ExchangeKind = input.kind ?? "secret-santa";
 
   const db = getSupabaseAdmin();
 
@@ -47,6 +53,8 @@ export async function createAndDeliverExchange(
       organizer_email: organizerEmail,
       budget_amount: input.budgetAmount ?? null,
       deadline: input.deadline ?? null,
+      kind,
+      created_by_ip: input.createdByIp ?? null,
     })
     .select("id")
     .single();
@@ -71,7 +79,7 @@ export async function createAndDeliverExchange(
     const rows = participantRows as ParticipantRow[];
     const exclusionPairs = await insertExclusions(exchangeId, rows, input.exclusions ?? []);
 
-    await drawAndDeliver(exchangeId, rows, exclusionPairs, organizerEmail, title);
+    await drawAndDeliver(exchangeId, rows, exclusionPairs, organizerEmail, title, kind);
     return { exchangeId };
   } catch (e) {
     // Roll back the half-built exchange so no orphan rows linger.
@@ -86,7 +94,7 @@ export async function redrawExchange(exchangeId: string): Promise<{ generation: 
 
   const { data: exchange } = await db
     .from("exchange")
-    .select("id, title, organizer_email")
+    .select("id, title, organizer_email, kind")
     .eq("id", exchangeId)
     .maybeSingle();
   if (!exchange) throw new Error("Exchange not found");
@@ -124,7 +132,8 @@ export async function redrawExchange(exchangeId: string): Promise<{ generation: 
     rows,
     exclusionPairs,
     exchange.organizer_email as string,
-    exchange.title as string
+    exchange.title as string,
+    (exchange.kind as ExchangeKind) ?? "secret-santa"
   );
   return { generation };
 }
@@ -134,9 +143,11 @@ async function drawAndDeliver(
   participants: ParticipantRow[],
   exclusionIds: Array<[string, string]>,
   organizerEmail: string,
-  title: string
+  title: string,
+  kind: ExchangeKind
 ): Promise<void> {
   const db = getSupabaseAdmin();
+  const label = kindLabel(kind);
 
   const { data: exchangeRow } = await db
     .from("exchange")
@@ -231,9 +242,10 @@ async function drawAndDeliver(
       kind: "assignment" as const,
       giverId: p.id,
       toEmail: p.email,
-      subject: "Your Secret Santa assignment",
+      subject: `Your ${label} assignment`,
       payload: {
         name: p.name,
+        kind,
         token: signToken({ t: "a", x: exchangeId, p: p.id, g: generation }),
         removeToken: signToken({ t: "r", x: exchangeId, p: p.id }),
         assignmentUrl: assignmentLink(exchangeId, p.id, generation),
@@ -245,7 +257,12 @@ async function drawAndDeliver(
       giverId: null,
       toEmail: organizerEmail,
       subject: "Your SantaWheel draw is ready",
-      payload: { title, token: signToken({ t: "o", x: exchangeId }), manageUrl: manageLink(exchangeId) },
+      payload: {
+        title,
+        kind,
+        token: signToken({ t: "o", x: exchangeId }),
+        manageUrl: manageLink(exchangeId),
+      },
     },
   ]);
 }
@@ -304,6 +321,9 @@ function normalizeParticipants(participants: IncomingParticipant[]): IncomingPar
   }
   const list = [...seen.values()];
   if (list.length < 2) throw new Error("At least 2 participants are required");
+  if (list.length > MAX_PARTICIPANTS) {
+    throw new Error(`Up to ${MAX_PARTICIPANTS} participants are supported`);
+  }
   return list;
 }
 
@@ -343,7 +363,7 @@ export async function redactParticipant(exchangeId: string, participantId: strin
 export async function importParticipants(
   exchangeId: string,
   incoming: Array<{ name: string; email: string; wishlistUrl?: string }>
-): Promise<{ added: number; skipped: number }> {
+): Promise<{ added: number; skipped: number; invalid: string[] }> {
   const db = getSupabaseAdmin();
   const { data: existing } = await db
     .from("participant")
@@ -351,18 +371,28 @@ export async function importParticipants(
     .eq("exchange_id", exchangeId);
   const known = new Set(((existing ?? []) as Array<{ email: string }>).map((e) => e.email));
 
-  const rows = incoming
-    .filter((p) => !known.has(p.email))
-    .map((p) => ({
+  const invalid: string[] = [];
+  const rows: Array<{ exchange_id: string; name: string; email: string; wishlist_url: string | null }> = [];
+  for (const p of incoming) {
+    const name = p.name?.trim();
+    const email = p.email?.toLowerCase().trim();
+    if (!name || !EMAIL_RE.test(email ?? "")) {
+      invalid.push(`${name || email || "row"} — need a name and a valid email`);
+      continue;
+    }
+    if (known.has(email)) continue; // already in the exchange
+    known.add(email); // dedup within the batch
+    rows.push({
       exchange_id: exchangeId,
-      name: p.name,
-      email: p.email,
+      name,
+      email,
       wishlist_url: p.wishlistUrl ?? null,
-    }));
+    });
+  }
 
   if (rows.length > 0) {
     const { error } = await db.from("participant").insert(rows);
     if (error) throw new Error(`importParticipants failed: ${error.message}`);
   }
-  return { added: rows.length, skipped: incoming.length - rows.length };
+  return { added: rows.length, skipped: incoming.length - rows.length - invalid.length, invalid };
 }

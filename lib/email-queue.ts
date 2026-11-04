@@ -1,6 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/supabase/draw-service";
 import { sendEmail } from "@/lib/mailer";
-import { renderAssignmentEmail, renderOrganizerEmail, renderReminderEmail } from "@/lib/email-templates";
+import { renderAssignmentEmail, renderOrganizerEmail, renderReminderEmail, kindLabel, type ExchangeKind } from "@/lib/email-templates";
 import { signToken } from "@/lib/tokens";
 
 export interface EnqueueInput {
@@ -141,7 +141,7 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
 
   const { data: due, error } = await db
     .from("exchange")
-    .select("id, draw_generation, organizer_email, title")
+    .select("id, draw_generation, organizer_email, title, kind")
     .eq("paid", true)
     .eq("status", "drawn")
     .eq("reminder_sent", false)
@@ -155,6 +155,7 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
     draw_generation: number;
     organizer_email: string;
     title: string;
+    kind: ExchangeKind;
   }>) {
     const { data: rows, error: aerr } = await db
       .from("assignment")
@@ -179,9 +180,10 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
           kind: "reminder" as const,
           giverId: r.giver_id,
           toEmail: r.participant.email,
-          subject: "Reminder: your Secret Santa assignment",
+          subject: `Reminder: your ${kindLabel(ex.kind)} assignment`,
           payload: {
             name: r.participant.name,
+            kind: ex.kind,
             token: signToken({ t: "a", x: ex.id, p: r.giver_id, g: ex.draw_generation }),
             removeToken: signToken({ t: "r", x: ex.id, p: r.giver_id }),
           },
@@ -227,11 +229,13 @@ async function markJobError(
 }
 
 function render(job: JobRow): { html: string; text: string } {
+  const kind = (job.payload.kind as ExchangeKind | undefined) ?? "secret-santa";
   if (job.kind === "assignment") {
     return renderAssignmentEmail({
       name: String(job.payload.name ?? "there"),
       assignmentToken: String(job.payload.token ?? ""),
       removeToken: String(job.payload.removeToken ?? ""),
+      kind,
     });
   }
   if (job.kind === "reminder") {
@@ -239,10 +243,12 @@ function render(job: JobRow): { html: string; text: string } {
       name: String(job.payload.name ?? "there"),
       assignmentToken: String(job.payload.token ?? ""),
       removeToken: String(job.payload.removeToken ?? ""),
+      kind,
     });
   }
   return renderOrganizerEmail({
     title: String(job.payload.title ?? "your draw"),
     manageToken: String(job.payload.token ?? ""),
+    kind,
   });
 }
