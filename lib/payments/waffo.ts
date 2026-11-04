@@ -17,6 +17,18 @@ export function paymentsMode(): "test" | "prod" {
 
 let client: WaffoPancake | null = null;
 
+/**
+ * Normalize the private key into PEM. Accepts:
+ * - PEM with escaped newlines ("-----BEGIN...-----\nMII...") — .env style
+ * - PEM with real newlines
+ * - raw base64 body (as copied from some dashboards) — gets PEM-wrapped
+ */
+function normalizePrivateKey(raw: string): string {
+  const key = raw.trim().replace(/\\n/g, "\n");
+  if (key.startsWith("-----BEGIN")) return key;
+  return `-----BEGIN PRIVATE KEY-----\n${key}\n-----END PRIVATE KEY-----`;
+}
+
 function credentials(): { merchantId: string; privateKey: string } {
   const test = paymentsMode() === "test";
   const merchantId = test
@@ -32,7 +44,7 @@ function credentials(): { merchantId: string; privateKey: string } {
       } / WAFFO_PRIVATE_KEY${test ? "_TEST" : ""}`
     );
   }
-  return { merchantId, privateKey };
+  return { merchantId, privateKey: normalizePrivateKey(privateKey) };
 }
 
 function getWaffo(): WaffoPancake {
