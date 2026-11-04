@@ -58,20 +58,50 @@ export interface RenderedEmail {
   text: string;
 }
 
+/** "20" -> "$20"; passes through values that already look formatted. */
+export function budgetLabel(budget: unknown): string | null {
+  const n = Number(budget);
+  if (budget == null || !Number.isFinite(n) || n <= 0) return null;
+  return n % 1 === 0 ? `$${n}` : `$${n.toFixed(2)}`;
+}
+
+/** "2026-12-20" -> "Sat, Dec 20" (local time); null for anything else. */
+export function deadlineLabel(d: unknown): string | null {
+  if (typeof d !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return null;
+  return new Date(d + "T00:00:00").toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+}
+
 export function renderAssignmentEmail(p: {
   name: string;
   assignmentToken: string;
   removeToken: string;
   kind?: ExchangeKind;
+  budget?: string | null;
+  deadline?: string | null;
 }): RenderedEmail {
   const url = `${baseUrl()}/a/${p.assignmentToken}`;
   const removeUrl = `${baseUrl()}/remove/${p.removeToken}`;
   const label = kindLabel(p.kind);
   const subject = `Your ${label} assignment`;
 
+  const details = [
+    p.budget ? `Budget: ${p.budget}` : null,
+    p.deadline ? `Exchange day: ${p.deadline}` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const detailLine = details
+    ? `<p style="margin:0 0 20px;font-size:14px"><strong>${escapeHtml(details)}</strong></p>`
+    : "";
+
   const body = `
     <p style="margin:0 0 16px">Hi ${escapeHtml(p.name)},</p>
     <p style="margin:0 0 20px">Your ${label} draw is ready. Open your private link to see who you are drawing for:</p>
+    ${detailLine}
     <p style="margin:0 0 16px">
       <a href="${url}" style="display:inline-block;background:#b3402a;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:8px">Open my assignment</a>
     </p>
@@ -84,6 +114,8 @@ export function renderAssignmentEmail(p: {
       `Hi ${p.name},`,
       "",
       `Your ${label} draw is ready. Open your private link to see who you are drawing for:`,
+      ...(details ? ["", details] : []),
+      "",
       url,
       "",
       "This link is yours alone — keep it private.",
@@ -139,15 +171,28 @@ export function renderReminderEmail(p: {
   assignmentToken: string;
   removeToken: string;
   kind?: ExchangeKind;
+  budget?: string | null;
+  deadline?: string | null;
 }): RenderedEmail {
   const url = `${baseUrl()}/a/${p.assignmentToken}`;
   const removeUrl = `${baseUrl()}/remove/${p.removeToken}`;
   const label = kindLabel(p.kind);
   const subject = `Reminder: your ${label} assignment`;
 
+  const details = [
+    p.budget ? `Budget: ${p.budget}` : null,
+    p.deadline ? `Exchange day: ${p.deadline}` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const detailLine = details
+    ? `<p style="margin:0 0 16px;font-size:14px"><strong>${escapeHtml(details)}</strong></p>`
+    : "";
+
   const body = `
     <p style="margin:0 0 16px">Hi ${escapeHtml(p.name)},</p>
     <p style="margin:0 0 20px">A quick reminder: you haven't opened your ${label} assignment yet. It takes one click:</p>
+    ${detailLine}
     <p style="margin:0 0 16px">
       <a href="${url}" style="display:inline-block;background:#b3402a;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:8px">Open my assignment</a>
     </p>`;
@@ -159,6 +204,8 @@ export function renderReminderEmail(p: {
       `Hi ${p.name},`,
       "",
       `A quick reminder: you haven't opened your ${label} assignment yet:`,
+      ...(details ? ["", details] : []),
+      "",
       url,
       "",
       `${footerSentence(p.kind)}.`,

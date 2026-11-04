@@ -2,8 +2,10 @@ import { verifyToken } from "@/lib/tokens";
 import { getSupabaseAdmin } from "@/lib/supabase/draw-service";
 import RemoveMeButton from "@/components/delivery/RemoveMeButton";
 import Watermark from "@/components/delivery/Watermark";
+import RevealCard from "@/components/delivery/RevealCard";
+import WishlistEditor from "@/components/delivery/WishlistEditor";
 import { signToken } from "@/lib/tokens";
-import { kindLabel } from "@/lib/email-templates";
+import { kindLabel, budgetLabel, deadlineLabel } from "@/lib/email-templates";
 
 export const metadata = {
   title: "Your assignment",
@@ -39,7 +41,7 @@ export default async function AssignmentPage({
   const db = getSupabaseAdmin();
   const { data: exchange } = await db
     .from("exchange")
-    .select("title, status, draw_generation, paid, kind")
+    .select("title, status, draw_generation, paid, kind, budget_amount, deadline")
     .eq("id", payload.x)
     .maybeSingle();
 
@@ -73,12 +75,12 @@ export default async function AssignmentPage({
   const [{ data: receiver }, { data: giver }] = await Promise.all([
     db
       .from("participant")
-      .select("name, wishlist_url, removed_at")
+      .select("name, wishlist_url, wishlist_text, removed_at")
       .eq("id", pair.receiver_id)
       .single(),
     db
       .from("participant")
-      .select("name, removed_at")
+      .select("name, wishlist_text, removed_at")
       .eq("id", payload.p)
       .single(),
   ]);
@@ -95,6 +97,13 @@ export default async function AssignmentPage({
   const receiverRemoved = Boolean(receiver?.removed_at);
   const receiverName = receiverRemoved ? "a removed participant" : (receiver?.name as string);
 
+  const budget = budgetLabel(exchange.budget_amount);
+  const deadline = deadlineLabel(exchange.deadline);
+  const wishlistIdeas = String(receiver?.wishlist_text ?? "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+
   // Track first open (drives premium reminder emails). Idempotent.
   // PostgREST needs `is.null` for NULL comparison — `eq(col, null)` produces
   // `eq.null`, which Postgres rejects as an invalid timestamp literal.
@@ -108,28 +117,66 @@ export default async function AssignmentPage({
   return (
     <section className="mx-auto max-w-md px-4 py-14">
       <p className="text-sm text-muted">{String(exchange.title)}</p>
+      {(budget || deadline) && (
+        <p className="mt-1 flex flex-wrap gap-2 text-xs text-muted">
+          {budget && (
+            <span className="rounded-full bg-surface px-2.5 py-1 ring-1 ring-border">
+              Budget {budget}
+            </span>
+          )}
+          {deadline && (
+            <span className="rounded-full bg-surface px-2.5 py-1 ring-1 ring-border">
+              Exchange day {deadline}
+            </span>
+          )}
+        </p>
+      )}
       <h1 className="mt-2 text-2xl font-bold tracking-tight">
         Hi {giver?.name}, you are drawing for
       </h1>
-      <div className="mt-6 rounded-xl border border-border bg-surface p-6 text-center">
-        <p className="text-3xl font-bold text-accent">{receiverName}</p>
-        {receiverRemoved && (
-          <p className="mt-2 text-xs text-muted">
-            This person removed their data. The organizer has been handling it —
-            they may update the draw.
-          </p>
-        )}
-        {receiver?.wishlist_url && !receiverRemoved && (
-          <a
-            href={receiver.wishlist_url}
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-            className="mt-4 inline-block rounded-lg border border-border px-4 py-2 text-sm font-medium hover:border-accent hover:text-accent"
-          >
-            View their wishlist
-          </a>
-        )}
-      </div>
+      <RevealCard>
+        <div className="mt-6 rounded-xl border border-border bg-surface p-6 text-center">
+          <p className="text-3xl font-bold text-accent">{receiverName}</p>
+          {receiverRemoved && (
+            <p className="mt-2 text-xs text-muted">
+              This person removed their data. The organizer has been handling it —
+              they may update the draw.
+            </p>
+          )}
+          {wishlistIdeas.length > 0 && !receiverRemoved && (
+            <div className="mt-4 border-t border-border pt-4 text-left">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Their wishlist
+              </p>
+              <ul className="mt-2 space-y-1.5">
+                {wishlistIdeas.map((idea, i) => (
+                  <li key={i} className="text-sm leading-relaxed">
+                    <span className="mr-1.5 text-accent">·</span>
+                    {idea}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {receiver?.wishlist_url && !receiverRemoved && (
+            <a
+              href={receiver.wishlist_url}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="mt-4 inline-block rounded-lg border border-border px-4 py-2 text-sm font-medium hover:border-accent hover:text-accent"
+            >
+              View their wishlist
+            </a>
+          )}
+        </div>
+      </RevealCard>
+
+      {!giver?.removed_at && (
+        <WishlistEditor
+          token={token}
+          initialText={String(giver?.wishlist_text ?? "")}
+        />
+      )}
 
       <p className="mt-6 text-xs leading-relaxed text-muted">
         Keep this page private — it is your personal assignment link and shows

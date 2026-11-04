@@ -8,7 +8,7 @@ import {
 import AssignmentLinks from "@/components/delivery/AssignmentLinks";
 import PayButton from "@/components/delivery/PayButton";
 import ImportPanel from "@/components/delivery/ImportPanel";
-import { assignmentUrl } from "@/lib/email-templates";
+import { assignmentUrl, budgetLabel, deadlineLabel } from "@/lib/email-templates";
 import { exchangePolicy } from "@/lib/exchange-visibility";
 import { paymentsMode, PREMIUM_PRICE } from "@/lib/payments/waffo";
 
@@ -142,8 +142,9 @@ export default async function ManagePage({
       <p className="mt-2 text-sm text-muted">
         Status: {String(exchange.status)} ·{" "}
         {policy.sendsEmail ? `${delivered}/${active.length} emails delivered` : `${active.length} participants`}{" "}
-        · delivery: {policy.sendsEmail ? "email" : "private links"} · budget:{" "}
-        {exchange.budget_amount ?? "—"} · deadline: {exchange.deadline ?? "—"}
+        · delivery: {policy.sendsEmail ? "email" : "private links"}
+        {budgetLabel(exchange.budget_amount) ? ` · budget: ${budgetLabel(exchange.budget_amount)}` : ""}
+        {deadlineLabel(exchange.deadline) ? ` · deadline: ${deadlineLabel(exchange.deadline)}` : ""}
       </p>
 
       {policy.blind && (

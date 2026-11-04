@@ -11,6 +11,8 @@ import { signToken } from "@/lib/tokens";
 import {
   assignmentLink,
   assignmentUrl,
+  budgetLabel,
+  deadlineLabel,
   kindLabel,
   manageLink,
   type ExchangeKind,
@@ -398,11 +400,15 @@ async function drawAndDeliver(input: {
 
   const { data: ex, error: exErr } = await db
     .from("exchange")
-    .select("draw_generation")
+    .select("draw_generation, budget_amount, deadline")
     .eq("id", exchangeId)
     .single();
   if (exErr) throw new Error(`fetchGeneration failed: ${exErr.message}`);
   const generation = ex.draw_generation as number;
+  // Same draw => same budget/date regardless of redraws; carried in the email
+  // payload so the templates stay synchronous.
+  const budgetLabelValue = budgetLabel(ex.budget_amount);
+  const deadlineLabelValue = deadlineLabel(ex.deadline);
 
   // Delivery state only exists when we actually deliver by email.
   if (deliveryMode === "email") {
@@ -460,6 +466,8 @@ async function drawAndDeliver(input: {
         payload: {
           name: p.name,
           kind,
+          budget: budgetLabelValue,
+          deadline: deadlineLabelValue,
           token: signToken({ t: "a", x: exchangeId, p: p.id, g: generation }),
           removeToken: signToken({ t: "r", x: exchangeId, p: p.id }),
           assignmentUrl: assignmentLink(exchangeId, p.id, generation),

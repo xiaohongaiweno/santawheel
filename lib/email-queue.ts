@@ -1,6 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/supabase/draw-service";
 import { sendEmail } from "@/lib/mailer";
-import { renderAssignmentEmail, renderOrganizerEmail, renderReminderEmail, kindLabel, type ExchangeKind } from "@/lib/email-templates";
+import { renderAssignmentEmail, renderOrganizerEmail, renderReminderEmail, kindLabel, budgetLabel, deadlineLabel, type ExchangeKind } from "@/lib/email-templates";
 import { signToken } from "@/lib/tokens";
 
 export interface EnqueueInput {
@@ -205,7 +205,7 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
 
   const { data: due, error } = await db
     .from("exchange")
-    .select("id, draw_generation, organizer_email, title, kind")
+    .select("id, draw_generation, organizer_email, title, kind, budget_amount, deadline")
     .eq("paid", true)
     .eq("status", "drawn")
     .eq("reminder_sent", false)
@@ -220,7 +220,11 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
     organizer_email: string;
     title: string;
     kind: ExchangeKind;
+    budget_amount: number | null;
+    deadline: string | null;
   }>) {
+    const budget = budgetLabel(ex.budget_amount);
+    const deadline = deadlineLabel(ex.deadline);
     // Claim the exchange first: two overlapping cron runs must not enqueue
     // the reminder batch twice. Only the run whose conditional update wins
     // proceeds; on enqueue failure the flag is released for the next sweep.
@@ -264,6 +268,8 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
             payload: {
               name: r.participant.name,
               kind: ex.kind,
+              budget,
+              deadline,
               token: signToken({ t: "a", x: ex.id, p: r.giver_id, g: ex.draw_generation }),
               removeToken: signToken({ t: "r", x: ex.id, p: r.giver_id }),
             },
@@ -312,12 +318,16 @@ async function markJobError(
 
 function render(job: JobRow): { html: string; text: string } {
   const kind = (job.payload.kind as ExchangeKind | undefined) ?? "secret_santa";
+  const budget = budgetLabel(job.payload.budget);
+  const deadline = deadlineLabel(job.payload.deadline);
   if (job.kind === "assignment") {
     return renderAssignmentEmail({
       name: String(job.payload.name ?? "there"),
       assignmentToken: String(job.payload.token ?? ""),
       removeToken: String(job.payload.removeToken ?? ""),
       kind,
+      budget,
+      deadline,
     });
   }
   if (job.kind === "reminder") {
@@ -326,6 +336,8 @@ function render(job: JobRow): { html: string; text: string } {
       assignmentToken: String(job.payload.token ?? ""),
       removeToken: String(job.payload.removeToken ?? ""),
       kind,
+      budget,
+      deadline,
     });
   }
   return renderOrganizerEmail({
