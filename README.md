@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SantaWheel
 
-## Getting Started
+Free Secret Santa / gift exchange generator — [santawheel.com](https://santawheel.com)
 
-First, run the development server:
+Paste a participant list, get a valid draw (nobody draws themselves, exclusion
+rules respected), and every participant receives a private link showing only
+their own assignment.
+
+## Stack
+
+- Next.js 15 (App Router) + TypeScript + Tailwind v4
+- Supabase Postgres for storage (`supabase/migrations/`)
+- Resend for email delivery, with a retry queue
+- Waffo Pancake for the one-time $4.99 premium unlock
+- Deployed on Vercel
+
+## Pages
+
+| Route | Purpose |
+|---|---|
+| `/` | Secret Santa generator (primary landing page) |
+| `/gift-exchange-generator` | Gift exchange generator (isolated copy, own keyword) |
+| `/a/[token]` | Participant reveal page — signed token, shows only own pairing |
+| `/manage/[token]` | Organizer dashboard — delivery status, resend, CSV, redraw, premium |
+| `/remove/[token]` | GDPR data removal |
+
+## Draw engine
+
+`lib/draw/derangement.ts` — the constraint set ("nobody draws themselves" plus
+pairwise exclusions) is a bipartite perfect matching. Solved with a randomized
+Kuhn augmenting-path algorithm, which detects unsatisfiable inputs exactly
+(no retry loops, no invalid output). 100 participants with 20 exclusions
+resolves in milliseconds.
+
+## Local development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # fill in the services below
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Required services:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Supabase** — run the SQL files in `supabase/migrations/` in order
+- **Resend** — API key + verified sending domain
+- **Waffo** — one-time product, merchant id, private key, webhook (`Payload: Raw`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`PAYMENTS_MODE=test` uses test credentials with card `4576 7500 0000 0110`.
 
-## Learn More
+## Tests
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm test          # vitest
+npx tsc --noEmit  # type check
+npm run build     # production build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Deployed on Vercel from `main`. Environment variables live in Vercel project
+settings; see `LAUNCH-CHECKLIST.md` for the full pre-launch list.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The email retry queue is triggered by an external 5-minute cron
+(cron-job.org) hitting `/api/cron/email-queue` with `Authorization: Bearer
+$CRON_SECRET`, because Vercel's Hobby plan only allows daily crons.
