@@ -50,9 +50,11 @@ export async function POST(req: NextRequest) {
       lineErrors: parsed.errors,
     });
   } catch (e) {
-    return NextResponse.json(
-      { error: e instanceof Error ? e.message : "Import failed" },
-      { status: 500 }
-    );
+    const message = e instanceof Error ? e.message : "Import failed";
+    // A full exchange is the caller's mistake, not an infrastructure fault.
+    if (/Up to \d+ participants/i.test(message)) {
+      return NextResponse.json({ error: message }, { status: 400 });
+    }
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

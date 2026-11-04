@@ -47,6 +47,33 @@ interface JobRow {
   payload: Record<string, unknown>;
 }
 
+/** Claim window: a claimed job is invisible to other workers for this long. */
+const CLAIM_MINUTES = 5;
+
+/**
+ * Atomically claim one due job.
+ *
+ * Cron (external, every 5 min), the Vercel daily fallback and the inline
+ * send after create/redraw/resend can overlap. Two workers must never send
+ * the same email twice, so claiming is a conditional update: only the worker
+ * whose UPDATE actually matches a still-pending, still-due row gets to send.
+ */
+async function claimJob(
+  db: ReturnType<typeof getSupabaseAdmin>,
+  job: JobRow,
+  nowIso: string
+): Promise<boolean> {
+  const claimUntil = new Date(Date.now() + CLAIM_MINUTES * 60_000).toISOString();
+  const { data } = await db
+    .from("email_job")
+    .update({ next_attempt_at: claimUntil })
+    .eq("id", job.id)
+    .eq("status", "pending")
+    .lte("next_attempt_at", nowIso)
+    .select("id");
+  return (data?.length ?? 0) > 0;
+}
+
 /**
  * Process all due jobs (optionally scoped to one exchange).
  * Failures back off exponentially (2^n minutes, capped at 60) and are recorded
@@ -73,11 +100,16 @@ export async function processDueJobs(
   if (error) throw new Error(`processDueJobs fetch failed: ${error.message}`);
 
   const jobs = (data ?? []) as unknown as JobRow[];
-  const result: QueueResult = { processed: jobs.length, sent: 0, failed: 0, retriable: 0 };
+  const nowIso = new Date().toISOString();
+  const result: QueueResult = { processed: 0, sent: 0, failed: 0, retriable: 0 };
 
   // Sending is I/O bound, so a small worker pool keeps a 100-person draw well
   // inside the serverless time budget without hammering Resend.
   await runWithConcurrency(jobs, opts.concurrency ?? 6, async (job) => {
+    // Lost the claim race (another worker is already sending this one): skip.
+    if (!(await claimJob(db, job, nowIso).catch(() => false))) return;
+    result.processed++;
+
     let outcome: "sent" | "failed" | "retriable";
     try {
       outcome = await attemptJob(job);
@@ -147,7 +179,10 @@ async function attemptJob(job: JobRow): Promise<"sent" | "failed" | "retriable">
         .from("assignment")
         .update({ email_status: "sent", sent_at: now, last_error: null })
         .eq("exchange_id", job.exchange_id)
-        .eq("giver_id", job.giver_id);
+        .eq("giver_id", job.giver_id)
+        // A participant who removed their data mid-flight must not be flipped
+        // back to an active delivery state.
+        .neq("email_status", "cancelled");
     }
     return "sent";
   } catch (e) {
@@ -186,12 +221,27 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
     title: string;
     kind: ExchangeKind;
   }>) {
+    // Claim the exchange first: two overlapping cron runs must not enqueue
+    // the reminder batch twice. Only the run whose conditional update wins
+    // proceeds; on enqueue failure the flag is released for the next sweep.
+    const { data: claimed, error: cerr } = await db
+      .from("exchange")
+      .update({ reminder_sent: true })
+      .eq("id", ex.id)
+      .eq("reminder_sent", false)
+      .select("id");
+    if (cerr) throw new Error(`sweepReminders claim failed: ${cerr.message}`);
+    if ((claimed?.length ?? 0) === 0) continue;
+
     const { data: rows, error: aerr } = await db
       .from("assignment")
       .select("giver_id, viewed_at, participant!assignment_giver_id_fkey(name, email, removed_at)")
       .eq("exchange_id", ex.id)
       .neq("email_status", "cancelled");
-    if (aerr) throw new Error(`sweepReminders assignments failed: ${aerr.message}`);
+    if (aerr) {
+      await db.from("exchange").update({ reminder_sent: false }).eq("id", ex.id);
+      throw new Error(`sweepReminders assignments failed: ${aerr.message}`);
+    }
 
     type Row = {
       giver_id: string;
@@ -203,25 +253,28 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
     );
 
     if (targets.length > 0) {
-      await enqueueEmails(
-        targets.map((r) => ({
-          exchangeId: ex.id,
-          kind: "reminder" as const,
-          giverId: r.giver_id,
-          toEmail: r.participant.email as string,
-          subject: `Reminder: your ${kindLabel(ex.kind)} assignment`,
-          payload: {
-            name: r.participant.name,
-            kind: ex.kind,
-            token: signToken({ t: "a", x: ex.id, p: r.giver_id, g: ex.draw_generation }),
-            removeToken: signToken({ t: "r", x: ex.id, p: r.giver_id }),
-          },
-        }))
-      );
+      try {
+        await enqueueEmails(
+          targets.map((r) => ({
+            exchangeId: ex.id,
+            kind: "reminder" as const,
+            giverId: r.giver_id,
+            toEmail: r.participant.email as string,
+            subject: `Reminder: your ${kindLabel(ex.kind)} assignment`,
+            payload: {
+              name: r.participant.name,
+              kind: ex.kind,
+              token: signToken({ t: "a", x: ex.id, p: r.giver_id, g: ex.draw_generation }),
+              removeToken: signToken({ t: "r", x: ex.id, p: r.giver_id }),
+            },
+          }))
+        );
+      } catch (e) {
+        await db.from("exchange").update({ reminder_sent: false }).eq("id", ex.id);
+        throw e;
+      }
       enqueued += targets.length;
     }
-
-    await db.from("exchange").update({ reminder_sent: true }).eq("id", ex.id);
   }
   return { exchanges: (due ?? []).length, enqueued };
 }

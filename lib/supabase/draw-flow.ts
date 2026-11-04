@@ -1,6 +1,7 @@
 import { buildDraw, validateDraw } from "@/lib/draw/derangement";
 import {
   EMAIL_RE,
+  MAX_PARTICIPANTS,
   normalizeParticipants,
   participantKey,
   type IncomingParticipant,
@@ -612,6 +613,7 @@ export async function importParticipants(
     .select("email")
     .eq("exchange_id", exchangeId);
   const known = new Set(((existing ?? []) as Array<{ email: string | null }>).map((e) => e.email));
+  const seatsLeft = MAX_PARTICIPANTS - (existing?.length ?? 0);
 
   const invalid: string[] = [];
   const rows: Array<{ exchange_id: string; name: string; email: string; wishlist_url: string | null }> = [];
@@ -624,6 +626,11 @@ export async function importParticipants(
     }
     if (known.has(email)) continue; // already in the exchange
     known.add(email); // dedup within the batch
+    if (rows.length >= seatsLeft) {
+      throw new Error(
+        `Up to ${MAX_PARTICIPANTS} participants are supported — this exchange already has ${existing?.length ?? 0}`
+      );
+    }
     rows.push({
       exchange_id: exchangeId,
       name,

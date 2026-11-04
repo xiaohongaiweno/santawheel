@@ -96,12 +96,14 @@ export default async function AssignmentPage({
   const receiverName = receiverRemoved ? "a removed participant" : (receiver?.name as string);
 
   // Track first open (drives premium reminder emails). Idempotent.
+  // PostgREST needs `is.null` for NULL comparison — `eq(col, null)` produces
+  // `eq.null`, which Postgres rejects as an invalid timestamp literal.
   await db
     .from("assignment")
     .update({ viewed_at: new Date().toISOString() })
     .eq("exchange_id", payload.x)
     .eq("giver_id", payload.p)
-    .eq("viewed_at", null);
+    .is("viewed_at", null);
 
   return (
     <section className="mx-auto max-w-md px-4 py-14">

@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   const { data: exchange } = await db
     .from("exchange")
-    .select("title, organizer_email, status, draw_generation, kind")
+    .select("title, organizer_email, status, draw_generation, kind, blind_mode, delivery_mode")
     .eq("id", exchangeId)
     .maybeSingle();
   if (!exchange) return NextResponse.json({ error: "Exchange not found" }, { status: 404 });
@@ -71,7 +71,12 @@ export async function POST(req: NextRequest) {
     kind = "organizer_link";
     toEmail = exchange.organizer_email as string;
     subject = "Your SantaWheel draw is ready";
-    jobPayload = { title: exchange.title, kind: exKind, token: body.token };
+    // Keep the email copy consistent with how the draw was created — a blind
+    // or private-link draw must not be described as a visible email draw.
+    const blind = Boolean(exchange.blind_mode);
+    const deliveryMode = exchange.delivery_mode === "link" ? "link" : "email";
+    if (blind) subject = "Your SantaWheel draw is ready — blind mode";
+    jobPayload = { title: exchange.title, kind: exKind, blind, deliveryMode, token: body.token };
   }
 
   // Throttle: someone holding the organizer link must not be able to hammer a

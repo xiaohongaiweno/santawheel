@@ -23,7 +23,12 @@ export async function POST(req: NextRequest) {
 
   if (event.eventType === "order.completed") {
     try {
-      const result = await fulfillOrderCompleted(event.data ?? ({} as OrderCompletedData));
+      // `mode` lives at the event level; Waffo may also echo it in the order
+      // payload. Thread it through so the test/prod guard can actually fire.
+      const result = await fulfillOrderCompleted({
+        ...(event.data ?? ({} as OrderCompletedData)),
+        mode: event.data?.mode ?? event.mode,
+      });
       // 200 either way: idempotent replays are expected, not errors.
       return NextResponse.json({ ok: true, ...result });
     } catch (e) {
