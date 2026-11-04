@@ -8,7 +8,10 @@ import {
 import AssignmentLinks from "@/components/delivery/AssignmentLinks";
 import PayButton from "@/components/delivery/PayButton";
 import ImportPanel from "@/components/delivery/ImportPanel";
-import { assignmentUrl, budgetLabel, deadlineLabel } from "@/lib/email-templates";
+import DrawNowButton from "@/components/delivery/DrawNowButton";
+import ExclusionsEditor from "@/components/delivery/ExclusionsEditor";
+import CopyButton from "@/components/home/CopyButton";
+import { assignmentUrl, budgetLabel, deadlineLabel, baseUrl } from "@/lib/email-templates";
 import { exchangePolicy } from "@/lib/exchange-visibility";
 import { paymentsMode, PREMIUM_PRICE } from "@/lib/payments/waffo";
 
@@ -122,6 +125,78 @@ export default async function ManagePage({
     (a) => a.email_status === "sent"
   ).length;
   const active = participantList.filter((p) => !p.removed_at);
+
+  // ---- Collect-first (draft) dashboard: share the join link, watch people ----
+  // ---- add themselves, set exclusions, then draw.                     ----
+  if (exchange.status === "draft") {
+    const joinUrl = `${baseUrl()}/j/${token}`;
+    const emailMode = policy.sendsEmail;
+    return (
+      <section className="mx-auto max-w-2xl px-4 py-10">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted">
+          Organizer dashboard · collecting participants
+        </p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight">
+          {String(exchange.title)}
+        </h1>
+        <p className="mt-2 text-sm text-muted">
+          Share the join link below. Everyone adds themselves; when the whole
+          group is in, draw the names from here.
+        </p>
+
+        <div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface p-4">
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold">Join link</p>
+            <p className="mt-1 break-all text-xs text-muted">{joinUrl}</p>
+          </div>
+          <CopyButton text={joinUrl} label="Copy link" />
+        </div>
+
+        <h2 className="mt-8 text-lg font-semibold">
+          Who&apos;s in ({active.length})
+        </h2>
+        {active.length === 0 ? (
+          <p className="mt-2 text-sm text-muted">
+            Nobody yet — the first name appears here as soon as someone joins.
+          </p>
+        ) : (
+          <div className="mt-3 divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface">
+            {active.map((p) => (
+              <div key={p.id} className="px-4 py-3 text-sm">
+                {p.name}
+                {emailMode && p.email && (
+                  <span className="ml-2 text-xs text-muted">{p.email}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        <ExclusionsEditor
+          token={token}
+          initialText=""
+          hint={
+            emailMode
+              ? 'One pair per line, e.g. "anna@example.com - carl@example.com" or by name.'
+              : 'One pair per line, e.g. "Anna - Ben".'
+          }
+        />
+
+        <div className="mt-6">
+          <DrawNowButton token={token} />
+        </div>
+
+        <p className="mt-6 text-xs leading-relaxed text-muted">
+          Drawing locks the participant list and
+          {emailMode
+            ? " emails everyone their assignment. "
+            : " generates one private link per person. "}
+          Need to start over afterwards? A redraw from the dashboard invalidates
+          every link and re-issues fresh ones.
+        </p>
+      </section>
+    );
+  }
 
   const privateLinks =
     policy.showsPrivateLinks && exchange.status === "drawn"

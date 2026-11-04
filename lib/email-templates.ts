@@ -38,6 +38,11 @@ export function manageLink(exchangeId: string): string {
   return link({ t: "o", x: exchangeId }, "/manage/");
 }
 
+/** Self-serve join link: participants add themselves while the draw collects. */
+export function joinLink(exchangeId: string): string {
+  return link({ t: "j", x: exchangeId }, "/j/");
+}
+
 function wrap(bodyHtml: string, removeUrl: string | null, kind?: string): string {
   const removeLine = removeUrl
     ? `<p style="margin:12px 0 0">Don't want to take part? <a href="${removeUrl}" style="color:#b3402a">Remove your data</a>.</p>`
@@ -122,6 +127,43 @@ export function renderAssignmentEmail(p: {
       "",
       `${footerSentence(p.kind)}.`,
       `Don't want to take part? Remove your data: ${removeUrl}`,
+    ].join("\n"),
+  };
+}
+
+export function renderCollectingEmail(p: {
+  title: string;
+  joinUrl: string;
+  manageUrl: string;
+  kind?: ExchangeKind;
+  deadline?: string | null;
+}): RenderedEmail {
+  const label = kindLabel(p.kind);
+  const subject = `Your ${label} is set up — share your join link`;
+
+  const body = `
+    <p style="margin:0 0 16px">Your ${label} draw for &quot;${escapeHtml(p.title)}&quot; is set up and collecting participants.</p>
+    ${p.deadline ? `<p style="margin:0 0 16px;font-size:14px"><strong>Exchange day: ${escapeHtml(p.deadline)}</strong></p>` : ""}
+    <p style="margin:0 0 20px">Share this join link with your group — everyone adds themselves:</p>
+    <p style="margin:0 0 16px">
+      <a href="${p.joinUrl}" style="display:inline-block;background:#b3402a;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:8px">Open the join link</a>
+    </p>
+    <p style="margin:0 0 16px;font-size:13px;color:#7a6f68">Or copy it: ${p.joinUrl}</p>
+    <p style="margin:0 0 16px">
+      <a href="${p.manageUrl}" style="color:#b3402a">Open your organizer dashboard</a> to see who has joined, set exclusions, and draw the names when everyone is in.
+    </p>`;
+
+  return {
+    subject,
+    html: wrap(body, null, p.kind),
+    text: [
+      `Your ${label} draw for "${p.title}" is set up and collecting participants.`,
+      ...(p.deadline ? ["", `Exchange day: ${p.deadline}`] : []),
+      "",
+      "Share this join link with your group — everyone adds themselves:",
+      p.joinUrl,
+      "",
+      `Open your organizer dashboard to see who has joined, set exclusions, and draw the names when everyone is in: ${p.manageUrl}`,
     ].join("\n"),
   };
 }

@@ -13,6 +13,7 @@ import {
   assignmentUrl,
   budgetLabel,
   deadlineLabel,
+  joinLink,
   kindLabel,
   manageLink,
   type ExchangeKind,
@@ -51,6 +52,12 @@ export interface CreateExchangeInput {
   deliveryMode?: DeliveryMode;
   /** Never show pairings in the organizer dashboard (email delivery only). */
   blindMode?: boolean;
+  /**
+   * Collect-first mode: create the exchange in `draft` status with no
+   * participants. The organizer shares a join link, people add themselves,
+   * and the organizer draws from the dashboard when everyone is in.
+   */
+  collect?: boolean;
   /** Creator IP, stored for abuse rate limiting. */
   createdByIp?: string;
   /**
@@ -69,6 +76,8 @@ export interface CreateExchangeResult {
   blindMode: boolean;
   /** Present for private-link draws: one unguessable link per participant. */
   links: PrivateLink[];
+  /** Present for collect-first draws: the self-serve join link. */
+  joinPath?: string;
 }
 
 /** Raised when the database has not had the migration for a feature applied. */
@@ -91,6 +100,10 @@ export async function createAndDeliverExchange(
 ): Promise<CreateExchangeResult> {
   const title = input.title?.trim();
   if (!title) throw new Error("Title is required");
+
+  // Collect-first: no participants yet, no draw — just a shell the organizer
+  // shares a join link for. See createCollectingExchange below.
+  if (input.collect) return createCollectingExchange(input);
 
   const deliveryMode: DeliveryMode = input.deliveryMode === "link" ? "link" : "email";
   const blindMode = Boolean(input.blindMode);
@@ -213,8 +226,165 @@ export async function createAndDeliverExchange(
   }
 }
 
-/** Insert the exchange row, degrading safely on an un-migrated database. */
-async function insertExchange(input: {
+/**
+ * Collect-first pipeline: create the exchange in `draft` status with zero
+ * participants, email the organizer one join link, and stop. The draw itself
+ * happens later via drawDraftExchange() once people have joined.
+ */
+async function createCollectingExchange(
+  input: CreateExchangeInput
+): Promise<CreateExchangeResult> {
+  const title = input.title!.trim();
+
+  const deliveryMode: DeliveryMode = input.deliveryMode === "link" ? "link" : "email";
+  const blindMode = Boolean(input.blindMode);
+  if (blindMode && deliveryMode !== "email") {
+    throw new Error("Blind mode is only available with email delivery");
+  }
+
+  const rawOrganizerEmail = (input.organizerEmail ?? "").toLowerCase().trim();
+  // The organizer email is mandatory here: it is the only way back to the
+  // dashboard, because the draw has not happened and there are no other links.
+  if (!EMAIL_RE.test(rawOrganizerEmail)) {
+    throw new Error("A valid organizerEmail is required");
+  }
+  const organizerEmail = rawOrganizerEmail;
+
+  const kind: ExchangeKind = input.kind ?? "secret_santa";
+  const requestId = normalizeRequestId(input.requestId);
+
+  if (requestId) {
+    const existing = await findExchangeByRequestId(requestId);
+    if (existing) {
+      return {
+        exchangeId: existing,
+        reused: true,
+        generation: 0,
+        deliveryMode,
+        blindMode,
+        links: [],
+        joinPath: `/j/${signToken({ t: "j", x: existing })}`,
+      };
+    }
+  }
+
+  const exchangeId = await insertExchange({
+    title,
+    organizerEmail,
+    kind,
+    budgetAmount: input.budgetAmount,
+    deadline: input.deadline,
+    createdByIp: input.createdByIp,
+    requestId,
+    deliveryMode,
+    blindMode,
+  });
+
+  try {
+    await enqueueEmails([
+      {
+        exchangeId,
+        kind: "organizer_link",
+        giverId: null,
+        toEmail: organizerEmail,
+        subject: `Your ${kindLabel(kind)} is set up — share your join link`,
+        payload: {
+          title,
+          kind,
+          collecting: true,
+          deliveryMode,
+          deadline: deadlineLabel(input.deadline),
+          token: signToken({ t: "o", x: exchangeId }),
+          joinToken: signToken({ t: "j", x: exchangeId }),
+          manageUrl: manageLink(exchangeId),
+          joinUrl: joinLink(exchangeId),
+        },
+      },
+    ]);
+  } catch (e) {
+    await getSupabaseAdmin().from("exchange").delete().eq("id", exchangeId);
+    throw e;
+  }
+
+  return {
+    exchangeId,
+    reused: false,
+    generation: 0,
+    deliveryMode,
+    blindMode,
+    links: [],
+    joinPath: `/j/${signToken({ t: "j", x: exchangeId })}`,
+  };
+}
+
+/**
+ * First draw of a collect-first exchange: participants are already in the
+ * database, so this is redrawExchange minus the reset — guarded to only run
+ * while the exchange is still collecting.
+ */
+export async function drawDraftExchange(
+  exchangeId: string
+): Promise<{ generation: number; links: PrivateLink[] }> {
+  const db = getSupabaseAdmin();
+
+  const { data: exchange } = await db
+    .from("exchange")
+    .select("*")
+    .eq("id", exchangeId)
+    .maybeSingle();
+  if (!exchange) throw new Error("Exchange not found");
+  if (exchange.status !== "draft") {
+    throw new Error("ALREADY_DRAWN: the names have already been drawn");
+  }
+
+  const { data: participants, error: perr } = await db
+    .from("participant")
+    .select("*")
+    .eq("exchange_id", exchangeId)
+    .is("removed_at", null);
+  if (perr) throw new Error(`fetchParticipants failed: ${perr.message}`);
+  const rows = participants as ParticipantRow[];
+  if (rows.length < 2) {
+    throw new Error("NEED_TWO: at least 2 people must join before the draw");
+  }
+
+  const { data: exclusionRows } = await db
+    .from("exclusion")
+    .select("participant_a, participant_b")
+    .eq("exchange_id", exchangeId);
+  const ids = new Set(rows.map((r) => r.id));
+  const exclusionPairs: Array<[string, string]> = (exclusionRows ?? [])
+    .filter((e) => ids.has(e.participant_a) && ids.has(e.participant_b))
+    .map((e) => [`${e.participant_a}`, `${e.participant_b}`]);
+
+  const deliveryMode: DeliveryMode =
+    exchange.delivery_mode === "link" ? "link" : "email";
+
+  const generation = await drawAndDeliver({
+    exchangeId,
+    participants: rows,
+    exclusionIds: exclusionPairs,
+    organizerEmail: (exchange.organizer_email as string) || null,
+    title: exchange.title as string,
+    kind: (exchange.kind as ExchangeKind) ?? "secret_santa",
+    deliveryMode,
+    blindMode: Boolean(exchange.blind_mode),
+  });
+
+  return {
+    generation,
+    links:
+      deliveryMode === "link"
+        ? rows.map((p) => ({
+            participantId: p.id,
+            name: p.name,
+            url: assignmentUrl(exchangeId, p.id, generation),
+          }))
+        : [],
+  };
+}
+
+/** Insert the exchange row, degrading safely on an un-migrated database. */async function insertExchange(input: {
   title: string;
   organizerEmail: string | null;
   kind: ExchangeKind;

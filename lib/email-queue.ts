@@ -1,6 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/supabase/draw-service";
 import { sendEmail } from "@/lib/mailer";
-import { renderAssignmentEmail, renderOrganizerEmail, renderReminderEmail, kindLabel, budgetLabel, deadlineLabel, type ExchangeKind } from "@/lib/email-templates";
+import { renderAssignmentEmail, renderCollectingEmail, renderOrganizerEmail, renderReminderEmail, kindLabel, budgetLabel, deadlineLabel, type ExchangeKind } from "@/lib/email-templates";
 import { signToken } from "@/lib/tokens";
 
 export interface EnqueueInput {
@@ -338,6 +338,15 @@ function render(job: JobRow): { html: string; text: string } {
       kind,
       budget,
       deadline,
+    });
+  }
+  if (job.payload.collecting === true) {
+    return renderCollectingEmail({
+      title: String(job.payload.title ?? "your draw"),
+      joinUrl: String(job.payload.joinUrl ?? ""),
+      manageUrl: String(job.payload.manageUrl ?? ""),
+      kind,
+      deadline: (job.payload.deadline as string | undefined) ?? null,
     });
   }
   return renderOrganizerEmail({

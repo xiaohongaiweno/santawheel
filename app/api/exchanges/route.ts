@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
   let exchangeId: string;
   let reused = false;
   let links: Awaited<ReturnType<typeof createAndDeliverExchange>>["links"] = [];
+  let joinPath: string | undefined;
   try {
     // UI sends hyphenated kinds ("secret-santa"); the DB stores underscored
     // values per the exchange_kind_check constraint.
@@ -49,6 +50,7 @@ export async function POST(req: NextRequest) {
     exchangeId = result.exchangeId;
     reused = result.reused;
     links = result.links;
+    joinPath = result.joinPath;
   } catch (e) {
     const message = e instanceof Error ? e.message : "Failed to create exchange";
     // A missing migration is an operator problem, not a bad request: say so
@@ -75,8 +77,17 @@ export async function POST(req: NextRequest) {
     // have been lost to a flaky connection, and an empty success page would
     // leave the organizer with nothing to hand out.
     return NextResponse.json(
-      { exchangeId, reused: true, delivery: null, managePath, links },
+      { exchangeId, reused: true, delivery: null, managePath, links, joinPath },
       { status: 200 }
+    );
+  }
+
+  // Collect-first draws only emailed the organizer a join link; there is
+  // nothing else to deliver until the organizer draws the names.
+  if (joinPath) {
+    return NextResponse.json(
+      { exchangeId, delivery: null, managePath, links: [], joinPath },
+      { status: 201 }
     );
   }
 

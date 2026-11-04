@@ -41,6 +41,8 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [mode, setMode] = useState<DeliveryMode>("email");
   const [blind, setBlind] = useState(false);
+  const [collect, setCollect] = useState(false);
+  const [joinUrl, setJoinUrl] = useState<string | null>(null);
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
   const [organizerEmail, setOrganizerEmail] = useState("");
@@ -67,9 +69,15 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
   );
 
   const organizerOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(organizerEmail.trim());
-  const organizerSatisfied = mode === "link" ? !organizerEmail.trim() || organizerOk : organizerOk;
+  // Collect mode: the organizer email is mandatory — the dashboard link and
+  // the join link are emailed there, and there are no other links yet.
+  const organizerSatisfied = collect
+    ? organizerOk
+    : mode === "link"
+      ? !organizerEmail.trim() || organizerOk
+      : organizerOk;
   const canSubmit =
-    !submitting && organizerSatisfied && parsed.participants.length >= 2;
+    !submitting && organizerSatisfied && (collect || parsed.participants.length >= 2);
 
   function switchMode(next: DeliveryMode) {
     setMode(next);
@@ -79,19 +87,21 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
 
   function toStep2() {
     setError(null);
-    if (parsed.participants.length < 2) {
-      setError(
-        parsed.participants.length === 0
-          ? mode === "email"
-            ? "Paste your participants first — one per line as “Name <email>”."
-            : "Paste your participants first — one name per line."
-          : `Add at least 2 participants (you have ${parsed.participants.length}).`
-      );
-      return;
-    }
-    if (parsed.errors.length > 0 && mode === "link") {
-      setError(parsed.errors[0]);
-      return;
+    if (!collect) {
+      if (parsed.participants.length < 2) {
+        setError(
+          parsed.participants.length === 0
+            ? mode === "email"
+              ? "Paste your participants first — one per line as “Name <email>”."
+              : "Paste your participants first — one name per line."
+            : `Add at least 2 participants (you have ${parsed.participants.length}).`
+        );
+        return;
+      }
+      if (parsed.errors.length > 0 && mode === "link") {
+        setError(parsed.errors[0]);
+        return;
+      }
     }
     if (!title) setTitle(`Our ${label}`);
     setStep(2);
@@ -113,13 +123,14 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
         body: JSON.stringify({
           title: title.trim() || `Our ${label}`,
           organizerEmail: organizerEmail.trim() || undefined,
-          participants: parsed.participants,
-          exclusions: exclusions.pairs,
+          participants: collect ? [] : parsed.participants,
+          exclusions: collect ? undefined : exclusions.pairs,
           budgetAmount: budget.trim() ? Number(budget) : undefined,
           deadline: deadline || undefined,
           kind,
           deliveryMode: mode,
           blindMode: blind,
+          collect: collect || undefined,
           requestId,
         }),
       });
@@ -127,6 +138,7 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
         error?: string;
         delivery?: DeliveryInfo | null;
         managePath?: string;
+        joinPath?: string;
         links?: ApiLink[];
       };
       if (!res.ok) throw new Error(data.error || "Something went wrong — please try again.");
@@ -134,6 +146,9 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
       setLinks(data.links ?? []);
       if (data.managePath) {
         setManageUrl(`${window.location.origin}${data.managePath}`);
+      }
+      if (data.joinPath) {
+        setJoinUrl(`${window.location.origin}${data.joinPath}`);
       }
       setStep(3);
     } catch (e) {
@@ -153,8 +168,10 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
     setExclusionsText("");
     setDelivery(null);
     setManageUrl(null);
+    setJoinUrl(null);
     setLinks([]);
     setBlind(false);
+    setCollect(false);
     setError(null);
     setRequestId(newRequestId());
   }
@@ -164,10 +181,38 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
     return (
       <div className="w-full rounded-xl border border-accent-green/30 bg-accent-green/5 p-6 text-left">
         <h2 className="text-lg font-bold text-accent-green">
-          Done — the draw is made!
+          {collect ? "Done — your join link is ready!" : "Done — the draw is made!"}
         </h2>
 
-        {mode === "link" ? (
+        {collect && joinUrl && (
+          <>
+            <p className="mt-3 text-sm leading-relaxed">
+              Your {label} is set up and collecting participants. Share this
+              join link with your group — everyone adds themselves, then you
+              draw the names from the dashboard.
+            </p>
+            <div className="mt-4 rounded-lg border border-border bg-background p-4">
+              <p className="text-sm font-medium">Join link</p>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <a
+                  href={joinUrl}
+                  className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-surface hover:bg-accent-strong"
+                >
+                  Open join link
+                </a>
+                <CopyButton text={joinUrl} label="Copy link" />
+              </div>
+              <p className="mt-2 break-all text-xs text-muted">{joinUrl}</p>
+              <p className="mt-2 text-xs leading-relaxed text-muted">
+                It was also emailed to <strong>{organizerEmail.trim()}</strong>.
+                When everyone has joined, open the dashboard, optionally set
+                exclusions, and press &quot;Draw the names&quot;.
+              </p>
+            </div>
+          </>
+        )}
+
+        {!collect && mode === "link" ? (
           <>
             <p className="mt-3 text-sm leading-relaxed">
               {parsed.participants.length} names were drawn. Nobody was emailed
@@ -177,7 +222,7 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
               <AssignmentLinks links={links.map((l) => ({ name: l.name, url: l.url }))} />
             </div>
           </>
-        ) : (
+        ) : !collect ? (
           <p className="mt-3 text-sm leading-relaxed">
             {parsed.participants.length} participants have been drawn and{" "}
             {delivery?.sent !== undefined ? (
@@ -194,9 +239,10 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
             . Each person gets a private link showing only their own assignment.
             {blind && " Blind mode is on — your dashboard will not show who drew whom."}
           </p>
-        )}
+        ) : null}
 
-        {mode === "email" &&
+        {!collect &&
+          mode === "email" &&
           delivery !== null &&
           delivery.sent === 0 &&
           delivery.retriable + delivery.failed > 0 && (
@@ -211,9 +257,11 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
           <div className="mt-4 rounded-lg border border-border bg-background p-4">
             <p className="text-sm font-medium">Your organizer dashboard</p>
             <p className="mt-1 text-xs leading-relaxed text-muted">
-              {mode === "link"
-                ? "Open it any time to re-copy the links, reset the draw, or add premium features. Save this link — it is the only way back in."
-                : "Open it to check delivery, resend an email, download the pairs as CSV, or reset the draw. Save this link — it is the only way back in."}
+              {collect
+                ? "Open it any time to see who has joined, set exclusions, and draw the names. Save this link — it is the only way back in."
+                : mode === "link"
+                  ? "Open it any time to re-copy the links, reset the draw, or add premium features. Save this link — it is the only way back in."
+                  : "Open it to check delivery, resend an email, download the pairs as CSV, or reset the draw. Save this link — it is the only way back in."}
             </p>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <a
@@ -238,7 +286,12 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
           </div>
         )}
 
-        {mode === "email" ? (
+        {collect ? (
+          <p className="mt-3 text-sm leading-relaxed text-muted">
+            You did not paste a list — participants add themselves. The draw
+            happens from the dashboard when you are ready.
+          </p>
+        ) : mode === "email" ? (
           <p className="mt-3 text-sm leading-relaxed">
             {delivery !== null && delivery.sent === 0 ? (
               <>
@@ -282,7 +335,9 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
         <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
           <div className="rounded-lg border border-border bg-background px-3 py-2">
             <dt className="text-xs text-muted">Participants</dt>
-            <dd className="font-medium">{parsed.participants.length} people</dd>
+            <dd className="font-medium">
+              {collect ? "They join via your link" : `${parsed.participants.length} people`}
+            </dd>
           </div>
           <div className="rounded-lg border border-border bg-background px-3 py-2">
             <dt className="text-xs text-muted">Contact details</dt>
@@ -293,9 +348,11 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
           <div className="rounded-lg border border-border bg-background px-3 py-2">
             <dt className="text-xs text-muted">Exclusion rules</dt>
             <dd className="font-medium">
-              {exclusions.pairs.length > 0
-                ? `${exclusions.pairs.length} pair${exclusions.pairs.length === 1 ? "" : "s"}`
-                : "None"}
+              {collect
+                ? "Set them on the dashboard"
+                : exclusions.pairs.length > 0
+                  ? `${exclusions.pairs.length} pair${exclusions.pairs.length === 1 ? "" : "s"}`
+                  : "None"}
             </dd>
           </div>
           <div className="rounded-lg border border-border bg-background px-3 py-2">
@@ -352,7 +409,7 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
           </label>
           <label className="block text-sm">
             <span className="mb-1 block font-medium">
-              Your email {mode === "email" ? <span className="text-accent">*</span> : "(optional)"}
+              Your email {mode === "email" || collect ? <span className="text-accent">*</span> : "(optional)"}
             </span>
             <input
               type="email"
@@ -363,9 +420,11 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
               className="block w-full rounded-lg border border-border bg-surface px-3 py-2 text-base outline-none focus:border-accent"
             />
             <span className="mt-1 block text-xs text-muted">
-              {mode === "email"
-                ? "We send your organizer dashboard link here."
-                : "Only used to email you the dashboard link — participants are never contacted."}
+              {collect
+                ? "We email your join link and dashboard link here."
+                : mode === "email"
+                  ? "We send your organizer dashboard link here."
+                  : "Only used to email you the dashboard link — participants are never contacted."}
             </span>
           </label>
           <label className="block text-sm">
@@ -410,6 +469,7 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
           </label>
         )}
 
+        {!collect && (
         <label className="mt-4 block text-sm">
           <span className="mb-1 block font-medium">
             Exclusions (optional) — people who must not draw each other
@@ -433,6 +493,7 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
             </span>
           )}
         </label>
+        )}
 
         {parsed.errors.length > 0 && (
           <p className="mt-3 text-xs text-muted">
@@ -461,13 +522,21 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
             disabled={submitting}
             className="h-12 flex-1 rounded-lg bg-accent px-6 text-base font-semibold text-surface transition-colors hover:bg-accent-strong disabled:opacity-60"
           >
-            {submitting ? "Drawing…" : "Confirm & draw names"}
+            {submitting
+              ? collect
+                ? "Creating…"
+                : "Drawing…"
+              : collect
+                ? "Create my join link"
+                : "Confirm & draw names"}
           </button>
         </div>
         <p className="mt-3 text-xs leading-relaxed text-muted">
-          {mode === "email"
-            ? "Everyone gets one email with a private link that shows only their own assignment. You can reset the draw later from your organizer dashboard — that cancels the old links and re-sends new ones."
-            : "The draw happens on our server and nobody is emailed. You get one private link per participant to send however you like; resetting the draw cancels every old link."}
+          {collect
+            ? "Nothing is drawn yet. People join themselves; when you draw later, everyone gets their assignment the usual way."
+            : mode === "email"
+              ? "Everyone gets one email with a private link that shows only their own assignment. You can reset the draw later from your organizer dashboard — that cancels the old links and re-sends new ones."
+              : "The draw happens on our server and nobody is emailed. You get one private link per participant to send however you like; resetting the draw cancels every old link."}
         </p>
       </div>
     );
@@ -514,6 +583,28 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
         </div>
       </fieldset>
 
+      <label className="mt-4 flex gap-2.5 rounded-lg border border-border bg-surface p-3 text-left text-sm">
+        <input
+          type="checkbox"
+          checked={collect}
+          onChange={(e) => {
+            setCollect(e.target.checked);
+            setError(null);
+          }}
+          className="mt-0.5 h-4 w-4 accent-[var(--accent)]"
+        />
+        <span>
+          <span className="font-medium">Let people join themselves with a link</span>
+          <span className="mt-0.5 block text-xs leading-relaxed text-muted">
+            Skip the list — you get one join link to share in your group chat.
+            Everyone adds their own name{mode === "email" ? " and email" : ""}, and you
+            draw the names from your dashboard when everyone is in.
+          </span>
+        </span>
+      </label>
+
+      {!collect && (
+        <>
       <label
         htmlFor="participants"
         className="mb-2 mt-4 block text-left text-sm font-medium"
@@ -541,6 +632,8 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
           ? "one per line · “Name <email>”, “Name, email”, or just an email"
           : "one per line · emails are not needed and are ignored"}
       </p>
+        </>
+      )}
 
       <button
         type="button"

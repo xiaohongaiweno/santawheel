@@ -30,6 +30,10 @@ const faqs = [
     a: "Only in email mode. Switch to private links and you paste names alone — we draw the pairs and give you one private link per person to send however you like. Nothing is emailed to participants in that mode.",
   },
   {
+    q: "Can people join by themselves?",
+    a: "Yes. Instead of pasting a list, tick \"let people join themselves\" and share one join link in your group chat. Everyone adds their own name, you watch the list fill up on your dashboard, set exclusions, and draw the names when everyone is in.",
+  },
+  {
     q: "Can I stop couples or family members from drawing each other?",
     a: "Yes. Add as many exclusion pairs as you like — partners, roommates, or a manager and their direct reports. Exclusions work in both directions, and the draw is computed to respect all of them at once.",
   },
