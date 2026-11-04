@@ -42,7 +42,7 @@ export async function createAndDeliverExchange(
   }
   const participants = normalizeParticipants(input.participants);
   const organizerEmail = input.organizerEmail.toLowerCase();
-  const kind: ExchangeKind = input.kind ?? "secret-santa";
+  const kind: ExchangeKind = input.kind ?? "secret_santa";
 
   const db = getSupabaseAdmin();
 
@@ -133,7 +133,7 @@ export async function redrawExchange(exchangeId: string): Promise<{ generation: 
     exclusionPairs,
     exchange.organizer_email as string,
     exchange.title as string,
-    (exchange.kind as ExchangeKind) ?? "secret-santa"
+    (exchange.kind as ExchangeKind) ?? "secret_santa"
   );
   return { generation };
 }

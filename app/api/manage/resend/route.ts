@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     .eq("id", exchangeId)
     .maybeSingle();
   if (!exchange) return NextResponse.json({ error: "Exchange not found" }, { status: 404 });
-  const exKind = (exchange.kind as ExchangeKind) ?? "secret-santa";
+  const exKind = (exchange.kind as ExchangeKind) ?? "secret_santa";
 
   let toEmail: string;
   let kind: "assignment" | "organizer_link";

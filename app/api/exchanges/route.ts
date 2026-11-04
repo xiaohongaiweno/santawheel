@@ -34,7 +34,10 @@ export async function POST(req: NextRequest) {
 
   let exchangeId: string;
   try {
-    const result = await createAndDeliverExchange({ ...body, createdByIp: ip });
+    // UI sends hyphenated kinds ("secret-santa"); the DB stores underscored
+    // values per the exchange_kind_check constraint.
+    const kind = body.kind?.replace(/-/g, "_") as CreateExchangeInput["kind"];
+    const result = await createAndDeliverExchange({ ...body, kind, createdByIp: ip });
     exchangeId = result.exchangeId;
   } catch (e) {
     const message = e instanceof Error ? e.message : "Failed to create exchange";

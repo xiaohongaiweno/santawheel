@@ -229,7 +229,7 @@ async function markJobError(
 }
 
 function render(job: JobRow): { html: string; text: string } {
-  const kind = (job.payload.kind as ExchangeKind | undefined) ?? "secret-santa";
+  const kind = (job.payload.kind as ExchangeKind | undefined) ?? "secret_santa";
   if (job.kind === "assignment") {
     return renderAssignmentEmail({
       name: String(job.payload.name ?? "there"),

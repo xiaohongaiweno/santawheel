@@ -1,14 +1,14 @@
 import { signToken, type TokenPayload } from "@/lib/tokens";
 
-export type ExchangeKind = "secret-santa" | "gift-exchange";
+export type ExchangeKind = "secret_santa" | "gift_exchange";
 
 /** Human label used across email copy. */
 export function kindLabel(kind?: string): string {
-  return kind === "gift-exchange" ? "gift exchange" : "Secret Santa";
+  return kind === "gift_exchange" ? "gift exchange" : "Secret Santa";
 }
 
 function footerSentence(kind?: string): string {
-  return kind === "gift-exchange"
+  return kind === "gift_exchange"
     ? "This email was sent because you joined a gift exchange organized with SantaWheel"
     : "This email was sent because you joined a Secret Santa group organized with SantaWheel";
 }
