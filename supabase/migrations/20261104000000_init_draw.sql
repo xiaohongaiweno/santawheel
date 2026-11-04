@@ -28,21 +28,29 @@ create table if not exists public.participant (
 
 create table if not exists public.exclusion (
   exchange_id    uuid not null references public.exchange (id) on delete cascade,
-  participant_a  uuid not null references public.participant (exchange_id, id) on delete cascade,
-  participant_b  uuid not null references public.participant (exchange_id, id) on delete cascade,
+  participant_a  uuid not null,
+  participant_b  uuid not null,
   created_at     timestamptz not null default now(),
   primary key (exchange_id, participant_a, participant_b),
+  foreign key (exchange_id, participant_a)
+    references public.participant (exchange_id, id) on delete cascade,
+  foreign key (exchange_id, participant_b)
+    references public.participant (exchange_id, id) on delete cascade,
   check (participant_a <> participant_b),
   check (participant_a < participant_b)  -- callers normalize order
 );
 
 create table if not exists public.pair (
   exchange_id uuid not null references public.exchange (id) on delete cascade,
-  giver_id    uuid not null references public.participant (exchange_id, id) on delete cascade,
-  receiver_id uuid not null references public.participant (exchange_id, id) on delete cascade,
+  giver_id    uuid not null,
+  receiver_id uuid not null,
   created_at  timestamptz not null default now(),
   primary key (exchange_id, giver_id),      -- each participant gives once
   unique (exchange_id, receiver_id),        -- ...and receives once
+  foreign key (exchange_id, giver_id)
+    references public.participant (exchange_id, id) on delete cascade,
+  foreign key (exchange_id, receiver_id)
+    references public.participant (exchange_id, id) on delete cascade,
   check (giver_id <> receiver_id)
 );
 
