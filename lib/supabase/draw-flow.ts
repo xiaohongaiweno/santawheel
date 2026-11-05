@@ -157,7 +157,7 @@ export async function createAndDeliverExchange(
     }
   }
 
-  const exchangeId = await insertExchange({
+  const exchange = await insertExchange({
     title,
     organizerEmail,
     kind,
@@ -168,6 +168,23 @@ export async function createAndDeliverExchange(
     deliveryMode,
     blindMode,
   });
+
+  // insertExchange can resolve to an exchange created by a concurrent request
+  // that won the client_request_id race (the pre-insert lookup above cannot
+  // see an uncommitted winner). Returning here is essential: continuing would
+  // re-insert participants into the reused exchange and, on failure, roll the
+  // winner's exchange back entirely.
+  if (exchange.reused) {
+    return {
+      exchangeId: exchange.id,
+      reused: true,
+      generation: 0,
+      deliveryMode,
+      blindMode,
+      links: [],
+    };
+  }
+  const exchangeId = exchange.id;
 
   try {
     const { data: participantRows, error: perr } = await getSupabaseAdmin()
@@ -268,7 +285,7 @@ async function createCollectingExchange(
     }
   }
 
-  const exchangeId = await insertExchange({
+  const exchange = await insertExchange({
     title,
     organizerEmail,
     kind,
@@ -279,6 +296,21 @@ async function createCollectingExchange(
     deliveryMode,
     blindMode,
   });
+
+  // Same concurrency guard as the non-collect path: a lost requestId race
+  // must return the winner's exchange untouched, never re-build on top of it.
+  if (exchange.reused) {
+    return {
+      exchangeId: exchange.id,
+      reused: true,
+      generation: 0,
+      deliveryMode,
+      blindMode,
+      links: [],
+      joinPath: `/j/${signToken({ t: "j", x: exchange.id })}`,
+    };
+  }
+  const exchangeId = exchange.id;
 
   try {
     await enqueueEmails([
@@ -384,7 +416,8 @@ export async function drawDraftExchange(
   };
 }
 
-/** Insert the exchange row, degrading safely on an un-migrated database. */async function insertExchange(input: {
+/** Insert the exchange row, degrading safely on an un-migrated database. */
+async function insertExchange(input: {
   title: string;
   organizerEmail: string | null;
   kind: ExchangeKind;
@@ -394,7 +427,7 @@ export async function drawDraftExchange(
   requestId: string | null;
   deliveryMode: DeliveryMode;
   blindMode: boolean;
-}): Promise<string> {
+}): Promise<{ id: string; reused: boolean }> {
   const db = getSupabaseAdmin();
   const base = {
     title: input.title,
@@ -422,13 +455,15 @@ export async function drawDraftExchange(
   for (let i = 0; i < attempts.length; i++) {
     const row = attempts[i];
     const { data, error } = await db.from("exchange").insert(row).select("id").single();
-    if (!error) return data!.id as string;
+    if (!error) return { id: data!.id as string, reused: false };
 
     lastError = error;
     if (error.code === "23505" && input.requestId) {
-      // Unique violation on client_request_id: a concurrent request won the race.
+      // Unique violation on client_request_id: a concurrent request won the
+      // race. Its row is committed by now (the 23505 only fires after the
+      // winner commits), so the lookup below always sees it.
       const existing = await findExchangeByRequestId(input.requestId);
-      if (existing) return existing;
+      if (existing) return { id: existing, reused: true };
     }
     if (error.code !== "42703" && error.code !== "PGRST204") break; // not a missing-column problem: give up
 
