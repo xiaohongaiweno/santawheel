@@ -161,12 +161,20 @@ export async function answerAnonymousQuestion(input: {
   }
 
   const now = new Date().toISOString();
-  const { error } = await db
+  // The rowcount check is the real guard: under a concurrent double answer,
+  // both requests pass the unanswered SELECT, but only the UPDATE that actually
+  // matched a still-null answer_text wins. PostgREST returns 0 rows for the
+  // loser without raising an error, so we must inspect the result ourselves.
+  const { data: updated, error } = await db
     .from("question")
     .update({ answer_text: text, answered_at: now })
     .eq("id", input.questionId)
-    .is("answer_text", null); // idempotent guard against double answers
+    .is("answer_text", null)
+    .select("id");
   if (error) throw new Error(`answerQuestion failed: ${error.message}`);
+  if (!updated || updated.length === 0) {
+    throw new QuestionError("ANSWERED: this question already has an answer");
+  }
 
   // Notify the asker. Their email lives on the participant row; if they have
   // none (private-link mode) they will see the answer on their page instead.

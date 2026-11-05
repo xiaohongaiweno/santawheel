@@ -244,9 +244,12 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
     if (cerr) throw new Error(`sweepReminders claim failed: ${cerr.message}`);
     if ((claimed?.length ?? 0) === 0) continue;
 
+    // assignment has no direct FK to participant (its FK targets pair), so a
+    // single-hint embed is unresolvable and PostgREST rejects it. Fetch both
+    // sides and join in code instead.
     const { data: rows, error: aerr } = await db
       .from("assignment")
-      .select("giver_id, viewed_at, participant!assignment_giver_id_fkey(name, email, removed_at)")
+      .select("giver_id, viewed_at")
       .eq("exchange_id", ex.id)
       .neq("email_status", "cancelled");
     if (aerr) {
@@ -254,31 +257,43 @@ export async function sweepReminders(limit = 20): Promise<{ exchanges: number; e
       throw new Error(`sweepReminders assignments failed: ${aerr.message}`);
     }
 
-    type Row = {
-      giver_id: string;
-      viewed_at: string | null;
-      participant: { name: string; email: string | null; removed_at: string | null };
-    };
-    const targets = ((rows ?? []) as unknown as Row[]).filter(
-      (r) => !r.viewed_at && !r.participant.removed_at && Boolean(r.participant.email)
+    const giverIds = ((rows ?? []) as Array<{ giver_id: string }>).map((r) => r.giver_id);
+    const viewedByGiver = new Set(
+      ((rows ?? []) as Array<{ giver_id: string; viewed_at: string | null }>)
+        .filter((r) => r.viewed_at)
+        .map((r) => r.giver_id)
+    );
+    const people =
+      giverIds.length === 0
+        ? []
+        : (
+            await db
+              .from("participant")
+              .select("id, name, email, removed_at")
+              .in("id", giverIds)
+          ).data ?? [];
+
+    type Person = { id: string; name: string; email: string | null; removed_at: string | null };
+    const targets = ((people ?? []) as unknown as Person[]).filter(
+      (p) => !viewedByGiver.has(p.id) && !p.removed_at && Boolean(p.email)
     );
 
     if (targets.length > 0) {
       try {
         await enqueueEmails(
-          targets.map((r) => ({
+          targets.map((p) => ({
             exchangeId: ex.id,
             kind: "reminder" as const,
-            giverId: r.giver_id,
-            toEmail: r.participant.email as string,
+            giverId: p.id,
+            toEmail: p.email as string,
             subject: `Reminder: your ${kindLabel(ex.kind)} assignment`,
             payload: {
-              name: r.participant.name,
+              name: p.name,
               kind: ex.kind,
               budget,
               deadline,
-              token: signToken({ t: "a", x: ex.id, p: r.giver_id, g: ex.draw_generation }),
-              removeToken: signToken({ t: "r", x: ex.id, p: r.giver_id }),
+              token: signToken({ t: "a", x: ex.id, p: p.id, g: ex.draw_generation }),
+              removeToken: signToken({ t: "r", x: ex.id, p: p.id }),
             },
           }))
         );
