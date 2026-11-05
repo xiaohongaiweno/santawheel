@@ -99,9 +99,9 @@ export default function WhiteElephantGenerator() {
           White Elephant Generator
         </h1>
         <p className="mt-3 text-base text-muted">
-          Everyone takes a turn: open a wrapped present from the pile, or steal one
-          that has already been opened. No gift can be stolen more than three times
-          — change the cap if your group likes it rougher.
+          Everyone picks in a fixed order: open a wrapped present from the pile, or
+          steal one that has already been opened. No gift can be stolen more than
+          three times — change the cap if your group likes it rougher.
         </p>
         <a
           href="#create"
