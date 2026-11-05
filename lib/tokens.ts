@@ -11,7 +11,8 @@ export type TokenPayload =
   | { t: "o"; x: string } // organizer manage link
   | { t: "j"; x: string } // join link: participants add themselves while the draw is collecting
   | { t: "r"; x: string; p: string } // remove-my-data link
-  | { t: "q"; x: string; q: string }; // question answer link: exchange + question id
+  | { t: "q"; x: string; q: string } // question answer link: exchange + question id
+  | { t: "w"; x: string }; // white elephant board link: exchange
 
 function secret(): string {
   const s =

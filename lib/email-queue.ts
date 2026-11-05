@@ -1,6 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/supabase/draw-service";
 import { sendEmail } from "@/lib/mailer";
-import { renderAssignmentEmail, renderCollectingEmail, renderOrganizerEmail, renderQuestionEmail, renderAnswerEmail, renderReminderEmail, kindLabel, budgetLabel, deadlineLabel, type ExchangeKind } from "@/lib/email-templates";
+import { renderAssignmentEmail, renderCollectingEmail, renderOrganizerEmail, renderQuestionEmail, renderAnswerEmail, renderReminderEmail, renderWeResultEmail, kindLabel, budgetLabel, deadlineLabel, type ExchangeKind } from "@/lib/email-templates";
 import { signToken } from "@/lib/tokens";
 
 export type EmailJobKind =
@@ -8,7 +8,8 @@ export type EmailJobKind =
   | "organizer_link"
   | "reminder"
   | "question"
-  | "answer";
+  | "answer"
+  | "we_result";
 
 export interface EnqueueInput {
   exchangeId: string;
@@ -379,6 +380,14 @@ function render(job: JobRow): { html: string; text: string } {
       answerText: String(job.payload.answer ?? ""),
       assignmentToken: String(job.payload.token ?? ""),
       removeToken: String(job.payload.removeToken ?? ""),
+      kind,
+    });
+  }
+  if (job.kind === "we_result") {
+    return renderWeResultEmail({
+      name: String(job.payload.name ?? "there"),
+      gift: String(job.payload.gift ?? "your present"),
+      title: (job.payload.title as string | undefined) ?? undefined,
       kind,
     });
   }

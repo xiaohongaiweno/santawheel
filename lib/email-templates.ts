@@ -48,6 +48,11 @@ export function answerLink(exchangeId: string, questionId: string): string {
   return link({ t: "q", x: exchangeId, q: questionId }, "/q/");
 }
 
+/** Shared white elephant draft board (organizer + spectators operate it). */
+export function boardLink(exchangeId: string): string {
+  return link({ t: "w", x: exchangeId }, "/we/");
+}
+
 function wrap(bodyHtml: string, removeUrl: string | null, kind?: string): string {
   const removeLine = removeUrl
     ? `<p style="margin:12px 0 0">Don't want to take part? <a href="${removeUrl}" style="color:#b3402a">Remove your data</a>.</p>`
@@ -341,6 +346,36 @@ export function renderAnswerEmail(p: {
       "",
       `${footerSentence(p.kind)}.`,
       `Don't want to take part? Remove your data: ${removeUrl}`,
+    ].join("\n"),
+  };
+}
+
+export function renderWeResultEmail(p: {
+  name: string;
+  gift: string;
+  title?: string;
+  kind?: ExchangeKind;
+}): RenderedEmail {
+  const label = kindLabel(p.kind);
+  const subject = `You ended up with: ${p.gift}`;
+
+  const body = `
+    <p style="margin:0 0 16px">Hi ${escapeHtml(p.name)},</p>
+    <p style="margin:0 0 12px">The ${label}${p.title ? ` &quot;${escapeHtml(p.title)}&quot;` : ""} is over. Here is what you took home:</p>
+    <p style="margin:0 0 20px;border-left:3px solid #b3402a;padding-left:12px;font-size:18px"><strong>${escapeHtml(p.gift)}</strong></p>
+    <p style="margin:0;font-size:13px;color:#7a6f68">Swaps are final once the last turn is played. Enjoy your gift.</p>`;
+
+  return {
+    subject,
+    html: wrap(body, null, p.kind),
+    text: [
+      `Hi ${p.name},`,
+      "",
+      `The ${label}${p.title ? ` "${p.title}"` : ""} is over. Here is what you took home:`,
+      "",
+      p.gift,
+      "",
+      "Swaps are final once the last turn is played. Enjoy your gift.",
     ].join("\n"),
   };
 }
