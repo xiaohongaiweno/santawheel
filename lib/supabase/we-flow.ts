@@ -422,7 +422,7 @@ export async function setTurnOrder(exchangeId: string, order: unknown): Promise<
 export async function finishGame(exchangeId: string): Promise<{
   view: WeBoardView;
   queued: number;
-  delivery: { sent: number; failed: number } | null;
+  delivery: { sent: number; failed: number; retriable: number } | null;
 }> {
   const ctx = await loadWeContext(exchangeId);
   if (ctx.state.phase !== "done") {
@@ -478,7 +478,11 @@ export async function finishGame(exchangeId: string): Promise<{
   return {
     view: toBoardView(await loadWeContext(exchangeId)),
     queued: jobs.length,
-    delivery: delivery ? { sent: delivery.sent, failed: delivery.failed } : null,
+    // retriable matters: a provider hiccup leaves the email queued, not failed,
+    // and the board must not claim "0 delivered" in that case.
+    delivery: delivery
+      ? { sent: delivery.sent, failed: delivery.failed, retriable: delivery.retriable }
+      : null,
   };
 }
 

@@ -123,7 +123,7 @@ export default function DraftBoard({
         view?: WeBoardView;
         error?: string;
         queued?: number;
-        delivery?: { sent: number; failed: number } | null;
+        delivery?: { sent: number; failed: number; retriable?: number } | null;
       };
       if (!res.ok) {
         setError(data.error ?? "That move was not allowed.");
@@ -134,11 +134,31 @@ export default function DraftBoard({
       if (action === "finish") {
         const sent = data.delivery?.sent ?? 0;
         const failed = data.delivery?.failed ?? 0;
-        setNotice(
-          `Results sent. ${sent} email${sent === 1 ? "" : "s"} delivered${
-            failed > 0 ? `, ${failed} failed and will retry` : ""
-          }.`
-        );
+        const queued = data.queued ?? 0;
+        // Anything not confirmed sent stays in the retry queue, so "0 delivered"
+        // would be alarming and wrong — say what actually happens next.
+        const pending = Math.max(0, queued - sent - failed);
+        if (queued === 0) {
+          setNotice("Results already sent — nothing new to email.");
+        } else if (pending > 0) {
+          setNotice(
+            sent > 0
+              ? `Emailed ${sent} of ${queued} players; the other ${pending} ${
+                  pending === 1 ? "is" : "are"
+                } queued and go out automatically within a few minutes.`
+              : `${queued} result email${queued === 1 ? "" : "s"} queued — ${
+                  queued === 1 ? "it goes" : "they go"
+                } out automatically within a few minutes.`
+          );
+        } else if (failed > 0) {
+          setNotice(
+            `Emailed ${sent} of ${queued} players; ${failed} address${
+              failed === 1 ? "" : "es"
+            } were rejected.`
+          );
+        } else {
+          setNotice(`Results emailed to all ${queued} players.`);
+        }
       }
     } catch {
       setError("Network problem — check your connection and try again.");
@@ -395,7 +415,7 @@ export default function DraftBoard({
           </button>
         )}
         {view.finished && (
-          <span className="ml-auto text-xs text-muted">Result emails sent</span>
+          <span className="ml-auto text-xs text-muted">Result emails queued</span>
         )}
       </section>
 
