@@ -290,6 +290,22 @@ export default function YankeeSwapRules() {
             ))}
           </div>
         </section>
+
+        <section aria-labelledby="more-rules">
+          <h2 id="more-rules" className="text-xl font-semibold">
+            More rules
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-muted">
+            Hosting the standard stealing version instead? The{" "}
+            <Link
+              href="/white-elephant-rules"
+              className="text-accent underline"
+            >
+              white elephant game rules
+            </Link>{" "}
+            cover the default rule set from first unwrap to final steal.
+          </p>
+        </section>
       </div>
     </>
   );
