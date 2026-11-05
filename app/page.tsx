@@ -181,6 +181,20 @@ export default function Home() {
             </ol>
           </section>
 
+          <section aria-labelledby="name-generator">
+            <h2 id="name-generator" className="text-xl font-semibold">
+              Also a secret santa name generator
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              Underneath the gift exchange, this is a secret santa name
+              generator: paste the group, press once, and the pairs are made. You
+              draw names once — one person to buy for, never yourself, and nobody
+              handed out twice. It is a random name picker with the exclusion
+              rules already applied, so the result matches pulling paper slips
+              out of a hat, only faster.
+            </p>
+          </section>
+
           <section aria-labelledby="private-links">
             <h2 id="private-links" className="text-xl font-semibold">
               Draw names without email — use private links
