@@ -262,7 +262,15 @@ export default function Home() {
             <p className="mt-3 text-sm leading-relaxed text-muted">
               Set a budget, exclude couples who live together, and let the
               draw handle the rest. Grandparents don&apos;t need an account —
-              their assignment simply arrives by email.
+              their assignment simply arrives by email. And when the family
+              would rather open and steal presents than draw names, the{" "}
+              <Link
+                href="/white-elephant-generator"
+                className="text-accent underline"
+              >
+                white elephant
+              </Link>{" "}
+              mode is one click away.
             </p>
           </section>
 
@@ -284,12 +292,32 @@ export default function Home() {
               Santa.
             </p>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              There is a second play mode on the same site for the pile game:
-              white elephant, known as yankee swap in New England and dirty Santa
-              in the South. Instead of pairing people up it draws a picking order
-              and runs the turns — open a wrapped present or steal one somebody
-              already opened, with a cap on repeat steals. Look for the white
-              elephant link in the footer when that is the game your group plays.
+              There is a second play mode on the same site for the pile game.
+              Instead of pairing people up it draws a picking order and runs the
+              turns — open a wrapped present or steal one somebody already
+              opened, with a cap on repeat steals. If that is the game your
+              group plays, the{" "}
+              <Link
+                href="/white-elephant-generator"
+                className="text-accent underline"
+              >
+                white elephant generator
+              </Link>{" "}
+              page runs it. The same game is called{" "}
+              <Link
+                href="/yankee-swap-generator"
+                className="text-accent underline"
+              >
+                yankee swap
+              </Link>{" "}
+              in New England and{" "}
+              <Link
+                href="/dirty-santa-generator"
+                className="text-accent underline"
+              >
+                dirty Santa
+              </Link>{" "}
+              in the South, and this site has a dedicated page for each.
             </p>
           </section>
 
