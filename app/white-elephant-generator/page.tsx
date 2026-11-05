@@ -249,6 +249,17 @@ export default function WhiteElephantGenerator() {
                 </dd>
               </div>
             </dl>
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              Want the full picture before you tweak anything? These{" "}
+              <Link
+                href="/white-elephant-rules"
+                className="text-accent underline"
+              >
+                white elephant gift exchange rules
+              </Link>{" "}
+              walk through the game step by step, what each default is for,
+              and what every variation does to the pacing.
+            </p>
           </section>
 
           <section aria-labelledby="for-offices">
