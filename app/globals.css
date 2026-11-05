@@ -5,7 +5,7 @@
   --background: #fdfaf5;
   --surface: #ffffff;
   --foreground: #2a2320;
-  --muted: #7a6f68;
+  --muted: #756a62; /* darkened from #7a6f68: 4.71:1 on #f9f1eb, WCAG AA */
   --accent: #b3402a; /* warm red */
   --accent-strong: #93301f;
   --accent-green: #1f7a4d;
