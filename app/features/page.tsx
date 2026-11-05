@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 import { site } from "@/lib/site";
@@ -69,7 +70,7 @@ const features: Array<{
   id: string;
   title: string;
   tagline: string;
-  body: string;
+  body: ReactNode;
   link?: { href: string; label: string };
 }> = [
   {
@@ -106,7 +107,25 @@ const features: Array<{
     id: "white-elephant",
     title: "White elephant mode — steal instead of swap",
     tagline: "The other half of the holiday game night",
-    body: "Not every group wants one-to-one pairings. Switch to white elephant mode and the same site runs the pile game instead: a random picking order, each turn either opening a wrapped gift or stealing one already opened, a steal cap so a single present cannot be taken forever, and undo on every move. Nobody is assigned a name and nobody shops for a specific person. It goes by yankee swap in New England and dirty Santa further south — same board, all three names, and up to 100 players on one phone.",
+    body: (
+      <>
+        Not every group wants one-to-one pairings. Switch to white elephant mode
+        and the same site runs the pile game instead: a random picking order,
+        each turn either opening a wrapped gift or stealing one already opened,
+        a steal cap so a single present cannot be taken forever, and undo on
+        every move. Nobody is assigned a name and nobody shops for a specific
+        person. It goes by{" "}
+        <Link href="/yankee-swap-generator" className="text-accent underline">
+          yankee swap
+        </Link>{" "}
+        in New England and{" "}
+        <Link href="/dirty-santa-generator" className="text-accent underline">
+          dirty Santa
+        </Link>{" "}
+        further south — same board, all three names, and up to 100 players on
+        one phone.
+      </>
+    ),
     link: { href: "/white-elephant-generator", label: "Open the white elephant generator" },
   },
   {

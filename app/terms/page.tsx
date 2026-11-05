@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: { url: "/terms" },
 };
 
-const UPDATED = "November 4, 2026";
+const UPDATED = "November 5, 2026";
 
 export default function TermsPage() {
   return (
