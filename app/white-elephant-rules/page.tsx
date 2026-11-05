@@ -5,7 +5,7 @@ import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 export const metadata: Metadata = {
   title: {
     absolute:
-      "White Elephant Gift Exchange Rules — How to Play, Steal Caps & Variations",
+      "White Elephant Game Rules — How to Play, Steal Caps & Variations",
   },
   description:
     "White elephant gift exchange rules explained step by step: how stealing works, the three-steal cap, variations, and house rules that keep the game friendly.",
@@ -165,14 +165,14 @@ export default function WhiteElephantRules() {
       <BreadcrumbJsonLd
         items={[
           { name: "Home", path: "/" },
-          { name: "White Elephant Gift Exchange Rules", path: "/white-elephant-rules" },
+          { name: "White Elephant Game Rules", path: "/white-elephant-rules" },
         ]}
       />
 
       <div className="mx-auto max-w-2xl space-y-10 px-4 py-12">
         <section>
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            White Elephant Gift Exchange Rules
+            White Elephant Game Rules
           </h1>
           <p className="mt-3 text-base leading-relaxed text-muted">
             Everything a group needs to play: the white elephant gift exchange
@@ -208,8 +208,9 @@ export default function WhiteElephantRules() {
             The rules most groups actually use
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted">
-            House wording varies, but this default set covers almost every
-            white elephant game rules question that comes up:
+            Every white elephant game runs on the same five defaults — house
+            wording varies from group to group, but this is the set to read
+            out before the first turn:
           </p>
           <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted">
             {defaultRules.map((r) => (
@@ -239,7 +240,14 @@ export default function WhiteElephantRules() {
         {/* Mid-page CTA */}
         <div className="rounded-lg border border-border bg-surface px-6 py-8 text-center">
           <p className="text-sm font-medium">
-            Settled on your rules? Start playing in under a minute.
+            Settled on your rules? The{" "}
+            <Link
+              href="/white-elephant-generator"
+              className="text-accent underline"
+            >
+              white elephant generator
+            </Link>{" "}
+            has the group playing in under a minute.
           </p>
           <Link
             href="/white-elephant-generator"
@@ -304,15 +312,9 @@ export default function WhiteElephantRules() {
             , and local versions there frequently add a rule that once a
             present has changed hands it cannot be stolen again, which makes
             for a much quieter game than the three-steal default. Whatever
-            your region calls it, the{" "}
-            <Link
-              href="/white-elephant-generator"
-              className="text-accent underline"
-            >
-              white elephant generator
-            </Link>{" "}
-            runs the same board for all of them — set the steal cap to match
-            your local etiquette and the rest is identical.
+            your region calls it, the white elephant generator runs the same
+            board for all of them — set the steal cap to match your local
+            etiquette and the rest is identical.
           </p>
         </section>
 
