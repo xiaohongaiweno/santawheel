@@ -43,6 +43,11 @@ export function joinLink(exchangeId: string): string {
   return link({ t: "j", x: exchangeId }, "/j/");
 }
 
+/** Direct answer link for one anonymous question (emailed to the receiver). */
+export function answerLink(exchangeId: string, questionId: string): string {
+  return link({ t: "q", x: exchangeId, q: questionId }, "/q/");
+}
+
 function wrap(bodyHtml: string, removeUrl: string | null, kind?: string): string {
   const removeLine = removeUrl
     ? `<p style="margin:12px 0 0">Don't want to take part? <a href="${removeUrl}" style="color:#b3402a">Remove your data</a>.</p>`
@@ -247,6 +252,90 @@ export function renderReminderEmail(p: {
       "",
       `A quick reminder: you haven't opened your ${label} assignment yet:`,
       ...(details ? ["", details] : []),
+      "",
+      url,
+      "",
+      `${footerSentence(p.kind)}.`,
+      `Don't want to take part? Remove your data: ${removeUrl}`,
+    ].join("\n"),
+  };
+}
+
+export function renderQuestionEmail(p: {
+  name: string;
+  questionText: string;
+  answerToken: string;
+  removeToken: string;
+  kind?: ExchangeKind;
+  title?: string;
+}): RenderedEmail {
+  const url = `${baseUrl()}/q/${p.answerToken}`;
+  const removeUrl = `${baseUrl()}/remove/${p.removeToken}`;
+  const label = kindLabel(p.kind);
+  const subject = `Anonymous question from your ${label}`;
+
+  const body = `
+    <p style="margin:0 0 16px">Hi ${escapeHtml(p.name)},</p>
+    <p style="margin:0 0 16px">Someone in your ${label}${p.title ? ` (${escapeHtml(p.title)})` : ""} — the person who is drawing you — sent you an anonymous question:</p>
+    <p style="margin:0 0 20px;border-left:3px solid #ece4da;padding-left:12px;font-style:italic">&quot;${escapeHtml(p.questionText)}&quot;</p>
+    <p style="margin:0 0 16px">
+      <a href="${url}" style="display:inline-block;background:#b3402a;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:8px">Answer anonymously</a>
+    </p>
+    <p style="margin:0;font-size:13px;color:#7a6f68">Your answer is delivered to them anonymously — they never see who asked or answered.</p>`;
+
+  return {
+    subject,
+    html: wrap(body, removeUrl, p.kind),
+    text: [
+      `Hi ${p.name},`,
+      "",
+      `Someone in your ${label} — the person who is drawing you — sent you an anonymous question:`,
+      "",
+      `"${p.questionText}"`,
+      "",
+      `Answer anonymously: ${url}`,
+      "",
+      "Your answer is delivered to them anonymously.",
+      "",
+      `${footerSentence(p.kind)}.`,
+      `Don't want to take part? Remove your data: ${removeUrl}`,
+    ].join("\n"),
+  };
+}
+
+export function renderAnswerEmail(p: {
+  name: string;
+  questionText: string;
+  answerText: string;
+  assignmentToken: string;
+  removeToken: string;
+  kind?: ExchangeKind;
+}): RenderedEmail {
+  const url = `${baseUrl()}/a/${p.assignmentToken}`;
+  const removeUrl = `${baseUrl()}/remove/${p.removeToken}`;
+  const label = kindLabel(p.kind);
+  const subject = `Your anonymous ${label} question was answered`;
+
+  const body = `
+    <p style="margin:0 0 16px">Hi ${escapeHtml(p.name)},</p>
+    <p style="margin:0 0 12px">Your anonymous question was answered:</p>
+    <p style="margin:0 0 12px;border-left:3px solid #ece4da;padding-left:12px;font-style:italic">&quot;${escapeHtml(p.questionText)}&quot;</p>
+    <p style="margin:0 0 20px;border-left:3px solid #b3402a;padding-left:12px">&quot;${escapeHtml(p.answerText)}&quot;</p>
+    <p style="margin:0 0 16px">
+      <a href="${url}" style="display:inline-block;background:#b3402a;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:8px">Open my assignment</a>
+    </p>
+    <p style="margin:0;font-size:13px;color:#7a6f68">You can keep asking anonymous questions from your assignment page.</p>`;
+
+  return {
+    subject,
+    html: wrap(body, removeUrl, p.kind),
+    text: [
+      `Hi ${p.name},`,
+      "",
+      "Your anonymous question was answered:",
+      "",
+      `Q: ${p.questionText}`,
+      `A: ${p.answerText}`,
       "",
       url,
       "",

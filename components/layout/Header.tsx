@@ -28,10 +28,10 @@ export default function Header() {
 
         <nav aria-label="Primary" className="flex items-center gap-1">
           <Link
-            href="/"
+            href="/features"
             className="rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-border/40"
           >
-            Home
+            Features
           </Link>
           <Link
             href="/"

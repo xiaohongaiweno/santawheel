@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/tokens";
+import { getSupabaseAdmin } from "@/lib/supabase/draw-service";
 import { drawDraftExchange } from "@/lib/supabase/draw-flow";
 import { processDueJobs } from "@/lib/email-queue";
 import { UnsolvableDrawError } from "@/lib/draw/derangement";
@@ -24,6 +25,13 @@ export async function POST(req: NextRequest) {
 
   try {
     const { generation, links } = await drawDraftExchange(payload.x);
+    // A manually executed draw supersedes any schedule the organizer set.
+    await getSupabaseAdmin()
+      .from("exchange")
+      .update({ scheduled_at: null })
+      .eq("id", payload.x)
+      .eq("status", "drawn")
+      .not("scheduled_at", "is", null);
     // Best-effort immediate send, same as creation: whatever exceeds the
     // function budget stays queued for the cron worker.
     let delivery: Awaited<ReturnType<typeof processDueJobs>> | null = null;

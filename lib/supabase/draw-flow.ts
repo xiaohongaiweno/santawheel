@@ -760,11 +760,21 @@ export async function redactParticipant(exchangeId: string, participantId: strin
       email: `removed.${participantId}@invalid`,
       note: null,
       wishlist_url: null,
+      wishlist_text: null,
+      address_text: null,
       removed_at: now,
     })
     .eq("exchange_id", exchangeId)
     .eq("id", participantId);
   if (error) throw new Error(`redactParticipant failed: ${error.message}`);
+
+  // Anonymous Q&A: questions they asked have no asker anymore; questions
+  // addressed to them have nobody to answer. Delete both sides.
+  await db
+    .from("question")
+    .delete()
+    .eq("exchange_id", exchangeId)
+    .or(`question_from.eq.${participantId},receiver_id.eq.${participantId}`);
 
   // Stop any scheduled mail for them; their delivered assignment becomes void.
   await db

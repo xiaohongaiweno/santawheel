@@ -10,7 +10,8 @@ export type TokenPayload =
   | { t: "a"; x: string; p: string; g: number } // assignment: exchange + giver + generation
   | { t: "o"; x: string } // organizer manage link
   | { t: "j"; x: string } // join link: participants add themselves while the draw is collecting
-  | { t: "r"; x: string; p: string }; // remove-my-data link
+  | { t: "r"; x: string; p: string } // remove-my-data link
+  | { t: "q"; x: string; q: string }; // question answer link: exchange + question id
 
 function secret(): string {
   const s =

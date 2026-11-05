@@ -10,6 +10,7 @@ import PayButton from "@/components/delivery/PayButton";
 import ImportPanel from "@/components/delivery/ImportPanel";
 import DrawNowButton from "@/components/delivery/DrawNowButton";
 import ExclusionsEditor from "@/components/delivery/ExclusionsEditor";
+import ScheduleDrawButton from "@/components/delivery/ScheduleDrawButton";
 import CopyButton from "@/components/home/CopyButton";
 import { assignmentUrl, budgetLabel, deadlineLabel, baseUrl } from "@/lib/email-templates";
 import { exchangePolicy } from "@/lib/exchange-visibility";
@@ -185,6 +186,11 @@ export default async function ManagePage({
         <div className="mt-6">
           <DrawNowButton token={token} />
         </div>
+
+        <ScheduleDrawButton
+          token={token}
+          initialScheduledAt={(exchange.scheduled_at as string | null) ?? null}
+        />
 
         <p className="mt-6 text-xs leading-relaxed text-muted">
           Drawing locks the participant list and

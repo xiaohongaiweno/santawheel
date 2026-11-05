@@ -47,6 +47,15 @@ export default function PrivacyPage() {
               participant.
             </li>
             <li>
+              <strong>Optional wishlist text, shipping address and anonymous
+              Q&amp;A</strong> — participants can add these themselves from
+              their assignment page. A wishlist or address is shown only to the
+              one person drawing them; anonymous questions are visible only to
+              the asking pair, with no names attached, and the organizer cannot
+              read any of them. All of it is deleted when the participant
+              removes their data or the draw is reset or erased.
+            </li>
+            <li>
               <strong>Organizer email</strong> — used to send you the organizer
               dashboard link. It is optional in private-link mode, where the
               dashboard link is shown to you once at the end instead.

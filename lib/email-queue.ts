@@ -1,11 +1,18 @@
 import { getSupabaseAdmin } from "@/lib/supabase/draw-service";
 import { sendEmail } from "@/lib/mailer";
-import { renderAssignmentEmail, renderCollectingEmail, renderOrganizerEmail, renderReminderEmail, kindLabel, budgetLabel, deadlineLabel, type ExchangeKind } from "@/lib/email-templates";
+import { renderAssignmentEmail, renderCollectingEmail, renderOrganizerEmail, renderQuestionEmail, renderAnswerEmail, renderReminderEmail, kindLabel, budgetLabel, deadlineLabel, type ExchangeKind } from "@/lib/email-templates";
 import { signToken } from "@/lib/tokens";
+
+export type EmailJobKind =
+  | "assignment"
+  | "organizer_link"
+  | "reminder"
+  | "question"
+  | "answer";
 
 export interface EnqueueInput {
   exchangeId: string;
-  kind: "assignment" | "organizer_link" | "reminder";
+  kind: EmailJobKind;
   giverId?: string | null;
   toEmail: string;
   subject: string;
@@ -38,7 +45,7 @@ export interface QueueResult {
 interface JobRow {
   id: string;
   exchange_id: string;
-  kind: "assignment" | "organizer_link" | "reminder";
+  kind: EmailJobKind;
   giver_id: string | null;
   to_email: string;
   subject: string;
@@ -338,6 +345,26 @@ function render(job: JobRow): { html: string; text: string } {
       kind,
       budget,
       deadline,
+    });
+  }
+  if (job.kind === "question") {
+    return renderQuestionEmail({
+      name: String(job.payload.name ?? "there"),
+      questionText: String(job.payload.question ?? ""),
+      answerToken: String(job.payload.token ?? ""),
+      removeToken: String(job.payload.removeToken ?? ""),
+      kind,
+      title: (job.payload.title as string | undefined) ?? undefined,
+    });
+  }
+  if (job.kind === "answer") {
+    return renderAnswerEmail({
+      name: String(job.payload.name ?? "there"),
+      questionText: String(job.payload.question ?? ""),
+      answerText: String(job.payload.answer ?? ""),
+      assignmentToken: String(job.payload.token ?? ""),
+      removeToken: String(job.payload.removeToken ?? ""),
+      kind,
     });
   }
   if (job.payload.collecting === true) {

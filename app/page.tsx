@@ -54,6 +54,18 @@ const faqs = [
     a: "Yes. Every participant row on the organizer dashboard has a Resend button, and it shows whether the earlier attempt was sent, pending or failed.",
   },
   {
+    q: "Can I ask my Secret Santa person what they want — without revealing myself?",
+    a: "Yes. From your assignment page you can send the person you are drawing an anonymous question — favourite snacks, clothing sizes, anything. They answer through a private link, and the answer comes back to you with no names attached. Even the organizer can't read the messages.",
+  },
+  {
+    q: "Can participants share their shipping address for mailed gifts?",
+    a: "Yes. Everyone can add a mailing address on their own assignment page, and only the person drawing them sees it. Great for remote teams and family in other cities — the gift ships straight to their door.",
+  },
+  {
+    q: "Can the draw happen automatically at a set time?",
+    a: "Yes. While a draw is collecting participants, pick a time like \"Friday 6 pm\" on your dashboard. When it arrives, the names are drawn automatically within about 5 minutes and everyone is emailed their assignment. You can cancel or draw manually any time before then.",
+  },
+  {
     q: "How long do you keep participant details?",
     a: "Until the draw is removed. There is no automatic expiry yet. Every email includes a one-click link that removes that person's name and email immediately, and the organizer can delete the entire draw from the dashboard once the exchange is over.",
   },
@@ -128,6 +140,12 @@ export default function Home() {
           <li>Exclusion rules</li>
           <li aria-hidden="true">·</li>
           <li>Blind mode</li>
+          <li aria-hidden="true">·</li>
+          <li>
+            <Link href="/features" className="underline hover:text-foreground">
+              Anonymous Q&amp;A, wishlists &amp; more
+            </Link>
+          </li>
         </ul>
         <div className="mt-6">
           <DrawForm kind="secret-santa" />
@@ -264,6 +282,38 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          </section>
+
+          <section aria-labelledby="wishlist-qa-address">
+            <h2 id="wishlist-qa-address" className="text-xl font-semibold">
+              Wishlists, anonymous questions &amp; shipping addresses
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              After the draw, every participant gets a private page where they
+              can leave gift ideas, add their shipping address, and{" "}
+              <Link href="/features#anonymous-questions" className="text-accent underline">
+                ask the person they are drawing anonymous questions
+              </Link>{" "}
+              — sizes, snacks, hobbies — with answers coming back without
+              either side learning who the other is. Givers see the wishlist
+              and address right next to the name, so nobody has to guess and
+              nobody has to run a separate spreadsheet.
+            </p>
+          </section>
+
+          <section aria-labelledby="scheduled-draws">
+            <h2 id="scheduled-draws" className="text-xl font-semibold">
+              Scheduled draws — set it and forget it
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              Share a join link, pick a draw time like &quot;Friday 6 pm&quot;
+              on your dashboard, and walk away.{" "}
+              <Link href="/features#scheduled-draws" className="text-accent underline">
+                When the time comes, the names draw themselves
+              </Link>{" "}
+              — respecting every exclusion — and each participant is emailed
+              their assignment. Cancel or draw manually any time before then.
+            </p>
           </section>
 
           <section aria-labelledby="faq">

@@ -22,6 +22,9 @@ export default function Footer() {
           >
             Gift Exchange Generator
           </Link>
+          <Link href="/features" className="text-muted hover:text-foreground">
+            Features
+          </Link>
           <Link href="/privacy" className="text-muted hover:text-foreground">
             Privacy
           </Link>

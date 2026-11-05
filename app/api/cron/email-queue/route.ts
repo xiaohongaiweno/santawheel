@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { processDueJobs, sweepReminders } from "@/lib/email-queue";
+import { sweepScheduledDraws } from "@/lib/supabase/schedule";
 
 /**
- * Email retry worker. Called from two places:
+ * Retry + scheduling worker. Called from two places:
  *  - Vercel Cron once a day (Hobby plan limit; see vercel.json) as a fallback sweep
  *  - An external free cron service (e.g. cron-job.org) every 5 minutes for timely
- *    retries and the premium reminder sweep
- * Processes due jobs: pending jobs whose backoff window has elapsed, plus the
- * reminder sweep for paid exchanges whose reminder time arrived.
+ *    retries, the premium reminder sweep and scheduled draws
+ * Processes due jobs: pending jobs whose backoff window has elapsed, the
+ * reminder sweep for paid exchanges whose reminder time arrived, and any
+ * collect-first draws whose scheduled time has passed.
  * Protect with CRON_SECRET ("Authorization: Bearer <CRON_SECRET>").
  */
 async function handle(req: NextRequest) {
@@ -24,7 +26,10 @@ async function handle(req: NextRequest) {
     const reminders = await sweepReminders().catch((e) => ({
       error: e instanceof Error ? e.message : "reminder sweep failed",
     }));
-    return NextResponse.json({ ok: true, ...result, reminders });
+    const scheduledDraws = await sweepScheduledDraws().catch((e) => ({
+      error: e instanceof Error ? e.message : "scheduled draw sweep failed",
+    }));
+    return NextResponse.json({ ok: true, ...result, reminders, scheduledDraws });
   } catch (e) {
     return NextResponse.json(
       { error: e instanceof Error ? e.message : "Queue processing failed" },

@@ -4,6 +4,9 @@ import RemoveMeButton from "@/components/delivery/RemoveMeButton";
 import Watermark from "@/components/delivery/Watermark";
 import RevealCard from "@/components/delivery/RevealCard";
 import WishlistEditor from "@/components/delivery/WishlistEditor";
+import AddressEditor from "@/components/delivery/AddressEditor";
+import AskQuestionForm from "@/components/delivery/AskQuestionForm";
+import AnswerQuestions from "@/components/delivery/AnswerQuestions";
 import { signToken } from "@/lib/tokens";
 import { kindLabel, budgetLabel, deadlineLabel } from "@/lib/email-templates";
 
@@ -75,12 +78,12 @@ export default async function AssignmentPage({
   const [{ data: receiver }, { data: giver }] = await Promise.all([
     db
       .from("participant")
-      .select("name, wishlist_url, wishlist_text, removed_at")
+      .select("name, wishlist_url, wishlist_text, address_text, removed_at")
       .eq("id", pair.receiver_id)
       .single(),
     db
       .from("participant")
-      .select("name, wishlist_text, removed_at")
+      .select("name, wishlist_text, address_text, removed_at")
       .eq("id", payload.p)
       .single(),
   ]);
@@ -103,6 +106,34 @@ export default async function AssignmentPage({
     .split("\n")
     .map((l) => l.trim())
     .filter(Boolean);
+
+  // Anonymous Q&A: questions this gifter asked (with any answers) and
+  // questions waiting for them as a receiver. Never loaded for removed
+  // participants, and names are never attached in either direction.
+  const [askedResult, inboxResult] = await Promise.all([
+    db
+      .from("question")
+      .select("id, question_text, answer_text, created_at")
+      .eq("exchange_id", payload.x)
+      .eq("question_from", payload.p)
+      .order("created_at"),
+    db
+      .from("question")
+      .select("id, question_text")
+      .eq("exchange_id", payload.x)
+      .eq("receiver_id", payload.p)
+      .is("answer_text", null)
+      .order("created_at"),
+  ]);
+  const asked = (askedResult.data ?? []) as Array<{
+    id: string;
+    question_text: string;
+    answer_text: string | null;
+  }>;
+  const inbox = (inboxResult.data ?? []) as Array<{
+    id: string;
+    question_text: string;
+  }>;
 
   // Track first open (drives premium reminder emails). Idempotent.
   // PostgREST needs `is.null` for NULL comparison — `eq(col, null)` produces
@@ -158,6 +189,16 @@ export default async function AssignmentPage({
               </ul>
             </div>
           )}
+          {receiver?.address_text && !receiverRemoved && (
+            <div className="mt-4 border-t border-border pt-4 text-left">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Their shipping address
+              </p>
+              <p className="mt-1.5 whitespace-pre-line text-sm leading-relaxed">
+                {String(receiver.address_text)}
+              </p>
+            </div>
+          )}
           {receiver?.wishlist_url && !receiverRemoved && (
             <a
               href={receiver.wishlist_url}
@@ -176,6 +217,50 @@ export default async function AssignmentPage({
           token={token}
           initialText={String(giver?.wishlist_text ?? "")}
         />
+      )}
+
+      {!giver?.removed_at && (
+        <AddressEditor
+          token={token}
+          initialText={String(giver?.address_text ?? "")}
+        />
+      )}
+
+      {!giver?.removed_at && !receiverRemoved && (
+        <AskQuestionForm token={token} />
+      )}
+
+      {asked.length > 0 && (
+        <div className="mt-4 rounded-lg border border-border bg-surface p-4">
+          <p className="text-sm font-semibold">
+            Your question{asked.length === 1 ? "" : "s"}
+          </p>
+          <div className="mt-3 space-y-3">
+            {asked.map((q) => (
+              <div
+                key={q.id}
+                className="rounded-lg border border-border bg-background p-3"
+              >
+                <p className="text-sm italic leading-relaxed">
+                  &ldquo;{q.question_text}&rdquo;
+                </p>
+                {q.answer_text ? (
+                  <p className="mt-2 border-l-2 border-accent pl-3 text-sm leading-relaxed">
+                    {q.answer_text}
+                  </p>
+                ) : (
+                  <p className="mt-2 text-xs text-muted">
+                    Waiting for an answer — you&apos;ll get an email when they reply.
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!giver?.removed_at && (
+        <AnswerQuestions token={token} questions={inbox} />
       )}
 
       <p className="mt-6 text-xs leading-relaxed text-muted">
