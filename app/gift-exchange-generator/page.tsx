@@ -222,6 +222,29 @@ export default function GiftExchangeGenerator() {
             </div>
           </section>
 
+          <section aria-labelledby="pile-game">
+            <h2 id="pile-game" className="text-xl font-semibold">
+              Playing the pile game instead?
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              If nobody gets a secret name and every gift sits in one pile, you
+              want the stealing game rather than a pairing —{" "}
+              <Link href="/white-elephant-generator" className="text-accent underline">
+                white elephant
+              </Link>
+              , called{" "}
+              <Link href="/yankee-swap-generator" className="text-accent underline">
+                yankee swap
+              </Link>{" "}
+              in New England and{" "}
+              <Link href="/dirty-santa-generator" className="text-accent underline">
+                dirty Santa
+              </Link>{" "}
+              in the South. Same site, one play mode, a random turn order and a
+              steal limit you set yourself.
+            </p>
+          </section>
+
           <section aria-labelledby="secret-santa">
             <h2 id="secret-santa" className="text-xl font-semibold">
               Running a Secret Santa instead?

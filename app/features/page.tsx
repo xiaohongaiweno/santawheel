@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: { absolute: "Features – Anonymous Q&A, Wishlists, Address Collection & More" },
   description:
-    "Everything SantaWheel does: anonymous questions, wishlist sharing, shipping address collection, scheduled draws, join links, exclusion rules, blind mode, private links and email delivery — free, no sign-up.",
+    "Anonymous Q&A, wishlists, address collection, scheduled draws, join links, exclusions, blind mode and white elephant mode — free, no sign-up, no app.",
   alternates: {
     canonical: "/features",
   },
@@ -35,6 +35,10 @@ const faqs = [
   {
     q: "Do participants need an account?",
     a: "No. Participants open a private link from their email or messaging app and see their assignment instantly. There is nothing to install and nothing to sign up for — for organizers either.",
+  },
+  {
+    q: "Does SantaWheel also run white elephant or dirty Santa games?",
+    a: "Yes. White elephant — called yankee swap in New England and dirty Santa in the South — is a second play mode on the same site. Instead of pairing people up, it hands the group a random picking order and runs the pile game: each turn is either opening a wrapped gift or stealing one that has already been opened, with a steal limit of your choosing.",
   },
   {
     q: "Is all of this free?",
@@ -66,6 +70,7 @@ const features: Array<{
   title: string;
   tagline: string;
   body: string;
+  link?: { href: string; label: string };
 }> = [
   {
     id: "anonymous-questions",
@@ -96,6 +101,13 @@ const features: Array<{
     title: "Join links — participants add themselves",
     tagline: "Stop chasing people for their email addresses",
     body: "Instead of pasting a roster, create a collecting draw and share one join link in your group chat. Everyone adds their own name, you watch the list fill up on your dashboard, set exclusions, and draw when the whole group is in — or let a scheduled draw handle it.",
+  },
+  {
+    id: "white-elephant",
+    title: "White elephant mode — steal instead of swap",
+    tagline: "The other half of the holiday game night",
+    body: "Not every group wants one-to-one pairings. Switch to white elephant mode and the same site runs the pile game instead: a random picking order, each turn either opening a wrapped gift or stealing one already opened, a steal cap so a single present cannot be taken forever, and undo on every move. Nobody is assigned a name and nobody shops for a specific person. It goes by yankee swap in New England and dirty Santa further south — same board, all three names, and up to 100 players on one phone.",
+    link: { href: "/white-elephant-generator", label: "Open the white elephant generator" },
   },
   {
     id: "exclusions",
@@ -159,7 +171,9 @@ export default function FeaturesPage() {
         <p className="mt-3 text-base text-muted">
           SantaWheel draws names like every Secret Santa generator — then keeps
           going: anonymous questions, wishlist sharing, shipping addresses,
-          scheduled draws and join links. Free, no sign-up, up to 100 people.
+          scheduled draws and join links. It also runs white elephant, yankee
+          swap and dirty Santa games in the same place. Free, no sign-up, up to
+          100 people.
         </p>
         <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-xs font-medium text-muted">
           <li>Anonymous Q&amp;A</li>
@@ -171,6 +185,8 @@ export default function FeaturesPage() {
           <li>Wishlists</li>
           <li aria-hidden="true">·</li>
           <li>Join links</li>
+          <li aria-hidden="true">·</li>
+          <li>White elephant mode</li>
         </ul>
         <div className="mt-6">
           <Link
@@ -191,6 +207,13 @@ export default function FeaturesPage() {
               </h2>
               <p className="mt-1 text-sm font-medium text-accent">{f.tagline}</p>
               <p className="mt-2 text-sm leading-relaxed text-muted">{f.body}</p>
+              {f.link && (
+                <p className="mt-2 text-sm">
+                  <Link href={f.link.href} className="text-accent underline">
+                    {f.link.label}
+                  </Link>
+                </p>
+              )}
             </section>
           ))}
 

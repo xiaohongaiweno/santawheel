@@ -28,6 +28,18 @@ export default function Footer() {
           >
             White Elephant Generator
           </Link>
+          <Link
+            href="/yankee-swap-generator"
+            className="text-muted hover:text-foreground"
+          >
+            Yankee Swap Generator
+          </Link>
+          <Link
+            href="/dirty-santa-generator"
+            className="text-muted hover:text-foreground"
+          >
+            Dirty Santa Generator
+          </Link>
           <Link href="/features" className="text-muted hover:text-foreground">
             Features
           </Link>

@@ -191,6 +191,27 @@ export default function WhiteElephantGenerator() {
             </p>
           </section>
 
+          <section aria-labelledby="other-names">
+            <h2 id="other-names" className="text-xl font-semibold">
+              Yankee swap and Dirty Santa are the same game
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              The name changes with the zip code, the rules do not. New England
+              calls it a yankee swap, the South and Midwest usually call it dirty
+              Santa, and both mean this: one wrapped pile, a fixed turn order, and
+              stealing instead of pairing people up. Use the page that matches
+              your invitation —{" "}
+              <Link href="/yankee-swap-generator" className="text-accent underline">
+                yankee swap generator
+              </Link>{" "}
+              or{" "}
+              <Link href="/dirty-santa-generator" className="text-accent underline">
+                dirty Santa generator
+              </Link>{" "}
+              — and you get this same board with the local etiquette spelled out.
+            </p>
+          </section>
+
           <section aria-labelledby="custom-rules">
             <h2 id="custom-rules" className="text-xl font-semibold">
               Rules you can customize

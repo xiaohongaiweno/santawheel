@@ -144,6 +144,8 @@ export default function Home() {
           <li aria-hidden="true">·</li>
           <li>Blind mode</li>
           <li aria-hidden="true">·</li>
+          <li>White elephant mode</li>
+          <li aria-hidden="true">·</li>
           <li>
             <Link href="/features" className="underline hover:text-foreground">
               Anonymous Q&amp;A, wishlists &amp; more
@@ -268,6 +270,14 @@ export default function Home() {
               </Link>{" "}
               page: same engine, wording that fits a swap rather than a Secret
               Santa.
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              There is a second play mode on the same site for the pile game:
+              white elephant, known as yankee swap in New England and dirty Santa
+              in the South. Instead of pairing people up it draws a picking order
+              and runs the turns — open a wrapped present or steal one somebody
+              already opened, with a cap on repeat steals. Look for the white
+              elephant link in the footer when that is the game your group plays.
             </p>
           </section>
 
