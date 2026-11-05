@@ -33,6 +33,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: `${site.url}/yankee-swap-rules`,
+      lastModified: "2026-11-05",
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${site.url}/dirty-santa-rules`,
+      lastModified: "2026-11-05",
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
       url: `${site.url}/white-elephant-generator`,
       lastModified: "2026-11-05",
       changeFrequency: "weekly",

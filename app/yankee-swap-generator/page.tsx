@@ -254,6 +254,17 @@ export default function YankeeSwapGenerator() {
                 </dd>
               </div>
             </dl>
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              Want the full New England version before you set anything? The{" "}
+              <Link
+                href="/yankee-swap-rules"
+                className="text-accent underline"
+              >
+                yankee swap rules
+              </Link>{" "}
+              cover the number draw, the final swap that closes the game, and
+              the etiquette points your table will vote on.
+            </p>
           </section>
 
           <section aria-labelledby="for-offices">

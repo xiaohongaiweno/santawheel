@@ -333,6 +333,34 @@ export default function WhiteElephantRules() {
             ))}
           </div>
         </section>
+
+        <section aria-labelledby="regional">
+          <h2 id="regional" className="text-xl font-semibold">
+            Regional variations
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-muted">
+            The same game travels with two regional accents. The Southern and
+            Midwestern version freezes a present the first time it changes
+            hands — the full{" "}
+            <Link
+              href="/dirty-santa-rules"
+              className="text-accent underline"
+            >
+              dirty santa rules
+            </Link>{" "}
+            cover that freeze rule and the calmer game it produces. New England
+            draws numbered slips and gives number one a final swap at the very
+            end — the{" "}
+            <Link
+              href="/yankee-swap-rules"
+              className="text-accent underline"
+            >
+              yankee swap rules
+            </Link>{" "}
+            walk through the number draw and that closing move. Pick the page
+            that matches the name on your invitation.
+          </p>
+        </section>
       </div>
     </>
   );

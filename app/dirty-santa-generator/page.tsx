@@ -224,6 +224,17 @@ export default function DirtySantaGenerator() {
                 </dd>
               </div>
             </dl>
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              Every family plays one detail differently. The full{" "}
+              <Link
+                href="/dirty-santa-rules"
+                className="text-accent underline"
+              >
+                dirty santa rules
+              </Link>{" "}
+              walk through the Southern defaults, the freeze rule, and the
+              variations worth voting on before the first turn.
+            </p>
           </section>
 
           <section aria-labelledby="vs-white-elephant">
