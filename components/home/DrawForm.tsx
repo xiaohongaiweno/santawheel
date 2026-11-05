@@ -274,10 +274,10 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
             </div>
             <p className="mt-2 break-all text-xs text-muted">{manageUrl}</p>
             <p className="mt-3 border-t border-border pt-3 text-xs leading-relaxed text-muted">
-              Optional premium ($4.99 once, per draw): remove the “Made with
-              SantaWheel” watermark, import from Excel/CSV, automatic reminders
-              for anyone who hasn’t opened their assignment, and no-repeat draws
-              across years.{" "}
+              Optional premium ($4.99 once, per draw): import participants from
+              Excel/CSV, send automatic reminders to anyone who hasn&apos;t
+              opened their assignment, and draw with no-repeat memory across
+              years.{" "}
               <a href={manageUrl} className="font-medium text-accent hover:underline">
                 Unlock it on your dashboard
               </a>
@@ -642,6 +642,9 @@ export default function DrawForm({ kind }: { kind: DrawKind }) {
       >
         Continue
       </button>
+      <p className="mt-2 text-xs text-muted">
+        Free to draw and send · optional $4.99 organizer upgrades
+      </p>
 
       {error && (
         <p role="alert" className="mt-3 text-left text-sm text-accent">

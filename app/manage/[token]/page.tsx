@@ -267,8 +267,7 @@ export default async function ManagePage({
               Premium
             </span>
             <span className="text-xs text-muted">
-              Paid {String(exchange.payment_mode ?? "")} · watermark removed ·
-              no-repeat draws on
+              Paid {String(exchange.payment_mode ?? "")} · no-repeat draws on
               {exchange.reminder_at && !exchange.reminder_sent
                 ? ` · reminder scheduled for ${new Date(String(exchange.reminder_at)).toLocaleDateString("en-US")}`
                 : exchange.reminder_sent
@@ -294,7 +293,6 @@ export default async function ManagePage({
             )}
           </div>
           <ul className="mt-3 space-y-1.5 text-sm text-muted">
-            <li>· Remove the &quot;Made with SantaWheel&quot; watermark from everyone&apos;s result page</li>
             <li>· Import participants in bulk from Excel / CSV</li>
             <li>· Automatic reminder for anyone who hasn&apos;t opened their assignment (3 days after the draw)</li>
             <li>· No-repeat draws — pairs from your previous exchanges won&apos;t repeat</li>

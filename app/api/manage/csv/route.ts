@@ -58,6 +58,10 @@ export async function GET(req: NextRequest) {
     ]);
   }
 
+  // Attribution stays on organizer-side exports only — participant assignment
+  // pages, emails and screenshots are always watermark-free.
+  rows.push([], ["Made with SantaWheel", "https://santawheel.com"]);
+
   const csv = rows
     .map((r) => r.map((cell) => `"${(cell ?? "").replaceAll('"', '""')}"`).join(","))
     .join("\r\n");

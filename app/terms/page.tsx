@@ -34,8 +34,8 @@ export default function TermsPage() {
           <p className="mt-2 text-muted">
             Creating a draw, drawing names, exclusion rules, email delivery and
             private links are free. A draw supports up to 100 participants.
-            Optional paid extras — removing the SantaWheel watermark, bulk CSV
-            import, automatic reminders and no-repeat draws across years — cost
+            Optional paid extras — bulk CSV import, automatic reminders and
+            no-repeat draws across years — cost
             $4.99 per draw as a one-time payment, charged through our payment
             provider. It is not a subscription, and nothing renews.
           </p>

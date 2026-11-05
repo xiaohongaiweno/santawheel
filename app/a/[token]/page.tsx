@@ -1,7 +1,6 @@
 import { verifyToken } from "@/lib/tokens";
 import { getSupabaseAdmin } from "@/lib/supabase/draw-service";
 import RemoveMeButton from "@/components/delivery/RemoveMeButton";
-import Watermark from "@/components/delivery/Watermark";
 import RevealCard from "@/components/delivery/RevealCard";
 import WishlistEditor from "@/components/delivery/WishlistEditor";
 import AddressEditor from "@/components/delivery/AddressEditor";
@@ -44,7 +43,7 @@ export default async function AssignmentPage({
   const db = getSupabaseAdmin();
   const { data: exchange } = await db
     .from("exchange")
-    .select("title, status, draw_generation, paid, kind, budget_amount, deadline")
+    .select("title, status, draw_generation, kind, budget_amount, deadline")
     .eq("id", payload.x)
     .maybeSingle();
 
@@ -279,8 +278,6 @@ export default async function AssignmentPage({
           />
         </div>
       </div>
-
-      <Watermark visible={!exchange.paid} />
     </section>
   );
 }

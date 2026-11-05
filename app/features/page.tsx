@@ -42,7 +42,7 @@ const faqs = [
   },
   {
     q: "Is all of this free?",
-    a: "Yes. Draws, join links, exclusions, wishlists, anonymous questions, address collection and scheduled draws are all free. An optional $4.99 one-time upgrade per draw removes the watermark and adds CSV import, automatic reminders and no-repeat draws across years.",
+    a: "Yes. Draws, join links, exclusions, wishlists, anonymous questions, address collection and scheduled draws are all free. An optional $4.99 one-time upgrade per draw adds CSV import, automatic reminders for anyone who hasn't opened their assignment, and no-repeat draws across years.",
   },
 ];
 
@@ -149,7 +149,7 @@ const features: Array<{
     id: "premium",
     title: "Premium — one-time, not a subscription",
     tagline: "$4.99 once, and this draw is premium forever",
-    body: "Import participants in bulk from Excel or CSV, send automatic reminders to anyone who hasn't opened their assignment, and draw with no-repeat memory so pairs from your previous exchanges don't come back. Watermark removed for everyone. Pay once via checkout — no account, no recurring charge.",
+    body: "Import participants in bulk from Excel or CSV, send automatic reminders to anyone who hasn't opened their assignment, and draw with no-repeat memory so pairs from your previous exchanges don't come back. Pay once via checkout — no account, no recurring charge.",
   },
 ];
 

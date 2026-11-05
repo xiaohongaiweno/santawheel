@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 const faqs = [
   {
     q: "Is SantaWheel free?",
-    a: "Yes. Drawing names, exclusion rules and email delivery are free, with no account and no credit card. An optional $4.99 upgrade per draw removes the watermark, adds Excel/CSV import, automatic reminders and no-repeat draws across years.",
+    a: "Yes. Drawing names, exclusion rules and email delivery are free, with no account and no credit card. An optional $4.99 upgrade per draw adds Excel/CSV import, automatic reminders for anyone who hasn't opened their assignment, and no-repeat draws across years.",
   },
   {
     q: "Do I need to create an account?",
@@ -132,7 +132,7 @@ export default function Home() {
           account, no app, no chasing people.
         </p>
         <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-xs font-medium text-muted">
-          <li>Free forever</li>
+          <li>Free to draw and send</li>
           <li aria-hidden="true">·</li>
           <li>No sign-up</li>
           <li aria-hidden="true">·</li>
