@@ -123,7 +123,11 @@ const features: Array<{
           dirty Santa
         </Link>{" "}
         further south — same board, all three names, and up to 100 players on
-        one phone.
+        one phone. Before you agree on house rules, the full{" "}
+        <Link href="/white-elephant-rules" className="text-accent underline">
+          white elephant rules
+        </Link>{" "}
+        are worth five minutes.
       </>
     ),
     link: { href: "/white-elephant-generator", label: "Open the white elephant generator" },

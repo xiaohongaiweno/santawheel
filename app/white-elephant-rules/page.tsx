@@ -240,14 +240,8 @@ export default function WhiteElephantRules() {
         {/* Mid-page CTA */}
         <div className="rounded-lg border border-border bg-surface px-6 py-8 text-center">
           <p className="text-sm font-medium">
-            Settled on your rules? The{" "}
-            <Link
-              href="/white-elephant-generator"
-              className="text-accent underline"
-            >
-              white elephant generator
-            </Link>{" "}
-            has the group playing in under a minute.
+            Settled on your rules? The white elephant generator has the group
+            playing in under a minute.
           </p>
           <Link
             href="/white-elephant-generator"

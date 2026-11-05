@@ -18,7 +18,14 @@ export const metadata: Metadata = {
 
 // ---------- structured data ----------
 
-const faqs = [
+const faqs: Array<{
+  q: string;
+  a: string;
+  /** Optional inline link rendered inside the visible answer. The JSON-LD
+   * answer text stays the plain `a` string, which contains the anchor text
+   * verbatim, so visible text and structured data always match. */
+  link?: { href: string; anchor: string };
+}> = [
   {
     q: "Is SantaWheel free?",
     a: "Yes. Drawing names, exclusion rules and email delivery are free, with no account and no credit card. An optional $4.99 upgrade per draw adds Excel/CSV import, automatic reminders for anyone who hasn't opened their assignment, and no-repeat draws across years.",
@@ -75,6 +82,11 @@ const faqs = [
     q: "How many people can take part?",
     a: "Up to 100 participants per draw, with any number of exclusions. Large lists are drawn in under a second.",
   },
+  {
+    q: "What are the white elephant rules?",
+    a: "In white elephant, play moves in a fixed order: the first player can only unwrap a gift, and every later turn is either unwrapping a new present from the pile or stealing one somebody has already opened. A gift is locked once it has been stolen three times, the player whose gift was stolen immediately unwraps a replacement from the pile, and you cannot steal back a gift that was just taken from you. The full white elephant game rules are written up step by step on the rules page.",
+    link: { href: "/white-elephant-rules", anchor: "white elephant game rules" },
+  },
 ];
 
 const faqJsonLd = {
@@ -112,6 +124,29 @@ function JsonLd({ data }: { data: object }) {
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
+  );
+}
+
+/** Renders an FAQ answer, swapping the anchor text for a link when present.
+ * The surrounding words come from the same `a` string that feeds the JSON-LD,
+ * so the visible text stays verbatim identical to the structured data. */
+function FaqAnswer({
+  a,
+  link,
+}: {
+  a: string;
+  link?: { href: string; anchor: string };
+}) {
+  const i = link ? a.indexOf(link.anchor) : -1;
+  if (!link || i < 0) return <>{a}</>;
+  return (
+    <>
+      {a.slice(0, i)}
+      <Link href={link.href} className="text-accent underline">
+        {link.anchor}
+      </Link>
+      {a.slice(i + link.anchor.length)}
+    </>
   );
 }
 
@@ -389,7 +424,7 @@ export default function Home() {
                     {f.q}
                   </summary>
                   <p className="mt-2 text-sm leading-relaxed text-muted">
-                    {f.a}
+                    <FaqAnswer a={f.a} link={f.link} />
                   </p>
                 </details>
               ))}
