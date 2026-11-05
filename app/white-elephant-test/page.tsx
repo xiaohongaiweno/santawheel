@@ -9,6 +9,8 @@ import TestGameForm from "@/components/we/TestGameForm";
 export const metadata: Metadata = {
   title: "White elephant test harness",
   robots: { index: false, follow: false, nocache: true },
+  alternates: { canonical: "/white-elephant-test" },
+  openGraph: { url: "/white-elephant-test" },
 };
 
 const rules = [

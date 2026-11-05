@@ -17,7 +17,7 @@ export default function BreadcrumbJsonLd({ items }: { items: Crumb[] }) {
       "@type": "ListItem",
       position: i + 1,
       name: c.name,
-      item: `${site.url}${c.path === "/" ? "/" : c.path}`,
+      item: c.path === "/" ? site.url : `${site.url}${c.path}`,
     })),
   };
   return (

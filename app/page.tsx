@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import DrawForm from "@/components/home/DrawForm";
 import CopyButton from "@/components/home/CopyButton";
-import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -121,7 +120,6 @@ export default function Home() {
     <>
       <JsonLd data={appJsonLd} />
       <JsonLd data={faqJsonLd} />
-      <BreadcrumbJsonLd items={[{ name: "Home", path: "/" }]} />
 
       {/* Above the fold: subtitle + form. LCP element is the textarea. */}
       <section className="mx-auto w-full max-w-2xl px-4 pb-10 pt-8 sm:pt-12">

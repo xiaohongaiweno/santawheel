@@ -6,7 +6,7 @@ import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 export const metadata: Metadata = {
   title: { absolute: "Gift Exchange Generator – Free Random Pairing" },
   description:
-    "Draw random gift exchange pairs for an office swap, a family draw or a friends' exchange. Free, no sign-up, names only if you prefer — with exclusion rules and private links.",
+    "Draw random gift exchange pairs for an office swap, a family draw or a friends' exchange. Free, no sign-up, with exclusion rules and private links.",
   alternates: {
     canonical: "/gift-exchange-generator",
   },
