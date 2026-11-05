@@ -568,7 +568,11 @@ export async function createWhiteElephantGame(input: CreateWeInput): Promise<Cre
     })
     .select("id")
     .single();
-  if (exErr) throw new Error(`createWhiteElephantGame exchange failed: ${exErr.message}`);
+  if (exErr) {
+    // Deploy-order safety: the column arrives with the white elephant migration.
+    if (exErr.code === "PGRST204" || /play_mode/i.test(exErr.message)) throw migrateError();
+    throw new Error(`createWhiteElephantGame exchange failed: ${exErr.message}`);
+  }
   const exchangeId = (exchange as { id: string }).id;
 
   try {
