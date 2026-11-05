@@ -310,3 +310,80 @@ TC-603（需真实浏览器 reduced-motion）、TC-1212（浏览器时区行为�
 ## 数据清理
 
 所有测试 exchange（T-E1~E8、T-probe、T-limit、T-F1~F3）已全部 purge，生产库仅剩 3 个真实用户活动（Live check、Our Secret Santa ×2）。
+
+
+---
+
+# 附：White elephant 玩法（2026-11-05 线上验证）
+
+新玩法的用例集与执行结果。规则引擎为纯函数（`lib/white-elephant.ts`），13 条 vitest 覆盖；
+线上用 `/api/we/test` 建一次性活动，逐条走规则后 purge。
+
+## 规则用例（线上生产环境）
+
+| # | 用例 | 期望 | 结果 |
+|---|---|---|---|
+| WE-01 | 创建 3 人 3 礼物 | 200 + boardPath | PASS |
+| WE-02 | 大厅加载 | phase=lobby | PASS |
+| WE-03 | 3 人 3 个未拆礼物 | players=3 pool=3 | PASS |
+| WE-04 | 随机顺序覆盖全部人 | 去重后 3 人 | PASS |
+| WE-05 | 顺序不完整时禁止开始 | 409 | PASS |
+| WE-06 | 组织者调整顺序 | 200 + 首位移到 Ada | PASS |
+| WE-07 | 开始游戏 | phase=playing | PASS |
+| WE-08 | 首位玩家轮到 | pendingActor=Ada | PASS |
+| WE-09 | **规则 5**：首位玩家不能偷 | 409 `first_player_must_pick` | PASS |
+| WE-10 | Ada 开 Blue box | 到手 Blue box | PASS |
+| WE-11 | 轮到 Ben | pendingActor=Ben | PASS |
+| WE-12 | Ben 从 Ada 手里偷 Blue box | 200，转手成功 | PASS |
+| WE-13 | 被偷者被强制重新开箱 | pendingActor=Ada, mode=pick_only | PASS |
+| WE-14 | **规则 3**：被偷者不能偷回来 | 409 | PASS |
+| WE-15 | Ada 重新开 Red box | 到手 Red box | PASS |
+| WE-16 | 轮到 Cleo | pendingActor=Cleo | PASS |
+| WE-17 | Cleo 开最后一个礼物 | 200 | PASS |
+| WE-18 | **规则 6**：轮次用完即结束 | phase=done | PASS |
+| WE-19 | 最终归属 Ada=Red / Ben=Blue / Cleo=Green | 一致 | PASS |
+| WE-20 | 结束后任何 pick/steal 都被拒 | 409 `finished` | PASS |
+| WE-21 | 撤销一步 | 回到 Cleo 的回合 | PASS |
+| WE-22 | 撤销后礼物回到池里 | pool=1 | PASS |
+| WE-23 | 再撤销回退到「强制重开」状态 | Ada / pick_only | PASS |
+| WE-24 | 被撤销的操作可重做 | 200，轮到 Cleo | PASS |
+| WE-25 | **刷新恢复进度**：重新 GET 状态与内存一致 | 玩家/轮到者全一致 | PASS |
+| WE-26 | 抽签台服务端渲染 | 200 且含页面标题 | PASS |
+| WE-27 | 抽签台 noindex | 含 noindex | PASS |
+| WE-28 | **规则 4**：偷到上限后礼物锁定 | locked=true | PASS |
+| WE-29 | 锁定的礼物不能再被偷 | 409 | PASS |
+| WE-30 | **1 人边界**：可创建 / 可开始 / 一开即结束 | 200 / playing / done | PASS |
+| WE-31 | 垃圾 token 被拒 | 403 | PASS |
+| WE-32 | 空 token 被拒 | 403 | PASS |
+| WE-33 | **secret santa 回归**：创建链路不受影响 | 201 | PASS |
+| WE-34 | 测试数据全部清理 | 无残留 | PASS |
+
+## 结果邮件（规则 9）
+
+| # | 用例 | 期望 | 结果 |
+|---|---|---|---|
+| WE-35 | 未结束时请求发信 | 409 `not_done` | PASS |
+| WE-36 | 结束后发信 | queued=3，每封信 subject/payload 与手持礼物一致 | PASS |
+| WE-37 | 双击「Send result emails」 | 第二次 queued=0，不重复发 | PASS |
+
+> 注：用例用 `@example.com` 收件人，Resend 生产环境必然 422 拒收（已知行为），
+> job 停留在 pending 等重试——因此 `delivery.sent=0`。这条现象也暴露了一个 UX bug：
+> 抽签台当时会显示「Results sent. 0 emails delivered.」。已修复为区分
+> 已送达 / 排队重试 / 被拒收 三种状态（commit `d864b5d`）。
+
+## 并发安全
+
+| # | 用例 | 期望 | 结果 |
+|---|---|---|---|
+| WE-38 | 两人同时开箱（不同礼物） | 一个 200、一个 409 `conflict` | PASS |
+| WE-39 | 只落一步（`(game_id, seq)` 唯一键生效） | 池里只少 1 个礼物 | PASS |
+
+并发失败方的提示为「Someone else moved first — reload the board.」，不是 500，也不是脏写。
+
+## 已知边界
+
+- 实时为 **2 秒轮询**（页面可见时），配置 `NEXT_PUBLIC_SUPABASE_URL` +
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY` 后自动切到 realtime 通道（`we_game` 已在发布里）。
+- 结束后的 `finished` 标记是幂等闸门：先抢占再入队，双击不会重复发信。
+- `undo` 允许撤销到大厅阶段之前？不会——撤销仅删最后一步事件，`start` 不在事件日志里，
+  因此大厅阶段没有可撤销内容。

@@ -32,7 +32,7 @@ const faqs = [
   },
   {
     q: "Is this a white elephant or yankee swap game?",
-    a: "No. Those games are played in a picking order with stealing, and we do not run that format yet. What this does is the draw behind a “buy for one person” exchange, which is what most office swaps and family exchanges actually use.",
+    a: "SantaWheel runs both formats. The draw above is the one-to-one exchange: everyone is paired and buys for one person. White Elephant — also called yankee swap or dirty Santa — is a second play mode on the same infrastructure. Everyone gets a fixed random turn order; on your turn you either open a wrapped gift from the pool or steal one that has already been opened. Whoever you steal from opens a new gift immediately (stealing it back is not allowed), a gift locks once it has been stolen a set number of times, the organizer can undo a misclick, and a single shared board page runs the whole game on one phone while everyone watches. The play-mode picker is still rolling out here — to run a white elephant game now, email hello@santawheel.com and we will set it up.",
   },
   {
     q: "How many people can join a gift exchange?",
