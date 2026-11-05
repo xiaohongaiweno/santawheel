@@ -17,7 +17,7 @@ export default function Footer() {
             Secret Santa Generator
           </Link>
           <Link
-            href="/gift-exchange-generator/"
+            href="/gift-exchange-generator"
             className="text-muted hover:text-foreground"
           >
             Gift Exchange Generator

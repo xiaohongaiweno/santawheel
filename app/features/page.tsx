@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/features",
   },
+  openGraph: {
+    url: "/features",
+  },
 };
 
 const faqs = [

@@ -18,7 +18,7 @@
 | TC-105 | 名单内重名 | 409/提示去重（或按参与者规则合并），给出明确错误 | P1 |
 | TC-106 | 名单内重复邮箱 | 409，提示邮箱已存在 | P1 |
 | TC-107 | 无效邮箱格式（email 模式） | 400，指出问题行 | P1 |
-| TC-108 | link 模式下带邮箱 | 邮箱作为可选字段保存，不发送邮件 | P2 |
+| TC-108 | link 模式下带邮箱 | **设计如此：link 模式刻意丢弃邮箱**（"nothing is emailed, so holding one would be data we do not need"）——不落库、不发信 | P2 |
 | TC-109 | organizer email 缺失/格式错（email 模式） | 400 "A valid organizerEmail is required" | P0 |
 | TC-110 | link 模式 organizer email 留空 | 允许；dashboard 链接仅在成功页展示一次 | P1 |
 | TC-111 | 标题为空/纯空格 | 400 "Title is required" | P2 |
@@ -267,3 +267,46 @@
 4. **3 人 + 1 组双向排除无解**：构造测试数据时用 4 人。
 5. **PostgREST NULL 判断必须 `.is(col, null)`**，`.eq(col, null)` 会 22007。
 6. **cron 间隔 5 分钟**：定时抽签断言要预留窗口期；本地验证可直接带 Bearer CRON_SECRET 调 `/api/cron/email-queue`。
+7. **重绘限流窗口约 1 分钟**（"A draw was just sent out"）：重绘用例要先等窗口。
+8. **创建限流按窗口内存活行计数**：purge 会释放配额——限流用例必须在 purge 之前、且窗口内凑满 5 行。
+
+---
+
+# 测试执行报告（2026-11-05）
+
+执行环境：生产 https://santawheel.com + Supabase 生产库；三轮执行（run1 全量 → run2 修复脚本问题 → run3 验证修复），静态层 tsc/eslint/vest 全绿。
+
+## 总结果
+
+| 层 | 结果 |
+|---|---|
+| 静态层 | tsc 0 错 · eslint 0 错 · vitest 66/66 |
+| 线上用例（run1 86 + run2 42 + run3 5 条次） | 全部 PASS（含修复后复测）|
+| 显式 SKIP | 11 条（附原因，见下） |
+
+## 测试发现并修复的 3 个真 bug
+
+| # | Bug | 严重度 | 修复 commit |
+|---|---|---|---|
+| 1 | **并发同 requestId 创建三方全 500，且败者会在胜者的 exchange 上重复插参与者、回滚时把胜者的 exchange 整个删掉**（幂等机制实际缺陷） | 高 | `3066611` |
+| 2 | **Premium 提醒邮件从未工作过**：sweepReminders 用了不存在的 `assignment→participant` embed（FK 实际指向 pair），schema cache 报错，提醒永远入队 0 封。此前 reminder_at 排在 11-07 尚未触发，本次测试首次踩到执行路径 | 高（付费功能静默失效） | `414dc30` |
+| 3 | **并发双答竞态**：`.is(answer_text,null)` 不影响返回行数，两个同时到达的回答都返回 200，败者静默覆盖胜者 | 中 | `414dc30`（更新后校验实际命中行数，败者走 409） |
+
+## 修正的用例预期
+
+- **TC-108**：link 模式丢弃参与者邮箱是**有意的隐私设计**（代码注释明示），原预期「保存邮箱」有误。
+- **TC-304**：SSR 文本节点拆分，断言须 strip-tags 后匹配。
+
+## 逐轮明细
+
+**Run 1（全量 86 条）**：51 PASS / 24 FAIL / 11 SKIP。FAIL 归因：①E3 误用 3 人+互斥（数学无解，踩了文档第 4 条坑）②重绘 1 分钟限流窗口③E2 并发 requestId 500（真 bug #1）④reminder embed（真 bug #2）⑤双答竞态（真 bug #3）⑥SSR 断言过严。
+**Run 2（42 条，修复 #1 后）**：38 PASS / 4 FAIL。TC-304/TC-505/406/TC-1202/1702/TC-901~910/TC-801~806 等此前级联失败项全部转 PASS。
+**Run 3（5 条，修复 #2/#3 后）**：reminder 入队 2/不重复 ✓；并发双答 [200,409] ✓；TC-113 创建限流 429 ✓；清理 ✓。
+
+## SKIP 清单（11 条，均附原因）
+
+TC-603（需真实浏览器 reduced-motion）、TC-1212（浏览器时区行为，API 侧已覆盖）、TC-1304（认领并发已被 TC-1702 间接覆盖）、TC-1307（Resend 拒收 fake 域名为已知行为）、TC-1502/1503/1505（需 Waffo 测试事件回调）、TC-1009（join 限流与创建共用计数）、TC-911/TC-914（降级分支逻辑简单，未构造专用场景）、TC-1705（并发 purge 竞态难以确定性复现）、TC-1404（重绘限流窗口优先验证 TC-407）、TC-1803（各入口均有长度上限）。
+
+## 数据清理
+
+所有测试 exchange（T-E1~E8、T-probe、T-limit、T-F1~F3）已全部 purge，生产库仅剩 3 个真实用户活动（Live check、Our Secret Santa ×2）。

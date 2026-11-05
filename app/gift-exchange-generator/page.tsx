@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/gift-exchange-generator",
   },
+  openGraph: {
+    url: "/gift-exchange-generator",
+  },
 };
 
 // ---------- structured data ----------
@@ -61,7 +64,7 @@ const appJsonLd = {
   name: "SantaWheel Gift Exchange Generator",
   alternateName: "Gift Exchange Generator",
   url: "https://santawheel.com/gift-exchange-generator",
-  applicationCategory: "GameApplication",
+  applicationCategory: "UtilitiesApplication",
   operatingSystem: "Any",
   browserRequirements: "Requires JavaScript",
   description:

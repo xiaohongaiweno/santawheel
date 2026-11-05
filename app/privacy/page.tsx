@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description:
     "What SantaWheel stores when you run a Secret Santa draw, which services process it, and how to have your data removed.",
   alternates: { canonical: "/privacy" },
+  openGraph: { url: "/privacy" },
 };
 
 const UPDATED = "November 4, 2026";

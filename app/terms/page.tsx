@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description:
     "The rules for using SantaWheel: what the free generator includes, what counts as abuse, and what we can and cannot guarantee about email delivery.",
   alternates: { canonical: "/terms" },
+  openGraph: { url: "/terms" },
 };
 
 const UPDATED = "November 4, 2026";

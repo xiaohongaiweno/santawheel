@@ -8,9 +8,12 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: { absolute: "Secret Santa Generator – Free & No Sign-up" },
   description:
-    "Paste your list, draw names, and each person gets their own assignment by email. Free, no account, up to 100 people, with couple and family exclusions.",
+    "A free secret santa generator: paste your list, draw names in one click, set exclusion rules, and email every assignment. No sign-up, up to 100 people.",
   alternates: {
     canonical: "/",
+  },
+  openGraph: {
+    url: "/",
   },
 };
 
@@ -91,7 +94,7 @@ const appJsonLd = {
   name: "SantaWheel",
   alternateName: "Secret Santa Generator",
   url: site.url,
-  applicationCategory: "GameApplication",
+  applicationCategory: "UtilitiesApplication",
   operatingSystem: "Any",
   browserRequirements: "Requires JavaScript",
   description:
@@ -171,22 +174,25 @@ export default function Home() {
               </li>
               <li>
                 Everyone receives their assignment by email, or you copy one
-                private link per person and send it through WhatsApp or
-                Messenger. You never have to chase anyone.
+                private link per person and send it yourself. No email for
+                someone on your list? Forward their link by WhatsApp or SMS —
+                it works in any group chat. You never have to chase anyone.
               </li>
             </ol>
           </section>
 
           <section aria-labelledby="private-links">
             <h2 id="private-links" className="text-xl font-semibold">
-              No email addresses? Use private links
+              Draw names without email — use private links
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              Not every group wants to hand over email addresses — and for a
-              family draw, half of them may not check their inbox anyway. Switch
-              to private links, paste names only, and you get one unguessable
-              link per person to share however your group already talks. Each
-              link opens that person&apos;s assignment and nothing else.
+              Not every group wants to hand over contact details — and for a
+              family draw, half of them may not check their inbox anyway. With
+              SantaWheel you can draw names without collecting email
+              addresses: switch to private links, paste names only, and you
+              get one unguessable link per person to share however your group
+              already talks. Each link opens that person&apos;s assignment and
+              nothing else.
             </p>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               Prefer to keep the pairings to yourself as well? Blind mode hides
@@ -197,12 +203,15 @@ export default function Home() {
 
           <section aria-labelledby="free-no-signup">
             <h2 id="free-no-signup" className="text-xl font-semibold">
-              Free and no sign-up
+              An online secret santa website — no app to install
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              SantaWheel is free to use with no account. There is no sign-up
-              to create, nothing to install, and no credit card. Paste your
-              list and draw names — that is the whole process.
+              SantaWheel is an online secret santa generator that runs
+              entirely in your browser: nothing to download, nothing to
+              install, and no account. It works on your phone and your
+              computer alike. As a secret santa website generator, it is
+              always ready when you are — open the page, paste your list, and
+              draw names. That is the whole process.
             </p>
           </section>
 
@@ -213,9 +222,10 @@ export default function Home() {
             <p className="mt-3 text-sm leading-relaxed text-muted">
               Some people should not draw each other. Exclude pairs so spouses,
               partners, or a manager and their direct reports never get
-              matched. Exclusions work in both directions, and if the rules
-              make a draw impossible, the generator tells you clearly instead
-              of giving a wrong result.
+              matched. SantaWheel is a secret santa generator with exclusions
+              that work in both directions, and if the rules make a draw
+              impossible, it tells you clearly instead of giving a wrong
+              result.
             </p>
           </section>
 
@@ -266,8 +276,9 @@ export default function Home() {
               Secret Santa message ideas
             </h2>
             <p className="mt-3 text-sm text-muted">
-              Short messages you can send along with the assignment. Replace
-              the placeholders in braces.
+              Need a secret santa text generator? These short messages are
+              ready to copy — send one along with the assignment. Replace the
+              placeholders in braces.
             </p>
             <div className="mt-4 space-y-3">
               {messageIdeas.map((msg) => (
@@ -295,9 +306,10 @@ export default function Home() {
                 ask the person they are drawing anonymous questions
               </Link>{" "}
               — sizes, snacks, hobbies — with answers coming back without
-              either side learning who the other is. Givers see the wishlist
-              and address right next to the name, so nobody has to guess and
-              nobody has to run a separate spreadsheet.
+              either side learning who the other is. It is a secret santa
+              generator with wish list support built in: givers see the
+              wishlist and address right next to the name, so nobody has to
+              guess and nobody has to run a separate spreadsheet.
             </p>
           </section>
 
