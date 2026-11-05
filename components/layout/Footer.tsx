@@ -22,6 +22,12 @@ export default function Footer() {
           >
             Gift Exchange Generator
           </Link>
+          <Link
+            href="/white-elephant-generator"
+            className="text-muted hover:text-foreground"
+          >
+            White Elephant Generator
+          </Link>
           <Link href="/features" className="text-muted hover:text-foreground">
             Features
           </Link>

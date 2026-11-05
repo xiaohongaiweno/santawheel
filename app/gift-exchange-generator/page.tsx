@@ -17,12 +17,18 @@ export const metadata: Metadata = {
 
 // ---------- structured data ----------
 
-const faqs = [
+interface Faq {
+  q: string;
+  a: string;
+  /** Optional follow-through link rendered under the answer (not in JSON-LD). */
+  link?: { href: string; label: string };
+}
+
+const faqs: Faq[] = [
   {
     q: "What does the gift exchange generator do?",
     a: "It pairs everyone in your group at random. Each person is assigned one other person to buy a gift for, nobody is assigned themselves, and everybody is assigned exactly once.",
-  },
-  {
+  },  {
     q: "Do participants need an account or an email address?",
     a: "No account, ever. Email addresses are optional: use email delivery and we message everyone for you, or choose private links and paste names only — we hand you one link per person to send yourself.",
   },
@@ -32,7 +38,11 @@ const faqs = [
   },
   {
     q: "Is this a white elephant or yankee swap game?",
-    a: "SantaWheel runs both formats. The draw above is the one-to-one exchange: everyone is paired and buys for one person. White Elephant — also called yankee swap or dirty Santa — is a second play mode on the same infrastructure. Everyone gets a fixed random turn order; on your turn you either open a wrapped gift from the pool or steal one that has already been opened. Whoever you steal from opens a new gift immediately (stealing it back is not allowed), a gift locks once it has been stolen a set number of times, the organizer can undo a misclick, and a single shared board page runs the whole game on one phone while everyone watches. The play-mode picker is still rolling out here — to run a white elephant game now, email hello@santawheel.com and we will set it up.",
+    a: "SantaWheel supports both formats. The draw above is the one-to-one exchange: everyone is paired and buys for one person. White Elephant — yankee swap, dirty Santa — is a separate play mode with a fixed picking order, where each turn is either opening a wrapped gift or stealing one that has already been opened, with a cap on how often a gift can be stolen.",
+    link: {
+      href: "/white-elephant-generator",
+      label: "Open the White Elephant Generator",
+    },
   },
   {
     q: "How many people can join a gift exchange?",
@@ -200,6 +210,13 @@ export default function GiftExchangeGenerator() {
                   <p className="mt-2 text-sm leading-relaxed text-muted">
                     {f.a}
                   </p>
+                  {f.link && (
+                    <p className="mt-1.5 text-sm">
+                      <Link href={f.link.href} className="text-accent underline">
+                        {f.link.label}
+                      </Link>
+                    </p>
+                  )}
                 </details>
               ))}
             </div>
