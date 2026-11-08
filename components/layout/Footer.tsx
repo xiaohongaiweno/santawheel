@@ -56,6 +56,19 @@ export default function Footer() {
             Sitemap
           </a>
         </nav>
+        <a
+          href="https://getbannerbid.com/directory"
+          target="_blank"
+          rel="noopener"
+        >
+          <img
+            src="https://getbannerbid.com/badges/listed-dark.svg"
+            alt="Listed on GetBannerBid"
+            width={200}
+            height={54}
+            loading="lazy"
+          />
+        </a>
       </div>
     </footer>
   );
