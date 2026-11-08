@@ -288,6 +288,24 @@ export default function Home() {
               click. Participants join by email, so remote teammates are
               covered without any installs.
             </p>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Writing the invitation? The{" "}
+              <Link
+                href="/secret-santa-rules"
+                className="text-accent underline"
+              >
+                Secret Santa rules
+              </Link>{" "}
+              spell out the budget, the exclusions and what to do when someone
+              drops out, and the{" "}
+              <Link
+                href="/secret-santa-gift-ideas"
+                className="text-accent underline"
+              >
+                gift ideas list
+              </Link>{" "}
+              covers everyone who has not started shopping yet.
+            </p>
           </section>
 
           <section aria-labelledby="for-family">

@@ -260,6 +260,17 @@ export default function WhiteElephantGenerator() {
               walk through the game step by step, what each default is for,
               and what every variation does to the pacing.
             </p>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Shopping for the pile? The{" "}
+              <Link
+                href="/white-elephant-gift-ideas"
+                className="text-accent underline"
+              >
+                white elephant gift ideas
+              </Link>{" "}
+              list is organised around what actually gets stolen, with a
+              budget range for each pick.
+            </p>
           </section>
 
           <section aria-labelledby="for-offices">

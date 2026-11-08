@@ -186,7 +186,14 @@ export default function WhiteElephantRules() {
               run the game online
             </Link>{" "}
             — the board keeps the order, tracks the steal counts, and locks
-            gifts for you.
+            gifts for you. Still shopping for the pile? The{" "}
+            <Link
+              href="/white-elephant-gift-ideas"
+              className="text-accent underline"
+            >
+              white elephant gift ideas
+            </Link>{" "}
+            are built around what actually gets stolen.
           </p>
         </section>
 

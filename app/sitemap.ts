@@ -10,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: site.url,
-      lastModified: "2026-11-05",
+      lastModified: "2026-11-08",
       changeFrequency: "daily",
       priority: 1,
     },
@@ -28,7 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${site.url}/white-elephant-rules`,
-      lastModified: "2026-11-05",
+      lastModified: "2026-11-08",
       changeFrequency: "monthly",
       priority: 0.7,
     },
@@ -46,7 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${site.url}/white-elephant-generator`,
-      lastModified: "2026-11-05",
+      lastModified: "2026-11-08",
       changeFrequency: "weekly",
       priority: 0.8,
     },
@@ -61,6 +61,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: "2026-11-05",
       changeFrequency: "weekly",
       priority: 0.7,
+    },
+    {
+      url: `${site.url}/secret-santa-rules`,
+      lastModified: "2026-11-08",
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${site.url}/secret-santa-gift-ideas`,
+      lastModified: "2026-11-08",
+      changeFrequency: "weekly",
+      priority: 0.6,
+    },
+    {
+      url: `${site.url}/white-elephant-gift-ideas`,
+      lastModified: "2026-11-08",
+      changeFrequency: "weekly",
+      priority: 0.6,
     },
     {
       url: `${site.url}/privacy`,
