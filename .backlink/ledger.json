@@ -1,0 +1,283 @@
+{
+  "version": 1,
+  "records": [
+    {
+      "id": "candidate-605e38fb",
+      "url": "https://www.producthunt.com/",
+      "site": "www.producthunt.com",
+      "state": "submitted",
+      "createdAt": "2026-11-06T14:11:38.804Z",
+      "updatedAt": "2026-11-07T14:03:33.137Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-06T14:11:38.804Z"
+        },
+        {
+          "state": "submitted",
+          "note": "2026-11-07: Product Hunt launch scheduled for 2026-11-10 12:01am PT; all 7 required items complete",
+          "at": "2026-11-07T14:03:33.137Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-07: Product Hunt launch scheduled for 2026-11-10 12:01am PT; all 7 required items complete",
+        "recordedAt": "2026-11-07T14:03:33.137Z"
+      }
+    },
+    {
+      "id": "candidate-621e7598",
+      "url": "https://alternativeto.net/manage-item/",
+      "site": "alternativeto.net",
+      "state": "rejected",
+      "createdAt": "2026-11-06T14:11:38.833Z",
+      "updatedAt": "2026-11-07T14:11:12.548Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-06T14:11:38.833Z"
+        },
+        {
+          "state": "rejected",
+          "note": "2026-11-07: normal queue waits weeks/months per AlternativeTo's own notice; user declined $9 priority review",
+          "at": "2026-11-07T14:11:12.548Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-93701c9c",
+      "url": "https://www.saashub.com/",
+      "site": "www.saashub.com",
+      "state": "candidate",
+      "createdAt": "2026-11-06T14:11:38.857Z",
+      "updatedAt": "2026-11-06T14:11:38.857Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-06T14:11:38.857Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-33381c47",
+      "url": "https://www.reddit.com/",
+      "site": "www.reddit.com",
+      "state": "candidate",
+      "createdAt": "2026-11-06T14:11:38.881Z",
+      "updatedAt": "2026-11-06T14:11:38.881Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-06T14:11:38.881Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-352a2b6e",
+      "url": "https://news.ycombinator.com/",
+      "site": "news.ycombinator.com",
+      "state": "candidate",
+      "createdAt": "2026-11-06T14:11:38.904Z",
+      "updatedAt": "2026-11-06T14:11:38.904Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-06T14:11:38.904Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-cd4c9da9",
+      "url": "https://pitchwall.co/submit",
+      "site": "pitchwall.co",
+      "state": "candidate",
+      "createdAt": "2026-11-06T14:11:38.927Z",
+      "updatedAt": "2026-11-06T14:11:38.927Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-06T14:11:38.927Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-ec1b1c3f",
+      "url": "https://10015.io/product-finder/submit",
+      "site": "10015.io",
+      "state": "candidate",
+      "createdAt": "2026-11-06T14:11:38.950Z",
+      "updatedAt": "2026-11-06T14:11:38.950Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-06T14:11:38.950Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-13bc8d7c",
+      "url": "https://uplup.com/blog/best-secret-santa-generator-tools",
+      "site": "uplup.com",
+      "state": "candidate",
+      "createdAt": "2026-11-06T14:11:38.973Z",
+      "updatedAt": "2026-11-06T14:11:38.973Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-06T14:11:38.973Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-83da7003",
+      "url": "https://www.educatorstechnology.com/2022/12/the-7-best-secret-santa-generators.html",
+      "site": "www.educatorstechnology.com",
+      "state": "drafted",
+      "createdAt": "2026-11-06T14:11:38.996Z",
+      "updatedAt": "2026-11-07T14:16:12.235Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-06T14:11:38.996Z"
+        },
+        {
+          "state": "drafted",
+          "note": "2026-11-07 outreach email sent from xiaohongaiweno@163.com",
+          "at": "2026-11-07T14:16:12.235Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-3b17ea7a",
+      "url": "https://wishes.app/blog/best-secret-santa-apps",
+      "site": "wishes.app",
+      "state": "drafted",
+      "createdAt": "2026-11-06T14:11:39.019Z",
+      "updatedAt": "2026-11-07T14:16:12.263Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-06T14:11:39.019Z"
+        },
+        {
+          "state": "drafted",
+          "note": "2026-11-07 outreach email sent from xiaohongaiweno@163.com",
+          "at": "2026-11-07T14:16:12.263Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-7b236d86",
+      "url": "https://blog.lmk.today/best-secret-santa-list-apps-in/",
+      "site": "blog.lmk.today",
+      "state": "candidate",
+      "createdAt": "2026-11-06T14:11:39.043Z",
+      "updatedAt": "2026-11-06T14:11:39.043Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-06T14:11:39.043Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-f1203322",
+      "url": "https://sideprojects.net/projects/submit",
+      "site": "sideprojects.net",
+      "state": "candidate",
+      "createdAt": "2026-11-07T15:29:58.355Z",
+      "updatedAt": "2026-11-07T15:29:58.383Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-07T15:29:58.355Z"
+        },
+        {
+          "state": "candidate",
+          "note": "2026-11-07: account logged in, form filled (url/title/slug/tagline/description/categories); launch_date select loads zero options and POST silently returns to the form; project page 404. Blocked by the site's date loader, not by rejection.",
+          "at": "2026-11-07T15:29:58.383Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-57b8203d",
+      "url": "https://www.directory-free.com/submit/add.php",
+      "site": "www.directory-free.com",
+      "state": "submitted",
+      "createdAt": "2026-11-07T15:49:55.846Z",
+      "updatedAt": "2026-11-07T15:59:53.877Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-07T15:49:55.846Z"
+        },
+        {
+          "state": "filled",
+          "note": "2026-11-07: free submission form (category Home & Family/Holidays) filled with title, URL, 378-char description, email xiaohongaiweno@163.com. Image CAPTCHA left for owner to complete per handoff-only policy.",
+          "at": "2026-11-07T15:49:55.878Z"
+        },
+        {
+          "state": "submitted",
+          "note": "2026-11-07: owner completed image CAPTCHA; site showed submission success. Not yet visible in Home & Family/Holidays listing (pending review).",
+          "at": "2026-11-07T15:59:53.877Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-07: owner completed image CAPTCHA; site showed submission success. Not yet visible in Home & Family/Holidays listing (pending review).",
+        "recordedAt": "2026-11-07T15:59:53.877Z"
+      }
+    },
+    {
+      "id": "candidate-fcff6e6f",
+      "url": "http://finest4.com/submit.php%20finest4.com",
+      "site": "finest4.com",
+      "state": "rejected",
+      "createdAt": "2026-11-07T15:57:54.989Z",
+      "updatedAt": "2026-11-07T15:57:55.017Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-07T15:57:54.989Z"
+        },
+        {
+          "state": "rejected",
+          "note": "2026-11-07: page unreachable (chrome-error / 525), no form rendered",
+          "at": "2026-11-07T15:57:55.017Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-949e1c41",
+      "url": "https://www.elitesitesdirectory.com/post-new/%20elitesitesdirectory.com",
+      "site": "www.elitesitesdirectory.com",
+      "state": "rejected",
+      "createdAt": "2026-11-07T15:57:55.042Z",
+      "updatedAt": "2026-11-07T15:57:55.065Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-07T15:57:55.042Z"
+        },
+        {
+          "state": "rejected",
+          "note": "2026-11-07: page unreachable (chrome-error / 525), no form rendered",
+          "at": "2026-11-07T15:57:55.065Z"
+        }
+      ]
+    }
+  ]
+}
