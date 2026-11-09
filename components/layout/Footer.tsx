@@ -85,6 +85,38 @@ export default function Footer() {
             loading="lazy"
           />
         </a>
+        <a href="https://twelve.tools" target="_blank" rel="noopener">
+          <img
+            src="https://twelve.tools/badge0-white.svg"
+            alt="Featured on Twelve Tools"
+            width={148}
+            height={40}
+            loading="lazy"
+          />
+        </a>
+        <a href="https://findly.tools" target="_blank" rel="noopener">
+          <img
+            src="https://findly.tools/badges/findly-tools-badge-light.svg"
+            alt="Featured on Findly.tools"
+            width={175}
+            height={55}
+            loading="lazy"
+          />
+        </a>
+        <a
+          href="https://showmebest.ai"
+          target="_blank"
+          rel="noopener"
+          aria-label="Featured on ShowMeBestAI"
+        >
+          <img
+            src="https://showmebest.ai/badge/feature-badge-white.webp"
+            alt="Featured on ShowMeBestAI"
+            width={220}
+            height={60}
+            loading="lazy"
+          />
+        </a>
       </div>
     </footer>
   );
