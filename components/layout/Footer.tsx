@@ -70,6 +70,30 @@ export default function Footer() {
           />
         </a>
       </div>
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 border-t border-border px-4 py-4">
+        <a
+          href="https://fazier.com"
+          target="_blank"
+          rel="noopener"
+          aria-label="Featured on Fazier"
+        >
+          <img
+            src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=light"
+            alt="Featured on Fazier"
+            width={120}
+            height={40}
+            loading="lazy"
+          />
+        </a>
+        <a
+          href="https://wired.business"
+          target="_blank"
+          rel="noopener"
+          className="text-sm text-muted underline hover:text-foreground"
+        >
+          Listed on Wired.business
+        </a>
+      </div>
     </footer>
   );
 }
