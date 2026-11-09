@@ -666,6 +666,270 @@
           "at": "2026-11-08T14:53:32.519Z"
         }
       ]
+    },
+    {
+      "id": "candidate-2930afef",
+      "url": "https://noisedaohang.netlify.app/tougao/",
+      "site": "noisedaohang.netlify.app",
+      "state": "submitted",
+      "createdAt": "2026-11-09T02:58:08Z",
+      "updatedAt": "2026-11-09T02:58:08Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-09T02:58:08Z"
+        },
+        {
+          "state": "submitted",
+          "note": "2026-11-09: 评论式投稿提交成功，留言计数 7952→7953，页面已显示 SantaWheel（https://santawheel.com）。",
+          "at": "2026-11-09T02:58:08Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-09: 评论式投稿提交成功，留言计数 7952→7953，页面已显示 SantaWheel（https://santawheel.com）。",
+        "recordedAt": "2026-11-09T02:58:08Z"
+      }
+    },
+    {
+      "id": "candidate-b68b65eb",
+      "url": "https://twelve.tools/submit-your-tool",
+      "site": "twelve.tools",
+      "state": "submitted",
+      "createdAt": "2026-11-09T02:58:08Z",
+      "updatedAt": "2026-11-09T02:58:08Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-09T02:58:08Z"
+        },
+        {
+          "state": "submitted",
+          "note": "2026-11-09: 提交后立即 live，listing https://twelve.tools/santawheel；管理链接 https://twelve.tools/edit?hash=aigylbw0182bp7tb069g；santawheel.com 页脚 badge 已上线。",
+          "at": "2026-11-09T02:58:08Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-09: 提交后立即 live，listing https://twelve.tools/santawheel；管理链接 https://twelve.tools/edit?hash=aigylbw0182bp7tb069g；santawheel.com 页脚 badge 已上线。",
+        "recordedAt": "2026-11-09T02:58:08Z"
+      }
+    },
+    {
+      "id": "candidate-e8be5526",
+      "url": "https://fazier.com/launches/santawheel",
+      "site": "fazier.com",
+      "state": "submitted",
+      "createdAt": "2026-11-09T02:58:08Z",
+      "updatedAt": "2026-11-09T02:58:08Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-09T02:58:08Z"
+        },
+        {
+          "state": "submitted",
+          "note": "2026-11-09: Free 档提交完成，排期 2026-11-10 上线。SnapByFace 在 Fazier 已有 listing（https://fazier.com/launches/snapbyface），未重复提交。",
+          "at": "2026-11-09T02:58:08Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-09: Free 档提交完成，排期 2026-11-10 上线。SnapByFace 在 Fazier 已有 listing（https://fazier.com/launches/snapbyface），未重复提交。",
+        "recordedAt": "2026-11-09T02:58:08Z"
+      }
+    },
+    {
+      "id": "candidate-8024707d",
+      "url": "https://www.allaboutai.com/submit/",
+      "site": "www.allaboutai.com",
+      "state": "rejected",
+      "createdAt": "2026-11-09T02:58:08Z",
+      "updatedAt": "2026-11-09T02:58:08Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-09T02:58:08Z"
+        },
+        {
+          "state": "rejected",
+          "note": "2026-11-09: 不提交 SantaWheel——该站为 AI 工具目录，SantaWheel 非 AI 产品，按站方规则会被拒。",
+          "at": "2026-11-09T02:58:08Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-09: 不提交 SantaWheel——该站为 AI 工具目录，SantaWheel 非 AI 产品，按站方规则会被拒。",
+        "recordedAt": "2026-11-09T02:58:08Z"
+      }
+    },
+    {
+      "id": "candidate-c0e417f9",
+      "url": "https://findly.tools/submit",
+      "site": "findly.tools",
+      "state": "candidate",
+      "createdAt": "2026-11-09T02:58:08Z",
+      "updatedAt": "2026-11-09T02:58:08Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-09T02:58:08Z"
+        },
+        {
+          "state": "candidate",
+          "note": "2026-11-09: blocked——/submit 跳转 /sign-in，需账号登录后继续。已确认 https://findly.tools/santawheel 当前 404（未收录）。",
+          "at": "2026-11-09T02:58:08Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-09: blocked——/submit 跳转 /sign-in，需账号登录后继续。已确认 https://findly.tools/santawheel 当前 404（未收录）。",
+        "recordedAt": "2026-11-09T02:58:08Z"
+      }
+    },
+    {
+      "id": "candidate-faf7dc3e",
+      "url": "https://showmebest.ai/submit/free-submit",
+      "site": "showmebest.ai",
+      "state": "candidate",
+      "createdAt": "2026-11-09T02:58:08Z",
+      "updatedAt": "2026-11-09T02:58:08Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-09T02:58:08Z"
+        },
+        {
+          "state": "candidate",
+          "note": "2026-11-09: blocked——免费表单填写完成且 badge 已上线 snapbyface.com，但点击 Submit 无任何网络请求/反馈，疑似账号或 Clerk 门禁未处理。",
+          "at": "2026-11-09T02:58:08Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-09: blocked——免费表单填写完成且 badge 已上线 snapbyface.com，但点击 Submit 无任何网络请求/反馈，疑似账号或 Clerk 门禁未处理。",
+        "recordedAt": "2026-11-09T02:58:08Z"
+      }
+    },
+    {
+      "id": "candidate-ade8a8be",
+      "url": "https://turbo0.com",
+      "site": "turbo0.com",
+      "state": "candidate",
+      "createdAt": "2026-11-09T02:58:08Z",
+      "updatedAt": "2026-11-09T02:58:08Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-09T02:58:08Z"
+        },
+        {
+          "state": "candidate",
+          "note": "2026-11-09: blocked——提交需登录。",
+          "at": "2026-11-09T02:58:08Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-09: blocked——提交需登录。",
+        "recordedAt": "2026-11-09T02:58:08Z"
+      }
+    },
+    {
+      "id": "candidate-7af6b55b",
+      "url": "https://peerlist.io/user/projects/add-project",
+      "site": "peerlist.io",
+      "state": "candidate",
+      "createdAt": "2026-11-09T02:58:08Z",
+      "updatedAt": "2026-11-09T02:58:08Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-09T02:58:08Z"
+        },
+        {
+          "state": "candidate",
+          "note": "2026-11-09: blocked——需登录。",
+          "at": "2026-11-09T02:58:08Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-09: blocked——需登录。",
+        "recordedAt": "2026-11-09T02:58:08Z"
+      }
+    },
+    {
+      "id": "candidate-f886b5b5",
+      "url": "https://toolfame.com/submit",
+      "site": "toolfame.com",
+      "state": "candidate",
+      "createdAt": "2026-11-09T02:58:08Z",
+      "updatedAt": "2026-11-09T02:58:08Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-09T02:58:08Z"
+        },
+        {
+          "state": "candidate",
+          "note": "2026-11-09: blocked——/submit 为登录页。",
+          "at": "2026-11-09T02:58:08Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-09: blocked——/submit 为登录页。",
+        "recordedAt": "2026-11-09T02:58:08Z"
+      }
+    },
+    {
+      "id": "candidate-d7e7811b",
+      "url": "https://goodaitools.com/submit",
+      "site": "goodaitools.com",
+      "state": "candidate",
+      "createdAt": "2026-11-09T02:58:08Z",
+      "updatedAt": "2026-11-09T02:58:08Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-09T02:58:08Z"
+        },
+        {
+          "state": "candidate",
+          "note": "2026-11-09: blocked——需登录；SnapByFace 已收录（sitemap 含 /ai/snapbyface）。",
+          "at": "2026-11-09T02:58:08Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-09: blocked——需登录；SnapByFace 已收录（sitemap 含 /ai/snapbyface）。",
+        "recordedAt": "2026-11-09T02:58:08Z"
+      }
+    },
+    {
+      "id": "candidate-628257d6",
+      "url": "https://sellwithboost.com/submit",
+      "site": "sellwithboost.com",
+      "state": "candidate",
+      "createdAt": "2026-11-09T02:58:08Z",
+      "updatedAt": "2026-11-09T02:58:08Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-09T02:58:08Z"
+        },
+        {
+          "state": "candidate",
+          "note": "2026-11-09: blocked——/submit 跳转 /login。",
+          "at": "2026-11-09T02:58:08Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-09: blocked——/submit 跳转 /login。",
+        "recordedAt": "2026-11-09T02:58:08Z"
+      }
     }
   ]
 }
