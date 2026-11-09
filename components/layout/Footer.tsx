@@ -94,7 +94,11 @@ export default function Footer() {
             loading="lazy"
           />
         </a>
-        <a href="https://findly.tools" target="_blank" rel="noopener">
+        <a
+          href="https://findly.tools/santawheel?utm_source=santawheel"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <img
             src="https://findly.tools/badges/findly-tools-badge-light.svg"
             alt="Featured on Findly.tools"
