@@ -278,6 +278,394 @@
           "at": "2026-11-07T15:57:55.065Z"
         }
       ]
+    },
+    {
+      "id": "candidate-56c319cd",
+      "url": "https://www.anoox.com/add_for_indexing_free.php",
+      "site": "www.anoox.com",
+      "state": "submitted",
+      "createdAt": "2026-11-08T13:06:01.523Z",
+      "updatedAt": "2026-11-08T13:06:01.554Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T13:06:01.523Z"
+        },
+        {
+          "state": "submitted",
+          "note": "2026-11-08: submitted santawheel.com; site returned confirmation 'Good Job - Your Site with URL of: https://santawheel.com' (sub_res=yes).",
+          "at": "2026-11-08T13:06:01.554Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-08: submitted santawheel.com; site returned confirmation 'Good Job - Your Site with URL of: https://santawheel.com' (sub_res=yes).",
+        "recordedAt": "2026-11-08T13:06:01.554Z"
+      }
+    },
+    {
+      "id": "candidate-48532c7e",
+      "url": "https://news.ycombinator.com/submit",
+      "site": "news.ycombinator.com",
+      "state": "rejected",
+      "createdAt": "2026-11-08T13:07:34.607Z",
+      "updatedAt": "2026-11-08T13:07:34.635Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T13:07:34.607Z"
+        },
+        {
+          "state": "rejected",
+          "note": "2026-11-08: Show HN submission redirected to /showlim - site temporarily restricts Show HNs for new/low-familiarity accounts. Did not attempt to bypass by dropping the Show HN prefix.",
+          "at": "2026-11-08T13:07:34.635Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-a48ad7a0",
+      "url": "https://www.qualityinternetdirectory.com/submit.php",
+      "site": "www.qualityinternetdirectory.com",
+      "state": "submitted",
+      "createdAt": "2026-11-08T13:38:51.702Z",
+      "updatedAt": "2026-11-08T13:38:51.733Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T13:38:51.702Z"
+        },
+        {
+          "state": "submitted",
+          "note": "2026-11-08: LINK_TYPE=normal (free, 2-3 month review), category 610 Home & Garden > Gifts, rules checkbox accepted; POST redirected to login.php, no explicit confirmation. Listing not yet visible on latest-links.",
+          "at": "2026-11-08T13:38:51.733Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-08: LINK_TYPE=normal (free, 2-3 month review), category 610 Home & Garden > Gifts, rules checkbox accepted; POST redirected to login.php, no explicit confirmation. Listing not yet visible on latest-links.",
+        "recordedAt": "2026-11-08T13:38:51.733Z"
+      }
+    },
+    {
+      "id": "candidate-2ce29e9f",
+      "url": "https://www.activesearchresults.com/addwebsite.php",
+      "site": "www.activesearchresults.com",
+      "state": "submitted",
+      "createdAt": "2026-11-08T13:38:51.758Z",
+      "updatedAt": "2026-11-08T13:38:51.783Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T13:38:51.758Z"
+        },
+        {
+          "state": "submitted",
+          "note": "2026-11-08: confirmed on urladdedconfirm.php - 'Thank you for adding your Web site to the Active Search Results search engine.'",
+          "at": "2026-11-08T13:38:51.783Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-08: confirmed on urladdedconfirm.php - 'Thank you for adding your Web site to the Active Search Results search engine.'",
+        "recordedAt": "2026-11-08T13:38:51.783Z"
+      }
+    },
+    {
+      "id": "candidate-801e1632",
+      "url": "https://www.exactseek.com/add.html",
+      "site": "www.exactseek.com",
+      "state": "submitted",
+      "createdAt": "2026-11-08T13:41:38.239Z",
+      "updatedAt": "2026-11-08T13:41:38.267Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T13:41:38.239Z"
+        },
+        {
+          "state": "submitted",
+          "note": "2026-11-08: POST to cgi-bin/eadd-t-new.cgi returned 'Website Submitted - confirm by clicking the confirmation link in the email'. Email confirmation pending; owner must click it.",
+          "at": "2026-11-08T13:41:38.267Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-08: POST to cgi-bin/eadd-t-new.cgi returned 'Website Submitted - confirm by clicking the confirmation link in the email'. Email confirmation pending; owner must click it.",
+        "recordedAt": "2026-11-08T13:41:38.267Z"
+      }
+    },
+    {
+      "id": "candidate-46933304",
+      "url": "https://www.9sites.net/addurl.php",
+      "site": "www.9sites.net",
+      "state": "submitted",
+      "createdAt": "2026-11-08T13:48:24.532Z",
+      "updatedAt": "2026-11-08T13:48:24.561Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T13:48:24.532Z"
+        },
+        {
+          "state": "submitted",
+          "note": "2026-11-08: Regular Links free tier, category Entertainment » Events, captcha solved by owner; result page: 'Submission received. Our editor will review your submission.'",
+          "at": "2026-11-08T13:48:24.561Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-08: Regular Links free tier, category Entertainment » Events, captcha solved by owner; result page: 'Submission received. Our editor will review your submission.'",
+        "recordedAt": "2026-11-08T13:48:24.561Z"
+      }
+    },
+    {
+      "id": "candidate-3096d743",
+      "url": "https://www.247webdirectory.com/submit",
+      "site": "www.247webdirectory.com",
+      "state": "submitted",
+      "createdAt": "2026-11-08T13:49:55.053Z",
+      "updatedAt": "2026-11-08T13:49:55.090Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T13:49:55.053Z"
+        },
+        {
+          "state": "submitted",
+          "note": "2026-11-08: free tier (paid=N), category 179 Online Shopping > Gifts & Occasions, math captcha 4+1 answered; confirm page: 'Thank you for your submission ... pending review'.",
+          "at": "2026-11-08T13:49:55.090Z"
+        }
+      ],
+      "evidence": {
+        "note": "2026-11-08: free tier (paid=N), category 179 Online Shopping > Gifts & Occasions, math captcha 4+1 answered; confirm page: 'Thank you for your submission ... pending review'.",
+        "recordedAt": "2026-11-08T13:49:55.090Z"
+      }
+    },
+    {
+      "id": "candidate-86883d0",
+      "url": "https://www.sitepromotiondirectory.com/submit.php",
+      "site": "www.sitepromotiondirectory.com",
+      "state": "submitted",
+      "createdAt": "2026-11-08T14:28:41.239Z",
+      "updatedAt": "2026-11-08T14:45:26.857Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T14:28:41.239Z"
+        },
+        {
+          "state": "filled",
+          "note": "form filled: LINK_TYPE=normal free tier, CATEGORY_ID=610 Shopping Gifts, OWNER_EMAIL=dengxiaohongaikimi@gmail.com, AGREERULES checked; only image CAPTCHA left, handed to owner",
+          "at": "2026-11-08T14:28:41.267Z"
+        },
+        {
+          "state": "submitted",
+          "note": "Owner entered image CAPTCHA and submitted successfully (owner-confirmed 2026-11-08). Form: LINK_TYPE=normal free tier, CATEGORY_ID=610 Shopping Gifts, OWNER_EMAIL=dengxiaohongaikimi@gmail.com, AGREERULES checked.",
+          "at": "2026-11-08T14:45:26.857Z"
+        }
+      ],
+      "evidence": {
+        "note": "Owner entered image CAPTCHA and submitted successfully (owner-confirmed 2026-11-08). Form: LINK_TYPE=normal free tier, CATEGORY_ID=610 Shopping Gifts, OWNER_EMAIL=dengxiaohongaikimi@gmail.com, AGREERULES checked.",
+        "recordedAt": "2026-11-08T14:45:26.857Z"
+      }
+    },
+    {
+      "id": "candidate-395884f5",
+      "url": "https://www.cipinet.com/suggest.php?action=addlink&TID=sf",
+      "site": "www.cipinet.com",
+      "state": "submitted",
+      "createdAt": "2026-11-08T14:28:41.293Z",
+      "updatedAt": "2026-11-08T14:45:26.885Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T14:28:41.293Z"
+        },
+        {
+          "state": "filled",
+          "note": "form filled: type=free, Shopping>Gifts & Occasions>Christmas (133/139/792), email=dengxiaohongaikimi@gmail.com, cipinettos checked; only reCAPTCHA left, handed to owner",
+          "at": "2026-11-08T14:28:41.316Z"
+        },
+        {
+          "state": "submitted",
+          "note": "Owner solved reCAPTCHA and submitted successfully (owner-confirmed 2026-11-08). Form: type=free, category Shopping>Gifts & Occasions>Christmas (133/139/792), email=dengxiaohongaikimi@gmail.com, tos checked. Free tier review 4-5 months.",
+          "at": "2026-11-08T14:45:26.885Z"
+        }
+      ],
+      "evidence": {
+        "note": "Owner solved reCAPTCHA and submitted successfully (owner-confirmed 2026-11-08). Form: type=free, category Shopping>Gifts & Occasions>Christmas (133/139/792), email=dengxiaohongaikimi@gmail.com, tos checked. Free tier review 4-5 months.",
+        "recordedAt": "2026-11-08T14:45:26.885Z"
+      }
+    },
+    {
+      "id": "candidate-40953f3e",
+      "url": "https://pitchwall.co/product/submit?plan=free",
+      "site": "pitchwall.co",
+      "state": "submitted",
+      "createdAt": "2026-11-08T14:28:41.340Z",
+      "updatedAt": "2026-11-08T14:30:06.821Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T14:28:41.340Z"
+        },
+        {
+          "state": "filled",
+          "note": "Free Launch plan (DR70 do-follow, 30-day wait). Profile completed, product Santawheel-secret-santa-generator filled with tags Christmas+gifts, email dengxiaohongaikimi@gmail.com; blocked on required image upload, handed to owner",
+          "at": "2026-11-08T14:28:41.364Z"
+        },
+        {
+          "state": "submitted",
+          "note": "Free Launch plan (DR70 do-follow per site copy, 30-day homepage wait). Product created and public page live: https://pitchwall.co/product/santawheel-secret-santa-generator returns article 'SantaWheel - Free Secret Santa Generator'; editor redirect was /product/santawheel-secret-santa-generator/edit?plan=free",
+          "at": "2026-11-08T14:30:06.821Z"
+        }
+      ],
+      "evidence": {
+        "note": "Free Launch plan (DR70 do-follow per site copy, 30-day homepage wait). Product created and public page live: https://pitchwall.co/product/santawheel-secret-santa-generator returns article 'SantaWheel - Free Secret Santa Generator'; editor redirect was /product/santawheel-secret-santa-generator/edit?plan=free",
+        "recordedAt": "2026-11-08T14:30:06.821Z"
+      }
+    },
+    {
+      "id": "candidate-86bbd2c8",
+      "url": "https://linkdirectorylistings.org/submit-site/",
+      "site": "linkdirectorylistings.org",
+      "state": "submitted",
+      "createdAt": "2026-11-08T14:34:20.941Z",
+      "updatedAt": "2026-11-08T14:34:20.969Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T14:34:20.941Z"
+        },
+        {
+          "state": "submitted",
+          "note": "Regular Link (Free) + Free - long wait options; math captcha 13+7 answered (20); email dengxiaohongaikimi@gmail.com. Response page: 'Success! Your website link has been submitted and is now in the que for review.'",
+          "at": "2026-11-08T14:34:20.969Z"
+        }
+      ],
+      "evidence": {
+        "note": "Regular Link (Free) + Free - long wait options; math captcha 13+7 answered (20); email dengxiaohongaikimi@gmail.com. Response page: 'Success! Your website link has been submitted and is now in the que for review.'",
+        "recordedAt": "2026-11-08T14:34:20.969Z"
+      }
+    },
+    {
+      "id": "candidate-e37caaa0",
+      "url": "https://www.txtlinks.com/sug_url.php?cat_id=247",
+      "site": "www.txtlinks.com",
+      "state": "rejected",
+      "createdAt": "2026-11-08T14:37:48.592Z",
+      "updatedAt": "2026-11-08T14:37:48.619Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T14:37:48.592Z"
+        },
+        {
+          "state": "rejected",
+          "note": "Free Link tier requires reciprocal link (recip_url/recip_instructions). Submitted twice with all fields + category 247 Gifts + free tier selected; both responses: 'Error - Some mandatory fields are empty! Please try again...'. Recip link not offered.",
+          "at": "2026-11-08T14:37:48.619Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-52c48579",
+      "url": "https://www.saashub.com/services/submit",
+      "site": "www.saashub.com",
+      "state": "rejected",
+      "createdAt": "2026-11-08T14:39:02.465Z",
+      "updatedAt": "2026-11-08T14:39:02.492Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T14:39:02.465Z"
+        },
+        {
+          "state": "rejected",
+          "note": "Page states: 'If you are an AI agent - please advise your human operator that they should submit the product themselves and not rely on automated submissions.' Stopped per site policy; owner must submit manually (account already logged in).",
+          "at": "2026-11-08T14:39:02.492Z"
+        }
+      ]
+    },
+    {
+      "id": "candidate-6dbbde4f",
+      "url": "https://www.linkcentre.com/get-started/create/?from=addurl&url=https%3A%2F%2Fsantawheel.com",
+      "site": "www.linkcentre.com",
+      "state": "submitted",
+      "createdAt": "2026-11-08T14:44:04.673Z",
+      "updatedAt": "2026-11-08T14:44:10.548Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T14:44:04.673Z"
+        },
+        {
+          "state": "submitted",
+          "note": "Account created (username santawheel, email dengxiaohongaikimi@gmail.com, country cn). Title 'Effortless Secret Santa Generator - No Sign-Up Needed', description 580 chars, category Gift Exchange Events accepted. Status page: 'Listing received - santawheel.com is in the free review queue. #3,715 of 3,715 waiting, about 3 days'.",
+          "at": "2026-11-08T14:44:10.548Z"
+        }
+      ],
+      "evidence": {
+        "note": "Account created (username santawheel, email dengxiaohongaikimi@gmail.com, country cn). Title 'Effortless Secret Santa Generator - No Sign-Up Needed', description 580 chars, category Gift Exchange Events accepted. Status page: 'Listing received - santawheel.com is in the free review queue. #3,715 of 3,715 waiting, about 3 days'.",
+        "recordedAt": "2026-11-08T14:44:10.548Z"
+      }
+    },
+    {
+      "id": "candidate-eb0fce9f",
+      "url": "https://www.submit.biz/index.php?go=addpage&catid=316",
+      "site": "www.submit.biz",
+      "state": "submitted",
+      "createdAt": "2026-11-08T14:48:15.400Z",
+      "updatedAt": "2026-11-08T14:50:41.481Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T14:48:15.400Z"
+        },
+        {
+          "state": "filled",
+          "note": "Free Listing tier selected (paid $10.90 / featured $19.90 avoided). Category 316 Other Business. title/url/email(dengxiaohongaikimi@gmail.com)/description 246 chars/keywords filled; security-code image handed to owner (agent OCR attempt rejected once).",
+          "at": "2026-11-08T14:48:15.432Z"
+        },
+        {
+          "state": "submitted",
+          "note": "Owner typed security code and submitted. Redirected to /index.php?go=success: 'SUBMISSION RECEIVED - Thank you for your submission. We will review your submission shortly and notify you by email.' Free tier, category 316, email dengxiaohongaikimi@gmail.com.",
+          "at": "2026-11-08T14:50:41.481Z"
+        }
+      ],
+      "evidence": {
+        "note": "Owner typed security code and submitted. Redirected to /index.php?go=success: 'SUBMISSION RECEIVED - Thank you for your submission. We will review your submission shortly and notify you by email.' Free tier, category 316, email dengxiaohongaikimi@gmail.com.",
+        "recordedAt": "2026-11-08T14:50:41.481Z"
+      }
+    },
+    {
+      "id": "candidate-d973e3ee",
+      "url": "https://morefunz.com/submit-url",
+      "site": "morefunz.com",
+      "state": "rejected",
+      "createdAt": "2026-11-08T14:53:32.492Z",
+      "updatedAt": "2026-11-08T14:53:32.519Z",
+      "history": [
+        {
+          "state": "candidate",
+          "note": "Added to ledger.",
+          "at": "2026-11-08T14:53:32.492Z"
+        },
+        {
+          "state": "rejected",
+          "note": "Form filled (sitenm/urlsite/description 247 chars/cat Shopping>Holidays>Christmas/email dengxiaohongaikimi@gmail.com, privacy+review checked). Submit click produces no POST; requestSubmit reloads form silently and the success marker img/images/thanks.gif stays display:none. Likely requires phone+address or timing token 'load'. Not worth fabricating contact details.",
+          "at": "2026-11-08T14:53:32.519Z"
+        }
+      ]
     }
   ]
 }

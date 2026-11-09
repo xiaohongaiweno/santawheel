@@ -1,53 +1,88 @@
-# Spec：santawheel.com GSC 收录落地（2026-11-07）
+# Spec — santawheel.com 外链持续提交（第二批）
 
-## 1. 已核实的事实（本次实测，非推测）
+## 1. 目标与范围
 
-| 项 | 结果 | 证据 |
-| --- | --- | --- |
-| GSC 验证方式 | DNS TXT（Domain 属性 `sc-domain:santawheel.com`） | `dig TXT santawheel.com` → `google-site-verification=SF8jQ4LS82-EgEMrHS4AiJ7PrC6Atq7PcQrS1xxpjrU` |
-| GSC 属性可访问 | 是，已登录（dengxiaohongaikimi@gmail.com），左侧资源为 santawheel.com | 浏览器实测 |
-| 站点地图 | 已提交，状态「成功」，11 个网址，最后读取 2026-11-07 | GSC 站点地图页 |
-| 网页索引报告 | 「正在处理数据，请过 1 天左右再来查看」 | GSC 编制索引 → 网页 |
-| 搜索表现 | 2026/11/3–11/4 有 1 次网页搜索点击 | GSC 概述「效果」卡片 |
-| 线上验证 meta | 不存在（无需存在，因为是 DNS 验证） | `curl https://santawheel.com/` 未发现 `google-site-verification` |
-| 分析埋点 | 无（无 gtag/GA/Plausible/Vercel Analytics） | 同上 |
-| sitemap.xml | 200，11 个 `<loc>` | curl |
-| 首页 TTFB | 1.21s（冷启动；此前实测 0.39s） | curl |
+- 目标：为 `https://santawheel.com`（免费 Secret Santa / White Elephant 抽签生成器）持续获取可验证的外链与目录收录。
+- 本轮范围：**只做外链提交与发布**。不做站内内容、SEO 改写、付费投放。
+- 硬约束（用户明确）：
+  1. 所有提交表单的邮箱字段一律填 `dengxiaohongaikimi@gmail.com`（覆盖此前的 `xiaohongaiweno@163.com`）。
+  2. 不购买任何付费加急（AlternativeTo $9 已拒绝）。
+  3. 需要登录 / 收信确认 / 人机验证的最后一两步由用户本人完成；不做绕过。
+  4. Reddit（r/SideProject 等）已遭全站风控删除，不再尝试。
 
-## 2. 结论
+## 2. 当前事实状态（唯一事实来源：`.backlink/ledger.json`）
 
-- GSC 验证与 sitemap 提交**已经完成**，不需要改代码、不需要再提交 sitemap。
-- 当前唯一缺口是「数据还没跑出来」+「尚未主动请求编入索引」+「没有分析工具做归因」。
-- 因此本 spec 只做三件事：请求收录、补埋点、Bing 导入。**不做**转盘页、长尾页、外链扩量（用户此前明确排除）。
+`ledger.mjs stats` 输出：22 条记录 / 21 个唯一域名；submitted 8、rejected 4、candidate 8、drafted 2。
 
-## 3. 需求
+已提交且有页面级证据：
 
-### R1 主动请求编入索引（人工，GSC UI）
-- 对 `/` 以及 3 个最有价值的 URL 逐个执行「网址检查 → 请求编入索引」。
-- 验收：每个 URL 出现「已请求编入索引」提示，当日最多可请求若干条。
+| 目标 | 证据要点 |
+|---|---|
+| anoox.com | "Good Job - Your Site with URL of: https://santawheel.com" |
+| activesearchresults.com/addwebsite.php | urladdedconfirm.php 感谢页 |
+| 9sites.net/addurl.php | "Submission received. Our editor will review your submission." |
+| 247webdirectory.com/submit | 免费档 + 数学验证码，pending review |
+| qualityinternetdirectory.com/submit.php | free normal 档，2–3 个月审核 |
+| Product Hunt | 排期 2026-11-10 12:01am PT（北京 16:01） |
+| exactseek.com/add.html | 已提交，**待用户点邮件确认链接** |
+| educatorstechnology / wishes.app | 外联邮件已发出（drafted） |
 
-### R2 补分析埋点（代码）
-- 在 `app/layout.tsx` 安装 Vercel Analytics：`@vercel/analytics` 的 `<Analytics />`，零配置、不依赖 Cookie 弹窗、免费额度足够。
-- 目的：让 11/10 Product Hunt 发布带来的访问可被归因，否则本季无法判断动作是否有效。
-- 验收：部署后首页 HTML/JS 出现 `/_vercel/insights` 请求；Vercel 面板出现数据。
+已判定无效（有证据，勿重试）：finest4、elitesitesdirectory、onepagelove、localpages、ctrlalt、freead1、cuspera、apprater、nextgentools、llmstxt、appsandwebsites、awesomeindie、startupbase、somuch、freeprwebdirectory、mojeek、brave、yep、qwant、Hacker News（Show HN 限流）、sideprojects.net（launch date 满）、ABILogic(/submit 404)、Gimpsy、Secret Search Engine Labs。
 
-### R3 Bing 导入（人工，BWT UI）
-- 在 Bing Webmaster Tools 用「从 GSC 导入」一键搬入，避免重复验证。
-- 验收：BWT 显示站点已验证、sitemap 已读取。
+## 3. 在飞三条（表单已完成，卡在人工环节）
 
-### R4 观测窗口
-- 7 天后复查：GSC「网页」已编入索引数量、BWT 索引数、Vercel Analytics 访问数。
-- 判定标准：7 天内首页进入「已编入索引」即视为通过；若仍「已发现但未编入索引」，再排查内容质量/抓取预算。
+### T1 Site Promotion Directory（浏览器 session `sp`）
+- URL: `https://www.sitepromotiondirectory.com/submit.php`
+- 表单已填（FormData 实测）：`LINK_TYPE=normal`（免费档）、`CATEGORY_ID=610`（Shopping » Gifts）、`TITLE=SantaWheel - Free Secret Santa Generator`、`URL=https://santawheel.com`、`OWNER_NAME=SantaWheel`、`OWNER_EMAIL=dengxiaohongaikimi@gmail.com`、`DESCRIPTION_limit=246`、`AGREERULES=true`（已补勾）。
+- 唯一缺口：`CAPTCHA`（文本型图片验证码），需用户输入并点提交。
 
-## 4. 约束
+### T2 Cipinet（session `cp`）
+- URL: `https://www.cipinet.com/suggest.php?action=addlink&TID=sf`
+- 表单已填：`type=free`、`catlevelid[0]=133 Shopping` → `catlevelid[1]=139 Gifts & Occasions` → `catlevelid[2]=792 Christmas`、`url=https://santawheel.com`、`title=SantaWheel - Free Secret Santa Generator`、`description` 193 字符（上限 200）、`email=dengxiaohongaikimi@gmail.com`、`cipinettos=true`。
+- 唯一缺口：reCAPTCHA v2 复选；评审周期 4–5 个月（免费档）。
 
-- DNS 验证已生效，禁止为「验证」再改代码。
-- 不购买任何加急/付费收录（用户已明确拒绝 $9）。
-- 不新增页面、不改现有一期内容架构。
-- 代码改动仅限 `app/layout.tsx` + `package.json` 依赖。
+### T3 Link Centre（session `lc`）
+- URL: `https://www.linkcentre.com/get-started/create/?from=addurl&url=https%3A%2F%2Fsantawheel.com`
+- 流程：Create Account → Verify Email → Submit Listing → Dashboard（当前 0%）。
+- 待填字段：`first_name / last_name / email / username / password / business_name / country / marketing_consent`。
+- 需用户确认：是否授权我代填密码（建议由用户自己填密码与收信验证，我只填其余字段）。
 
-## 5. 涉及文件
+## 4. 本轮新增目标筛选方法（不再重复读文件，直接跑命令）
 
-- `app/layout.tsx`（新增 Analytics 组件挂载）
-- `package.json`（新增 `@vercel/analytics`）
-- 无其他文件改动
+数据源：`/Users/xiaohongaiweno/.trae-cn/skills/backlink/data/submission-targets.json`（1032 条）
+筛选器：`targets-select.mjs`，默认读取当前工作目录的 `.backlink/ledger.json`，自动排除已 submitted/rejected 域名。
+
+执行命令（在 `/Users/workspace/ai_workspace/santawheel` 下）：
+
+```bash
+node /Users/xiaohongaiweno/.trae-cn/skills/backlink/scripts/targets-select.mjs \
+  --cohort open --free-only --limit 40 --min-traffic 0 --format table
+```
+
+判定规则（避免重复踩坑）：
+- 命中「需要回链 / 需要登录 / 页面 404 / 域名不可达 / 品类错配 / 付费墙」→ 记账 `rejected` 并写证据。
+- 表单含 `AGREERULES`/`agree`、`*_limit` 字数计数器、`paid` 单选 → 必须显式设成免费档 + 勾选 + 同步计数器。
+- 数学题验证码可自算；图片/reCAPTCHA/Turnstile 交用户。
+
+## 5. 记账规范（每次提交后立即写）
+
+```bash
+cd /Users/workspace/ai_workspace/santawheel && \
+node /Users/xiaohongaiweno/.trae-cn/skills/backlink/scripts/ledger.mjs upsert \
+  --file .backlink/ledger.json --url "<submit-url>" --domain <domain> && \
+node /Users/xiaohongaiweno/.trae-cn/skills/backlink/scripts/ledger.mjs transition \
+  --file .backlink/ledger.json --url "<submit-url>" --state submitted \
+  --evidence "<返回页原文摘要>"
+```
+
+## 6. 验证标准（Definition of Done）
+
+1. `ledger.json` 中每条新提交都处于 `submitted` 且 `evidence` 含真实页面原文（不接受"看起来成功了"）。
+2. 所有表单邮箱字段均为 `dengxiaohongaikimi@gmail.com`（提交前用 `FormData` dump 复核）。
+3. `ledger.mjs stats` 的 `submitted` 数量较本轮开始时净增 ≥ 3。
+4. 无法完成的环节（邮件确认、图片验证码、账号密码）明确列给用户，不静默跳过。
+
+## 7. 需用户确认的点
+
+- 是否授权代填 Link Centre 账号密码（默认：不代填密码，只填姓名/邮箱/用户名/公司/国家）。
+- ExactSeek 确认邮件、Link Centre 验证邮件需用户在自己的 Gmail 中点击。
