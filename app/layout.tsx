@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -47,6 +48,9 @@ export const viewport: Viewport = {
   themeColor: "#fdfaf5",
 };
 
+/** GA4 measurement id; overridable via env without touching code. */
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? "G-10KZRNVH86";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -58,6 +62,18 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
       >
         <SiteJsonLd />
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}', { anonymize_ip: true });
+          `}
+        </Script>
         <Header />
         <main className="flex-1 pb-20 md:pb-0">{children}</main>
         <Footer />

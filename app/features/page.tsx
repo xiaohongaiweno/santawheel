@@ -166,7 +166,7 @@ const features: Array<{
     id: "privacy",
     title: "Privacy by design",
     tagline: "One click removes a person; one click deletes the whole draw",
-    body: "Every email carries a one-click remove-my-data link, the organizer can erase the entire draw from the dashboard when the exchange is over, and assignment links die the moment a draw is reset. No accounts, no tracking, no data resale.",
+    body: "Every email carries a one-click remove-my-data link, the organizer can erase the entire draw from the dashboard when the exchange is over, and assignment links die the moment a draw is reset. No accounts and no data resale.",
   },
   {
     id: "premium",

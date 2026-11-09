@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: { url: "/privacy" },
 };
 
-const UPDATED = "November 4, 2026";
+const UPDATED = "November 9, 2026";
 
 export default function PrivacyPage() {
   return (
@@ -169,10 +169,14 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-lg font-semibold">Cookies and analytics</h2>
           <p className="mt-2 text-muted">
-            SantaWheel does not set cookies and does not embed third-party
-            trackers or analytics. Nothing is written to your browser&apos;s
-            local storage — the site works without it. If we add analytics
-            later, this policy will say so before it goes live.
+            SantaWheel uses Google Analytics 4 to count page views and see
+            which pages are used. Google may set cookies on your browser and
+            collect data such as a truncated (anonymized) IP address and
+            device/browser information, processed under Google&apos;s privacy
+            terms. You can opt out with Google&apos;s official browser add-on
+            or any ad blocker. Analytics data is never combined with draw data
+            — names, emails, assignments and wishlists are not shared with
+            Google — and it is not used for advertising or profiling.
           </p>
         </section>
 
