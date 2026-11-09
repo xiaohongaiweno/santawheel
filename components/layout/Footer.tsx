@@ -85,14 +85,6 @@ export default function Footer() {
             loading="lazy"
           />
         </a>
-        <a
-          href="https://wired.business"
-          target="_blank"
-          rel="noopener"
-          className="text-sm text-muted underline hover:text-foreground"
-        >
-          Listed on Wired.business
-        </a>
       </div>
     </footer>
   );
