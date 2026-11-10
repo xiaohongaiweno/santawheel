@@ -127,7 +127,12 @@ const features: Array<{
         <Link href="/white-elephant-rules" className="text-accent underline">
           white elephant rules
         </Link>{" "}
-        are worth five minutes.
+        are worth five minutes. Playing the Southern freeze version instead?
+        The{" "}
+        <Link href="/dirty-santa-rules" className="text-accent underline">
+          dirty Santa rules
+        </Link>{" "}
+        are written up separately.
       </>
     ),
     link: { href: "/white-elephant-generator", label: "Open the white elephant generator" },

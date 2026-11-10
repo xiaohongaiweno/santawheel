@@ -16,13 +16,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${site.url}/features`,
-      lastModified: "2026-11-05",
+      lastModified: "2026-11-09",
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
       url: `${site.url}/gift-exchange-generator`,
-      lastModified: "2026-11-05",
+      lastModified: "2026-11-09",
       changeFrequency: "weekly",
       priority: 0.8,
     },
@@ -40,7 +40,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${site.url}/dirty-santa-rules`,
-      lastModified: "2026-11-05",
+      lastModified: "2026-11-09",
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${site.url}/dirty-santa-rules/printable`,
+      lastModified: "2026-11-10",
       changeFrequency: "monthly",
       priority: 0.7,
     },
@@ -58,7 +64,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${site.url}/dirty-santa-generator`,
-      lastModified: "2026-11-05",
+      lastModified: "2026-11-09",
       changeFrequency: "weekly",
       priority: 0.7,
     },

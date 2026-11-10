@@ -103,6 +103,32 @@ const faqs = [
   },
 ];
 
+// Mid-article FAQ: answers reuse only rules and numbers already published on
+// this page. The JSON-LD below maps over the same strings, so visible text
+// and structured data stay verbatim identical.
+const midFaqs = [
+  {
+    q: "How many gifts should each person bring for dirty Santa?",
+    a: "One wrapped gift per person — the pile has to match the headcount. The host sets the price cap in the invite, and fifteen to twenty-five dollars is the usual Southern range. Some hosts also drop a spare or two into the pile in case somebody forgets.",
+  },
+  {
+    q: "Can you steal the same gift twice in dirty Santa?",
+    a: "In the default Southern version, no. A present freezes the first time it changes hands and can never be stolen again, which is why the game runs quieter than white elephant. Some households let a gift move twice before it dies — agree on it before the first turn.",
+  },
+  {
+    q: "What happens when a gift has been stolen three times?",
+    a: "In dirty Santa it never gets that far: the default freezes a gift on its first steal, so a third steal cannot happen. Three steals is the white elephant default, where a present locks after the third time it is taken. If your invitation says the cap is three, you are playing the white elephant version.",
+  },
+  {
+    q: "What is the difference between dirty Santa and white elephant?",
+    a: "The skeleton is identical: one wrapped pile, a drawn order, and each turn is open or steal. The difference is the freeze rule — dirty santa freezes a gift the first time it changes hands, while white elephant lets it be stolen three times before it locks. That single line is why dirty santa runs quieter.",
+  },
+  {
+    q: "How much should you spend on a dirty Santa gift?",
+    a: "Whatever cap the host writes into the invite — the usual Southern range is fifteen to twenty-five dollars. New gifts only, nothing perishable or alive, and nothing so personal that only one person in the room would want it. A well-chosen gag gift is a tradition, not a violation.",
+  },
+];
+
 // ---------- structured data ----------
 
 const howtoJsonLd = {
@@ -129,6 +155,16 @@ const faqJsonLd = {
   })),
 };
 
+const midFaqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: midFaqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+
 function JsonLd({ data }: { data: object }) {
   return (
     <script
@@ -143,6 +179,7 @@ export default function DirtySantaRules() {
     <>
       <JsonLd data={howtoJsonLd} />
       <JsonLd data={faqJsonLd} />
+      <JsonLd data={midFaqJsonLd} />
       <BreadcrumbJsonLd
         items={[
           { name: "Home", path: "/" },
@@ -250,6 +287,22 @@ export default function DirtySantaRules() {
           </Link>
         </div>
 
+        <section aria-labelledby="mid-faq">
+          <h2 id="mid-faq" className="text-xl font-semibold">
+            Dirty Santa FAQ
+          </h2>
+          <div className="mt-4 divide-y divide-border rounded-lg border border-border">
+            {midFaqs.map((f) => (
+              <details key={f.q} className="px-4 py-3">
+                <summary className="cursor-pointer list-none text-sm font-medium marker:hidden">
+                  {f.q}
+                </summary>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
         <section aria-labelledby="house-rules">
           <h2 id="house-rules" className="text-xl font-semibold">
             House rules that keep it friendly
@@ -289,6 +342,14 @@ export default function DirtySantaRules() {
             ))}
           </div>
         </section>
+
+        <p className="text-sm leading-relaxed text-muted">
+          Want a one-page card to hand out or pin up?{" "}
+          <Link href="/dirty-santa-rules/printable" className="text-accent underline">
+            Download the printable dirty Santa rules
+          </Link>{" "}
+          — the default rule set, print-ready.
+        </p>
 
         <section aria-labelledby="more-rules">
           <h2 id="more-rules" className="text-xl font-semibold">

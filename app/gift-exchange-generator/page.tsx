@@ -241,7 +241,12 @@ export default function GiftExchangeGenerator() {
                 dirty Santa
               </Link>{" "}
               in the South. Same site, one play mode, a random turn order and a
-              steal limit you set yourself.
+              steal limit you set yourself. Each region freezes gifts on its own
+              schedule —{" "}
+              <Link href="/dirty-santa-rules" className="text-accent underline">
+                the dirty Santa variation rules
+              </Link>{" "}
+              cover the Southern version where a present dies on its first steal.
             </p>
           </section>
 

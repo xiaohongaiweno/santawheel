@@ -177,6 +177,17 @@ export default function DirtySantaGenerator() {
                 When the order ends, whatever you are holding is yours.
               </li>
             </ol>
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              The rules page walks through{" "}
+              <Link
+                href="/dirty-santa-rules"
+                className="text-accent underline"
+              >
+                how dirty Santa stealing works
+              </Link>{" "}
+              in full — the freeze rule, steal chains, and the courtesy rules
+              worth voting on.
+            </p>
           </section>
 
           <section aria-labelledby="house-rules">
