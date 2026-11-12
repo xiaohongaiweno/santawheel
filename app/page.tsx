@@ -370,7 +370,31 @@ export default function Home() {
               >
                 dirty Santa
               </Link>{" "}
-              in the South, and this site has a dedicated page for each.
+              in the South, and this site has a dedicated page for each. If your
+              group argues about house rules first, each variant also has a
+              full{" "}
+              <Link
+                href="/white-elephant-rules"
+                className="text-accent underline"
+              >
+                white elephant rules
+              </Link>{" "}
+              page — the{" "}
+              <Link
+                href="/yankee-swap-rules"
+                className="text-accent underline"
+              >
+                yankee swap rules
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/dirty-santa-rules"
+                className="text-accent underline"
+              >
+                dirty Santa rules
+              </Link>{" "}
+              cover the regional differences, steal caps and kid-friendly
+              variations.
             </p>
           </section>
 

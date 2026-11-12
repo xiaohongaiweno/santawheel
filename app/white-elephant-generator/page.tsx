@@ -4,9 +4,9 @@ import CreateGameForm from "@/components/we/CreateGameForm";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 
 export const metadata: Metadata = {
-  title: { absolute: "White Elephant Generator – Free Online Gift Exchange Draw" },
+  title: { absolute: "White Elephant Generator – Free Online Gift Swap Game" },
   description:
-    "White elephant generator: random picking order, open a present or steal an opened one, with a cap on repeat steals. Free, no sign-up, runs on one phone.",
+    "White elephant generator: draw a random turn order, open a wrapped present or steal one already opened, and the board enforces the steal cap for you. Free, no sign-up — one phone runs the whole game.",
   alternates: {
     canonical: "/white-elephant-generator",
   },
@@ -68,7 +68,7 @@ const appJsonLd = {
   operatingSystem: "Any",
   browserRequirements: "Requires JavaScript",
   description:
-    "Free white elephant generator. Give the group a random picking order, then open a wrapped gift or steal an opened one, with a configurable cap on repeat steals.",
+    "Free white elephant generator. Draw a random turn order, open a wrapped present or steal one already opened, and the board enforces the steal cap for you.",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
 

@@ -4,9 +4,9 @@ import DrawForm from "@/components/home/DrawForm";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 
 export const metadata: Metadata = {
-  title: { absolute: "Gift Exchange Generator – Free Random Pairing" },
+  title: { absolute: "Gift Exchange Generator – Draw Names in Pairs, Free" },
   description:
-    "Draw random gift exchange pairs for an office swap, a family draw or a friends' exchange. Free, no sign-up, with exclusion rules and private links.",
+    "Free gift exchange generator: paste your list, draw random pairs in one click, exclude problem combinations, and hand out private links. No email collection, no sign-up.",
   alternates: {
     canonical: "/gift-exchange-generator",
   },
@@ -78,7 +78,7 @@ const appJsonLd = {
   operatingSystem: "Any",
   browserRequirements: "Requires JavaScript",
   description:
-    "Free gift exchange generator. Paste your participant list and draw random pairs for an office swap, a family draw or a friends' exchange. No sign-up required.",
+    "Free gift exchange generator. Paste your list and draw random pairs in one click, with exclusion rules and private links. No email collection, no sign-up.",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
 
@@ -241,8 +241,12 @@ export default function GiftExchangeGenerator() {
                 dirty Santa
               </Link>{" "}
               in the South. Same site, one play mode, a random turn order and a
-              steal limit you set yourself. Each region freezes gifts on its own
-              schedule —{" "}
+              steal limit you set yourself — the{" "}
+              <Link href="/white-elephant-rules" className="text-accent underline">
+                white elephant rules
+              </Link>{" "}
+              page covers the full rulebook and variations first. Each region
+              freezes gifts on its own schedule —{" "}
               <Link href="/dirty-santa-rules" className="text-accent underline">
                 the dirty Santa variation rules
               </Link>{" "}

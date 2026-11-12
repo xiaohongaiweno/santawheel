@@ -10,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: site.url,
-      lastModified: "2026-11-08",
+      lastModified: "2026-11-12",
       changeFrequency: "daily",
       priority: 1,
     },
@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${site.url}/gift-exchange-generator`,
-      lastModified: "2026-11-09",
+      lastModified: "2026-11-12",
       changeFrequency: "weekly",
       priority: 0.8,
     },
@@ -52,7 +52,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${site.url}/white-elephant-generator`,
-      lastModified: "2026-11-08",
+      lastModified: "2026-11-12",
       changeFrequency: "weekly",
       priority: 0.8,
     },
