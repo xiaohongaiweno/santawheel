@@ -121,6 +121,18 @@ export default function Footer() {
             loading="lazy"
           />
         </a>
+        <a
+          href="https://goodaitools.com/ai/santawheel"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://goodaitools.com/assets/images/badge.png"
+            alt="Good AI Tools"
+            height={54}
+            loading="lazy"
+          />
+        </a>
       </div>
     </footer>
   );
