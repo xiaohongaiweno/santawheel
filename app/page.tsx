@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import DrawForm from "@/components/home/DrawForm";
 import CopyButton from "@/components/home/CopyButton";
@@ -21,10 +22,10 @@ export const metadata: Metadata = {
 const faqs: Array<{
   q: string;
   a: string;
-  /** Optional inline link rendered inside the visible answer. The JSON-LD
-   * answer text stays the plain `a` string, which contains the anchor text
+  /** Optional inline links rendered inside the visible answer. The JSON-LD
+   * answer text stays the plain `a` string, which contains the anchor texts
    * verbatim, so visible text and structured data always match. */
-  link?: { href: string; anchor: string };
+  links?: Array<{ href: string; anchor: string }>;
 }> = [
   {
     q: "Is SantaWheel free?",
@@ -84,8 +85,11 @@ const faqs: Array<{
   },
   {
     q: "What are the white elephant rules?",
-    a: "In white elephant, play moves in a fixed order: the first player can only unwrap a gift, and every later turn is either unwrapping a new present from the pile or stealing one somebody has already opened. A gift is locked once it has been stolen three times, the player whose gift was stolen immediately unwraps a replacement from the pile, and you cannot steal back a gift that was just taken from you. The full white elephant game rules are written up step by step on the rules page.",
-    link: { href: "/white-elephant-rules", anchor: "white elephant game rules" },
+    a: "In white elephant, play moves in a fixed order: the first player can only unwrap a gift, and every later turn is either unwrapping a new present from the pile or stealing one somebody has already opened. A gift is locked once it has been stolen three times, the player whose gift was stolen immediately unwraps a replacement from the pile, and you cannot steal back a gift that was just taken from you. The full white elephant game rules are written up step by step on the rules page. If you want a one-page card for the party, there are printable dirty Santa rules.",
+    links: [
+      { href: "/white-elephant-rules", anchor: "white elephant game rules" },
+      { href: "/dirty-santa-rules/printable", anchor: "printable dirty Santa rules" },
+    ],
   },
 ];
 
@@ -127,27 +131,35 @@ function JsonLd({ data }: { data: object }) {
   );
 }
 
-/** Renders an FAQ answer, swapping the anchor text for a link when present.
+/** Renders an FAQ answer, swapping the anchor texts for links when present.
  * The surrounding words come from the same `a` string that feeds the JSON-LD,
  * so the visible text stays verbatim identical to the structured data. */
 function FaqAnswer({
   a,
-  link,
+  links,
 }: {
   a: string;
-  link?: { href: string; anchor: string };
+  links?: Array<{ href: string; anchor: string }>;
 }) {
-  const i = link ? a.indexOf(link.anchor) : -1;
-  if (!link || i < 0) return <>{a}</>;
-  return (
-    <>
-      {a.slice(0, i)}
-      <Link href={link.href} className="text-accent underline">
-        {link.anchor}
-      </Link>
-      {a.slice(i + link.anchor.length)}
-    </>
-  );
+  const marks = (links ?? [])
+    .map((l) => ({ ...l, i: a.indexOf(l.anchor) }))
+    .filter((m) => m.i >= 0)
+    .sort((x, y) => x.i - y.i);
+  if (marks.length === 0) return <>{a}</>;
+  const parts: ReactNode[] = [];
+  let cursor = 0;
+  for (const m of marks) {
+    if (m.i < cursor) continue;
+    parts.push(a.slice(cursor, m.i));
+    parts.push(
+      <Link key={`${m.href}-${m.i}`} href={m.href} className="text-accent underline">
+        {m.anchor}
+      </Link>,
+    );
+    cursor = m.i + m.anchor.length;
+  }
+  parts.push(a.slice(cursor));
+  return <>{parts}</>;
 }
 
 export default function Home() {
@@ -466,7 +478,7 @@ export default function Home() {
                     {f.q}
                   </summary>
                   <p className="mt-2 text-sm leading-relaxed text-muted">
-                    <FaqAnswer a={f.a} link={f.link} />
+                    <FaqAnswer a={f.a} links={f.links} />
                   </p>
                 </details>
               ))}

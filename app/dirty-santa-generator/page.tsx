@@ -244,7 +244,14 @@ export default function DirtySantaGenerator() {
                 dirty santa rules
               </Link>{" "}
               walk through the Southern defaults, the freeze rule, and the
-              variations worth voting on before the first turn.
+              variations worth voting on before the first turn. Hand out a{" "}
+              <Link
+                href="/dirty-santa-rules/printable"
+                className="text-accent underline"
+              >
+                printable rules card
+              </Link>{" "}
+              so nobody argues about the steal cap.
             </p>
           </section>
 
