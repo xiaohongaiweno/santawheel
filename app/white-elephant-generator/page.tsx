@@ -196,7 +196,11 @@ export default function WhiteElephantGenerator() {
               Yankee swap and Dirty Santa are the same game
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              The name changes with the zip code, the rules do not. New England
+              The name changes with the zip code, the{" "}
+              <Link href="/dirty-santa-rules" className="text-accent underline">
+                dirty Santa rules
+              </Link>{" "}
+              do not. New England
               calls it a yankee swap, the South and Midwest usually call it dirty
               Santa, and both mean this: one wrapped pile, a fixed turn order, and
               stealing instead of pairing people up. Use the page that matches
