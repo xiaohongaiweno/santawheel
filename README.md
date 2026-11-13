@@ -1,61 +1,63 @@
 # SantaWheel
 
-免费在线 Secret Santa / 礼物交换抽签工具 — [santawheel.com](https://santawheel.com)
+Free online Secret Santa / gift exchange generator — [santawheel.com](https://santawheel.com)
 
-免注册、浏览器打开即用（手机与电脑均可，最多支持 100 人）：粘贴参与者名单，一键完成合法抽签——没人会抽到自己、排除规则双向生效，每位参与者收到一个只显示自己分配结果的私密链接。
+No sign-up, works in the browser on mobile and desktop, up to 100 participants: paste your participant list and get a valid draw in one click — nobody draws themselves, exclusion rules apply in both directions, and every participant receives a private link showing only their own assignment.
 
-## 核心功能
+English | [简体中文](./README.zh-CN.md)
 
-- **一键抽签**：粘贴名单自动配对，保证不抽到自己、不重复分配，并带重抽保护
-- **排除规则**：夫妻/情侣、上下级等互不抽取，规则双向生效；规则冲突导致无法抽签时明确提示
-- **多种分发方式**：邮件自动派发、私密链接（WhatsApp/短信等任意渠道，无需邮箱）、自主加入链接三种模式
-- **隐私保护**：盲抽模式下连组织者也不知道谁抽了谁；支持匿名问答（尺码、喜好等），组织者不可见
-- **愿望清单**：参与者可填写礼物愿望与收货地址，地址仅对抽中者可见
-- **白象换礼模式**：支持 White Elephant / Yankee Swap / Dirty Santa，自动生成拆礼与偷礼顺序（含 3 次偷礼锁定规则）
-- **定时开奖**：可设定具体时间自动抽取，也可随时取消或手动抽取
+## Features
 
-## 完整规则
+- **One-click draw**: paste your list and get valid pairs — no self-draws, no duplicates, with redraw protection
+- **Exclusion rules**: keep couples, roommates, or managers and reports apart; rules apply in both directions, and unsolvable rule conflicts are reported clearly instead of producing a broken draw
+- **Multiple delivery methods**: automatic email, private links (share via WhatsApp/SMS — no email needed), or self-join links
+- **Privacy**: blind mode hides pairings even from the organizer; anonymous Q&A (sizes, preferences) the organizer cannot see
+- **Wishlists**: participants can add gift wishes and a shipping address, visible only to whoever drew them
+- **White elephant mode**: White Elephant / Yankee Swap / Dirty Santa with an automatic opening and stealing order (including the 3-steal lock rule)
+- **Scheduled draws**: set a draw time in advance, cancel it, or draw manually anytime
 
-以下规则与官网 [Secret Santa Rules](https://santawheel.com/secret-santa-rules)、[White Elephant Rules](https://santawheel.com/white-elephant-rules)、[Yankee Swap Rules](https://santawheel.com/yankee-swap-rules)、[Dirty Santa Rules](https://santawheel.com/dirty-santa-rules) 页面内容一致。
+## The Complete Rules
 
-### Secret Santa（神秘圣诞老人）规则
+The rules below match the site pages [Secret Santa Rules](https://santawheel.com/secret-santa-rules), [White Elephant Rules](https://santawheel.com/white-elephant-rules), [Yankee Swap Rules](https://santawheel.com/yankee-swap-rules), and [Dirty Santa Rules](https://santawheel.com/dirty-santa-rules).
 
-玩法：每人匿名为另外一人准备礼物，抽签决定谁给谁买。
+### Secret Santa rules
 
-1. **提前约定预算**：预算写进邀请，对所有人生效。不写下来，就会有人花六十美元、有人花十美元。
-2. **收集参与者**：三人起步才像抽签；两人互抽等于没有秘密。退出接收的人应整体退出抽签，保持闭环。
-3. **抽签前约定排除规则**：夫妻、同居伴侣、兄弟姐妹、上下级等互不抽取。排除关系双向生效；极端情况下排除会让抽签无解，工具会明确报告而不是返回错误结果。
-4. **一对一配对抽签**：每个名字只被抽到一次，每人只为一人买礼物、也从一人处收礼物。任何人不能抽到自己。
-5. **私下发送分配结果**：邮件、私密链接（一人生成一条不可猜测的链接）或自主加入链接。不想知道配对的组织者可开盲抽模式。
-6. **交换前保密**：分配结果是惊喜。不告诉抽到的人、不确认猜测、不在群聊里发配对表，交换当天才揭晓。
+How it works: everyone anonymously prepares a gift for one other person, decided by a draw.
 
-常见变通：抽签后有人退出 → 重新抽签并作废旧链接；有人没收到结果 → 后台重发，不要口头转述；临时加人 → 抽签前直接加入，抽签后必须重抽。
+1. **Agree on a budget in advance**: put the number in the invite and it applies to everyone. Without a written number, someone spends sixty dollars and someone spends ten.
+2. **Collect the group**: three people is the practical minimum; a two-person draw has no secrecy. Anyone who opts out of receiving should opt out of the draw entirely to keep the loop closed.
+3. **Agree on exclusions before the draw**: couples, roommates, siblings, and manager/direct-report pairs should not draw each other. Exclusions apply in both directions; in extreme cases they can make a draw impossible, and the tool reports that instead of returning an invalid result.
+4. **Draw one-to-one pairs**: every name is drawn exactly once, so each person buys for one other person and receives from one other person. Nobody draws themselves.
+5. **Send assignments privately**: by email, via private links (one unguessable link per person), or via self-join links. Organizers who do not want to know the pairings can turn on blind mode.
+6. **Keep it secret until the exchange**: the assignment is the surprise. Do not tell the person you drew, do not confirm guesses, do not post the pairing list anywhere the group can see it.
 
-### White Elephant / Yankee Swap / Dirty Santa（白象换礼）规则
+Common fixes: someone drops out after the draw → redraw and invalidate old links; someone never received their assignment → resend from the dashboard, never read it out loud; late joiner → add before the draw, redraw if the draw already happened.
 
-玩法：人人带一件包装好的无署名礼物放入一堆，按固定顺序轮流"拆新礼物或偷已拆礼物"。三个名字是同一种游戏的不同叫法（新英格兰叫 Yankee Swap，南方叫 Dirty Santa，其余多叫 White Elephant），差别主要在"冻结规则"。
+### White Elephant / Yankee Swap / Dirty Santa rules
 
-基本流程：
+How it works: everyone brings one wrapped, unlabelled gift to one pile, and players take turns in a fixed order, choosing to "unwrap a new gift or steal an opened one." The three names are the same game (Yankee Swap in New England, Dirty Santa in the South, White Elephant most everywhere else); the main difference is the freeze rule.
 
-1. **每人带一件礼物**：数量必须等于人数，预算由主持人写在邀请里（常见 15–25 美元），只用新礼物，不带易腐品和活物。
-2. **随机确定顺序**：抽取顺序并在第一轮前锁定，之后不再变动。
-3. **第一位玩家只能拆**：第一轮没有可偷的东西，只能从礼物堆里拆一件并展示。
-4. **每轮二选一**：拆一件新礼物，或偷一件已被拆开的礼物。被偷的人立即再拆一件新礼物。
-5. **偷礼次数有上限**：White Elephant 默认同一件礼物被偷 3 次后锁定，归最后持有人所有；Dirty Santa 的默认南方规则是礼物一经偷出立即"冻结"，不能再被偷。
-6. **不许立刻偷回**：刚从你手里被偷走的礼物，你不能马上偷回去。
-7. **礼物堆空了游戏结束**：结束时你手里的礼物就是你的，结束后不再交换。
+Basic flow:
 
-常见变体：偷礼上限设为 0（纯按顺序拆礼，适合小孩）；每次轮次限偷一次；搞怪礼物专场；冻结次数改为 2 次。
+1. **Everyone brings one gift**: the pile must match the headcount, the host sets the budget in the invite (commonly $15–25), new gifts only, nothing perishable or alive.
+2. **Draw a random order**: the order is set before the first turn and locked after that.
+3. **The first player can only unwrap**: there is nothing to steal yet, so turn one opens a present from the pile and shows it around.
+4. **Each turn is a choice**: unwrap a new gift, or steal any opened one. Whoever is stolen from immediately unwraps a new gift from the pile.
+5. **Steals are capped**: White Elephant's default locks a gift after it has been stolen 3 times, and it stays with its final holder; Dirty Santa's default Southern rule freezes a gift the moment it is first stolen — it can never be stolen again.
+6. **No stealing straight back**: a gift that was just taken from you cannot be taken back on your next turn.
+7. **The game ends when the pile is empty**: whatever you are holding is yours, and there is no trading afterwards.
 
-## 技术栈
+Common variants: steal cap set to 0 (a straight pick-in-order draw for kids); one steal per turn; gag-gift rounds; a freeze limit of two moves instead of one.
+
+## Stack
 
 - Next.js 15 (App Router) + TypeScript + Tailwind v4
-- Supabase Postgres 存储（`supabase/migrations/`）
-- Resend 邮件派发，带重试队列
-- Waffo Pancake 一次性 $4.99 高级解锁
-- 部署在 Vercel
+- Supabase Postgres for storage (`supabase/migrations/`)
+- Resend for email delivery, with a retry queue
+- Waffo Pancake for the one-time $4.99 premium unlock
+- Deployed on Vercel
 
-## 页面
+## Pages
 
 | Route | Purpose |
 |---|---|
@@ -65,11 +67,15 @@
 | `/manage/[token]` | Organizer dashboard — delivery status, resend, CSV, redraw, premium |
 | `/remove/[token]` | GDPR data removal |
 
-## 抽签引擎
+## Draw engine
 
-`lib/draw/derangement.ts` — 约束集（"不抽自己"加上两两排除）本质是二部图完美匹配，用随机化 Kuhn 增广路径算法求解，可精确判定无解输入（无重试循环、无非法输出）。100 人 + 20 条排除毫秒级完成。
+`lib/draw/derangement.ts` — the constraint set ("nobody draws themselves" plus
+pairwise exclusions) is a bipartite perfect matching. Solved with a randomized
+Kuhn augmenting-path algorithm, which detects unsatisfiable inputs exactly
+(no retry loops, no invalid output). 100 participants with 20 exclusions
+resolves in milliseconds.
 
-## 本地开发
+## Local development
 
 ```bash
 npm install
@@ -102,41 +108,41 @@ The email retry queue is triggered by an external 5-minute cron
 (cron-job.org) hitting `/api/cron/email-queue` with `Authorization: Bearer
 $CRON_SECRET`, because Vercel's Hobby plan only allows daily crons.
 
-## 关于作者
+## About the Author
 
-独立开发者，曾就职于 [华为] 等大厂，超过12年云计算研发，精通ES云服务，擅长JAVA, Python开发，独立运营 SnapByFace 人脸识别、照片分组项目与 SantaWheel 圣诞抽签工具，专注于 AI 工具产品
+Independent developer, previously worked at [Huawei] and other large tech companies. 12+ years of cloud computing R&D, expert in ES cloud services, proficient in Java and Python. Independently runs SnapByFace (face recognition and photo grouping) and SantaWheel (Christmas gift exchange tool), focused on AI tool products.
 
-- X (Twitter)：https://x.com/@DengXiaoho71001
-- YouTube：https://www.youtube.com/@xiaohongdeng-q1y
-- 知乎：https://www.zhihu.com/people/exeta1
-- Product Hunt：https://www.producthunt.com/products/snapbyface?launch=snapbyface
-- 领英：www.linkedin.com/in/xiaohong-deng-781b1b443
-- github: https://github.com/xiaohongaiweno
+- X (Twitter): https://x.com/@DengXiaoho71001
+- YouTube: https://www.youtube.com/@xiaohongdeng-q1y
+- Zhihu: https://www.zhihu.com/people/exeta1
+- Product Hunt: https://www.producthunt.com/products/snapbyface?launch=snapbyface
+- LinkedIn: https://www.linkedin.com/in/xiaohong-deng-781b1b443
+- GitHub: https://github.com/xiaohongaiweno
 
-## 我的产品
+## My Products
 
-### SnapByFace —— 离线优先的桌面端人脸搜索工具
+### SnapByFace — Offline-First Desktop Face Search Tool
 
-SnapByFace 是一款离线优先的桌面端人脸搜索与整理工具，支持 macOS 与 Windows。
+SnapByFace is an offline-first desktop tool for face search and photo organization, available for macOS and Windows.
 
-- **本地 AI 识别**：基于 ONNX Runtime 的人脸检测与特征提取，所有计算在本地完成，照片不离开设备
-- **以图搜图**：导入一张参考人脸，即可在数万张照片中找出同一人的所有照片
-- **视频支持**：不仅支持图片，还支持从视频文件中提取帧进行人脸识别
-- **隐私优先**：无云端依赖，无账号体系，数据完全存储在本地 SQLite 数据库
-- **多语言**：支持中文 / 英文双语界面
+- **Local AI recognition**: face detection and feature extraction powered by ONNX Runtime — all computation happens locally, photos never leave the device
+- **Search by photo**: import one reference face and find every photo of that person across tens of thousands of images
+- **Video support**: works on images and extracts frames from video files for face recognition
+- **Privacy first**: no cloud dependencies, no accounts, all data stored in a local SQLite database
+- **Multilingual**: Chinese / English interface
 
-官网：https://snapbyface.com/
+Website: https://snapbyface.com/
 
-### SantaWheel —— 免费在线 Secret Santa 抽签工具
+### SantaWheel — Free Online Secret Santa Generator
 
-SantaWheel 是一款免注册的在线圣诞礼物交换（Secret Santa）抽签工具，浏览器打开即用，手机与电脑均可，最多支持 100 人。
+SantaWheel is a free, sign-up-free online Secret Santa gift exchange tool that works in the browser on mobile and desktop, for groups of up to 100 people.
 
-- **一键抽签**：粘贴参与者名单即可自动配对，保证不会抽到自己、不会重复分配，并带重抽保护
-- **排除规则**：可设置夫妻/情侣、上下级等互不抽取，规则双向生效；规则冲突导致无法抽签时会明确提示
-- **多种分发方式**：邮件自动派发、私密链接（通过 WhatsApp/短信等任意渠道发放，无需邮箱）、自主加入链接三种模式
-- **隐私保护**：盲抽模式下连组织者也不知道谁抽了谁；支持匿名问答（询问尺码、喜好等），组织者亦不可见
-- **愿望清单**：参与者可填写礼物愿望与收货地址，地址仅对抽中者可见
-- **白象换礼模式**：支持 White Elephant / Yankee Swap / Dirty Santa，自动生成拆礼与偷礼顺序（含 3 次偷礼锁定规则）
-- **定时开奖**：可设定具体时间自动抽取，也可随时取消或手动抽取
+- **One-click draw**: paste your participant list and get valid pairs — no self-draws, no duplicates, with redraw protection
+- **Exclusion rules**: keep couples and managers/reports apart; rules apply in both directions, and unsolvable conflicts are reported clearly
+- **Multiple delivery methods**: automatic email, private links (share via WhatsApp/SMS — no email needed), or self-join links
+- **Privacy**: blind mode hides pairings even from the organizer; anonymous Q&A (sizes, preferences) the organizer cannot see
+- **Wishlists**: participants can add gift wishes and a shipping address, visible only to whoever drew them
+- **White elephant mode**: White Elephant / Yankee Swap / Dirty Santa with an automatic opening and stealing order (including the 3-steal lock rule)
+- **Scheduled draws**: set a draw time in advance, cancel it, or draw manually anytime
 
-官网：https://santawheel.com
+Website: https://santawheel.com
